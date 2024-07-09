@@ -1,0 +1,26 @@
+---
+interface Props {
+	
+}
+
+const {} = Astro.props;
+---
+
+<canvas class="fixed top-0 left-0 w-full h-full z-0" id="canvas"></canvas>
+<script>
+    import RaindropFX from "raindrop-fx";
+  
+    const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  
+    const raindropFx = new RaindropFX({
+      canvas: canvas,
+      background:
+        "https://t3.ftcdn.net/jpg/02/26/35/82/360_F_226358206_e6Z8BuwkQRvYOM70INACyADuHbMApLvK.jpg",
+    });
+  
+    raindropFx.start();
+  </script>
+  
