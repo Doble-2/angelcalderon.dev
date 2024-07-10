@@ -2,9 +2,11 @@
 import ExperienceSection from "../components/index/experience/ExperienceSection.astro";
 import ProfileSection from "../components/index/ProfileSection.astro";
 import ProjectSection from "../components/index/projects/ProjectSection.astro";
+import CertifiedSection from "../components/index/certifieds/CertifiedSection.astro";
 
 import Section from "../components/share/Section.astro";
 import Layout from "../layouts/Layout.astro";
+import Contact from "../components/Contact.astro";
 ---
 
 <Layout title="Ángel Calderón | Desarrollador Frontend">
@@ -16,7 +18,12 @@ import Layout from "../layouts/Layout.astro";
     <ExperienceSection />
   </Section>
 
-  <Section className={" py-8"}>
+  <Section className={" p-0 px-0"}>
     <ProjectSection />
   </Section>
+
+  <Section className={" py-8 flex-col flex md:flex-row"}>
+    <CertifiedSection />
+  </Section>
+    <Contact />
 </Layout>

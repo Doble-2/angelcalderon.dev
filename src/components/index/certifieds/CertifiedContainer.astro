@@ -1,0 +1,9 @@
+---
+const { className, href, title, image } = Astro.props;
+---
+
+<div class:list={["col-span-1 bg-sky-800 max-w-32" , className]}>
+    <a href={href} target="_blank" title={title}>
+        <img class="object-cover h-full w-full" src='/avila.jpg' alt="" />
+    </a>
+</div>
