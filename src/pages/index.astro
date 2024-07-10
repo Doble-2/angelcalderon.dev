@@ -1,6 +1,8 @@
 ---
 import ExperienceSection from "../components/index/experience/ExperienceSection.astro";
 import ProfileSection from "../components/index/ProfileSection.astro";
+import ProjectSection from "../components/index/projects/ProjectSection.astro";
+
 import Section from "../components/share/Section.astro";
 import Layout from "../layouts/Layout.astro";
 ---
@@ -10,7 +12,11 @@ import Layout from "../layouts/Layout.astro";
     <ProfileSection />
   </Section>
 
-  <Section className={   ' py-8'}>
+  <Section className={" py-8"}>
     <ExperienceSection />
+  </Section>
+
+  <Section className={" py-8"}>
+    <ProjectSection />
   </Section>
 </Layout>
