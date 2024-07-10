@@ -21,13 +21,14 @@ const { title } = Astro.props;
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
-	<body>
+	<body class="max-w-screen">
 		<Rainy />
-		<NavBar />
-		<main>
+	
+		<main class="">
 			<div
-				class="z-10 relative main-section text-white "
+				class="z-10 relative main-section text-white  bg-black/[.3]"
 			>
+			<NavBar />
 				<slot />
 			</div>
 		</main>
