@@ -1,18 +1,13 @@
 <canvas class="fixed top-0 left-0 w-screen h-screen z-0" id="canvas"></canvas>
 <script>
-    import RaindropFX from "raindrop-fx";
-  
-    const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-  
-    const raindropFx = new RaindropFX({
-      canvas: canvas,
-      background:
-        "/avila.jpg",
-    });
-  
-    raindropFx.start();
-  </script>
-  
+  import RaindropFX from "raindrop-fx";
+  const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  const raindropFx = new RaindropFX({
+    canvas: canvas,
+    background: "/avila.jpg",
+  });
+  raindropFx.start();
+</script>
