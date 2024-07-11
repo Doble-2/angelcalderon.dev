@@ -1,9 +1,18 @@
 ---
+import { Image } from "astro:assets";
+
 const { className, href, title, image } = Astro.props;
 ---
 
-<div class:list={["col-span-1 bg-sky-800 max-w-32" , className]}>
-    <a href={href} target="_blank" title={title}>
-        <img class="object-cover h-full w-full" src='/avila.jpg' alt="" />
+<div class:list={["col-span-1 bg-sky-800 max-w-32", className]}>
+    <a href={href} download target="_blank" title={title}>
+        <Image
+            height={40}
+            width={40}
+            loading="lazy"
+            class="object-cover h-full w-full"
+            src="/avila.jpg"
+            alt={title}
+        />
     </a>
 </div>
