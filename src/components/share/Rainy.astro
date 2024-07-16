@@ -1,7 +1,27 @@
-<!-- <canvas class="fixed top-0 left-0 w-screen h-screen z-0" id="canvas"></canvas> -->
-<img src="/avila.jpg" alt="avila image" srcset="" class="object-cover	 fixed blur top-0 left-0 w-screen h-screen z-0">
-<!-- <script>
+<!--  -->
+<div class="">
+  <p class="z-30 text-xl fixed">lluvia</p>
+  <div id="containerRain">
+    <img src="/avila.jpg" alt="avila image" id="canvas" class="object-cover	blur w-screen h-screen fixed top-0 left-0 z-0" >
+
+  </div>
+
+</div>
+ <script >
   import RaindropFX from "raindrop-fx";
+
+  const buttons = document.querySelectorAll('p.fixed');
+
+  // Maneja los clics en cada botón.
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      playRain();
+    });
+  });
+  function playRain(){
+    document.getElementById("containerRain").innerHTML=`<canvas class="fixed top-0 left-0 w-screen h-screen z-0" id="canvas"></canvas>`;
+
+
   const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;
@@ -11,5 +31,7 @@
     background: "/avila.jpg",
   });
   raindropFx.start();
+  }
+ 
 </script>
- -->
+ 
