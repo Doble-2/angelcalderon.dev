@@ -1,18 +1,13 @@
 ---
 import { Image } from "astro:assets";
 
-const { className, href, title, image } = Astro.props;
+const { className, href, title, image, color } = Astro.props;
 ---
 
-<div class:list={["col-span-2 bg-sky-800", className]}>
+<div class:list={[`col-span-2 bg-[${color}] bg-opacity-50 rounded-sm`, className]}>
     <a href={href} target="_blank" title={title}>
-        <Image
-            height={40}
-            width={40}
-            loading="lazy"
-            class="object-cover h-full w-full"
-            src={image}
-            alt={title}
-        />
+        <div class="h-16">
+
+        </div>
     </a>
 </div>

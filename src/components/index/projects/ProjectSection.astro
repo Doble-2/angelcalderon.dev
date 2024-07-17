@@ -47,17 +47,20 @@ const projects = docsProjects.sort((a, b) => {
                                 "/" +
                                 project.images[0]
                             }
+                            color={project.color}
                         />
                     ) : (
                         <DesktopProjectContainer
                             href="/#"
-                            title="Proyecto 1"
+                            title={project.name}
                             image={
                                 "/projects/" +
                                 project.name +
                                 "/" +
                                 project.images[0]
                             }
+                            color={project.color}
+
                         />
                     )}
                 </>
