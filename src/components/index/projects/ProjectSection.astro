@@ -1,27 +1,25 @@
 ---
 import DesktopProjectContainer from "./DesktopProjectContainer.astro";
 import MobileProjectContainer from "./MobileProjectContainer.astro";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-} from "firebase/firestore"
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../../../firebase/client";
 
 const db = getFirestore(app);
 
 const queryProjects = await getDocs(collection(db, "projects"));
-  const queryCertifieds = await getDocs(collection(db, "certifieds"));
-  const docsProjects = [];
-  const docsCertifieds = [];
-  //console.log(queryProjects);
-  queryProjects.forEach((doc) => {
+const docsProjects = [];
+queryProjects.forEach((doc) => {
     docsProjects.push({ ...doc.data(), id: doc.id });
-  });
-  queryCertifieds.forEach((doc) => {
-    docsCertifieds.push({ ...doc.data(), id: doc.id });
-  });
- 
+});
+const projects = docsProjects.sort((a, b) => {
+    if (a.order > b.order) {
+        return -1;
+    }
+    if (a.order < b.order) {
+        return 1;
+    }
+    return 0;
+});
 ---
 
 <div class="flex flex-col w-full">
@@ -33,44 +31,38 @@ const queryProjects = await getDocs(collection(db, "projects"));
         </div>
     </div>
     <div
-        class="mb-4 grid md:grid-cols-4 grid-cols-2 lg:grid-cols-6 gap-1 w-full"
+        id="projects"
+        class="mb-4 grid md:grid-cols-4 grid-cols-2 lg:grid-cols-6 gap-3 w-full"
     >
-        <MobileProjectContainer
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-        <DesktopProjectContainer
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-        <MobileProjectContainer
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-        <DesktopProjectContainer
-            className={" hidden md:block"}
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-
-        <DesktopProjectContainer
-            className={" hidden md:block"}
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-        <DesktopProjectContainer
-            className={"hidden md:block"}
-            href="/#"
-            title="Proyecto 1"
-            image="/avila.jpg"
-        />
-        <!--  <DesktopProjectContainer />
-        <DesktopProjectContainer /> -->
+        {
+            projects.map((project) => (
+                <>
+                    {project.type == "aplicación" ? (
+                        <MobileProjectContainer
+                            href="/#"
+                            title={project.name}
+                            image={
+                                "/projects/" +
+                                project.name +
+                                "/" +
+                                project.images[0]
+                            }
+                        />
+                    ) : (
+                        <DesktopProjectContainer
+                            href="/#"
+                            title="Proyecto 1"
+                            image={
+                                "/projects/" +
+                                project.name +
+                                "/" +
+                                project.images[0]
+                            }
+                        />
+                    )}
+                </>
+            ))
+        }
     </div>
     <div class="md:place-self-end place-self-center lg:col-span-7">
         <button

@@ -5,14 +5,14 @@ const { className, href, title, image } = Astro.props;
 ---
 
 <div
-    class:list={["row-span-2 bg-cyan-600 col-span-2 md:col-span-1", className]}
+    class:list={["row-span-2 bg-black bg-opacity-25 col-span-2 md:col-span-1 rounded-sm", className]}
 >
-    <a href={href} target="_blank" title={title}>
+    <a href={href} target="_blank" title={title} class="rounded-sm">
         <Image
             height={40}
             width={40}
             loading="lazy"
-            class="object-cover h-full w-full"
+            class="object-fill  h-full w-full rounded-sm"
             src={image}
             alt={title}
         />
