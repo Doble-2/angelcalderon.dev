@@ -1,37 +1,42 @@
 <!--  -->
 <div class="">
-  <p class="z-30 text-xl fixed">lluvia</p>
-  <div id="containerRain">
-    <img src="/avila.jpg" alt="avila image" id="canvas" class="object-cover	blur w-screen h-screen fixed top-0 left-0 z-0" >
-
+  <div id="containerRain" class="z-[5] fixed">
+    <canvas class="top-0 left-0 w-screen h-screen z-[5]" id="canvas"></canvas>
   </div>
-
+  <img
+    src="/avila.jpg"
+    alt="avila image"
+    class="object-cover object-center blur-[13px] w-screen h-screen fixed top-0 left-0 z-0"
+  />
 </div>
- <script >
+<script>
   import RaindropFX from "raindrop-fx";
-
-  const buttons = document.querySelectorAll('p.fixed');
-
-  // Maneja los clics en cada botón.
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => {
-      playRain();
-    });
-  });
-  function playRain(){
-    document.getElementById("containerRain").innerHTML=`<canvas class="fixed top-0 left-0 w-screen h-screen z-0" id="canvas"></canvas>`;
-
-
-  const canvas = document.querySelector("#canvas") as HTMLCanvasElement;
-  const rect = canvas.getBoundingClientRect();
+  var canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  var rect = canvas.getBoundingClientRect();
   canvas.width = rect.width;
   canvas.height = rect.height;
-  const raindropFx = new RaindropFX({
+  var raindropFx = new RaindropFX({
     canvas: canvas,
     background: "/avila.jpg",
   });
-  raindropFx.start();
-  }
- 
+  let rain = false;
+  const button = document.getElementById("rain-btn");
+
+  // Maneja los clics en cada botón.
+
+  button.addEventListener("click", () => {
+    if (!rain) {
+      rain = true;
+      console.log(raindropFx);
+      raindropFx.options.spawnLimit = 200;
+      raindropFx.start();
+    } else {
+      //  rain = false;
+      console.log(raindropFx);
+
+      raindropFx.options.spawnLimit = 0;
+      rain = false;
+
+      raindropFx.stop();
+    }  });
 </script>
- 

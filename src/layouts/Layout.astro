@@ -1,6 +1,8 @@
 ---
 import NavBar from "../components/share/NavBar.astro";
 import Rainy from "../components/share/Rainy.astro";
+import { Image } from "astro:assets";
+
 interface Props {
 	title: string;
 }
@@ -29,9 +31,36 @@ const { title } = Astro.props;
 				<NavBar />
 				<slot />
 			</div>
+
+			<div class="fixed bottom-4 right-4 z-30">
+				<button
+					id="rain-btn"
+					class="bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none  h-10 w-10"
+					type="button"
+					id="radix-:r2:"
+					aria-haspopup="menu"
+					aria-expanded="true"
+					data-state="open"
+					aria-controls="radix-:r3:"
+				>
+					<Image
+						width="50"
+						height="50"
+						loading="lazy"
+						class="w-8 h-8"
+						src="https://img.icons8.com/ios/50/ffffff/blur.png"
+
+						alt="blur"
+					/>
+
+					<path d="M5 12h14"></path>
+					<path d="M12 5v14"></path>
+				</button>
+			</div>
 		</main>
 	</body>
 </html>
+
 <style is:global>
 	:root {
 		--accent: 136, 58, 234;
