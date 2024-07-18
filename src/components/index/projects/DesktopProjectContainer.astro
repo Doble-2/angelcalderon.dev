@@ -4,16 +4,31 @@ import { Image } from "astro:assets";
 const { className, href, title, image, color } = Astro.props;
 ---
 
-<div class:list={[`col-span-2 bg-[${color}] bg-opacity-25`, className]}>
-    <a href={href} target="_blank" title={title}>
-        <Image
-            height={40}
-            width={40}
-            loading="lazy"
-            class="object-cover h-full w-full"
-            src={image}
-            alt={title}
-            
-        />
-    </a>
+<div
+    class:list={[
+        `col-span-2 bg-white bg-opacity-25 rounded-xl max-h-[50vh] flex flex-col items-center`,
+        className,
+    ]}
+>
+    <Image
+        height={40}
+        width={40}
+        loading="lazy"
+        class="object-cover w-64"
+        src={image}
+        alt={title}
+    />
+    <div
+       
+        class="relative bottom-8 flex flex-col items-center justify-center w-full gap-2 font-bold"
+    >
+      {title}
+        <button
+            class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center w-44"
+        >
+            <a href="/profile.png" download class="text-sm font-semibold">
+                Ver más
+            </a>
+        </button>
+    </div>
 </div>
