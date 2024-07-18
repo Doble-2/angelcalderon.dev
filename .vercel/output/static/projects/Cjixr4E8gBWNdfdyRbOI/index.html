@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Soy Desarrollador web/mobile y eterno autodidacta viviendo en Caracas Venezuela | este es mi portfolio, descubre mis proyectos y ponte en contacto conmigo"><meta name="viewport" content="width=device-width"><link rel="icon" href="/favicon_.png"><meta name="generator" content="Astro v4.11.5"><title>Ángel Calderón | Desarrollador Frontend</title><link rel="stylesheet" href="/_astro/index.CWRtLPdB.css"></head> <body class="max-w-screen"> <!--  --><div class=""> <div id="containerRain" class="z-[5] fixed"> <canvas class="top-0 left-0 w-screen h-screen z-[5]" id="canvas"></canvas> </div> <img src="/avila.jpg" alt="avila image" class="object-cover object-center blur-[13px] w-screen h-screen fixed top-0 left-0 z-0"> </div><!-- 
+<script>
+  import RaindropFX from "raindrop-fx";
+  var canvas = document.getElementById("canvas") as HTMLCanvasElement;
+  var rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  var raindropFx = new RaindropFX({
+    canvas: canvas,
+    background: "/avila.jpg",
+  });
+  let rain = false;
+  const button = document.getElementById("rain-btn");
+
+  // Maneja los clics en cada botón.
+
+  button.addEventListener("click", () => {
+    if (!rain) {
+      rain = true;
+      console.log(raindropFx);
+      raindropFx.options.spawnLimit = 200;
+      raindropFx.start();
+    } else {
+      //  rain = false;
+      console.log(raindropFx);
+
+      raindropFx.options.spawnLimit = 0;
+      rain = false;
+
+      raindropFx.stop();
+    }  });
+</script>
+ --> <main class=""> <div class="z-10 relative main-section text-white bg-black/[.3] "> <!-- bg-neutral-800/[.3] --><header class="z-20 absolute w-full py-2"> <a class="text-xl text-white flex justify-center items-center" href="/#"> <h2 class="text-xl text-white">angelcalderon.dev</h2> <img src="/favicon_.webp" loading="eager" class="mx-1" alt="icono de angel calderon" width="25" height="28" decoding="async"> </a> </header>  <div class="min-h-[85vh] xl:min-h-[fit-content]  max-h-[500rem!Important]   gap-2 grid items-center main-section sm:flex max-w-screen-xl px-8  mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:px-16  pt-8 md:h-screen  xl:h-[fit-content]">  <img src="/projects/Appod/home.jpg" class="w-full h-full object-contain" alt="Appod" width="500" height="500" loading="lazy" decoding="async">  </div> <div class="min-h-[85vh] xl:min-h-[fit-content]  max-h-[500rem!Important]   gap-2 grid items-center main-section sm:flex max-w-screen-xl px-8  mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:px-16  pt-8 md:h-screen  xl:h-[fit-content]">  <p> Appod </p>  </div>  </div> <!-- <div class="fixed bottom-4 right-4 z-30">
+				<button
+					id="rain-btn"
+					class="bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none h-10 w-10"
+					type="button"
+					id="radix-:r2:"
+					aria-haspopup="menu"
+					aria-expanded="true"
+					data-state="open"
+					aria-controls="radix-:r3:"
+				>
+					<Image
+						width="50"
+						height="50"
+						loading="lazy"
+						class="w-8 h-8"
+						src="https://img.icons8.com/ios/50/ffffff/blur.png"
+						alt="blur"
+					/>
+
+					<path d="M5 12h14"></path>
+					<path d="M12 5v14"></path>
+				</button>
+			</div> --> </main> </body></html>

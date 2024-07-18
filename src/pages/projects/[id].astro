@@ -5,6 +5,15 @@ import Layout from "../../layouts/Layout.astro";
 import Section from "../../components/share/Section.astro";
 import { Image } from "astro:assets";
 
+export async function getStaticPaths() {
+  return [
+    { params: { id: '4aarFXK78isi8ZZnRMtd' } },
+    { params: { id: 'Cjixr4E8gBWNdfdyRbOI' } },
+    { params: { id: 'pBKFvSyVaCAedozCEKsE' } },
+    { params: { id: 'z8hlAP2vQnSTKVcX6H1v' } },
+   
+  ];
+}
 const { id } = Astro.params;
 if (!id) {
   return Astro.redirect("/404");
