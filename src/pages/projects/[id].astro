@@ -7,11 +7,10 @@ import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   return [
-    { params: { id: '4aarFXK78isi8ZZnRMtd' } },
-    { params: { id: 'Cjixr4E8gBWNdfdyRbOI' } },
-    { params: { id: 'pBKFvSyVaCAedozCEKsE' } },
-    { params: { id: 'z8hlAP2vQnSTKVcX6H1v' } },
-   
+    { params: { id: "4aarFXK78isi8ZZnRMtd" } },
+    { params: { id: "Cjixr4E8gBWNdfdyRbOI" } },
+    { params: { id: "pBKFvSyVaCAedozCEKsE" } },
+    { params: { id: "z8hlAP2vQnSTKVcX6H1v" } },
   ];
 }
 const { id } = Astro.params;
@@ -30,10 +29,26 @@ if (!project) {
 ---
 
 <Layout title="Ángel Calderón | Desarrollador Frontend">
-  <Section className={"pt-8 md:h-screen  xl:h-[fit-content]"}>
+  <Section className={"p-[0!important] h-screen "}>
+    <div class="z-20 absolute flex flex-col justify-center items-center p-8">
+
+      <div class="backdrop-blur-sm bg-black/30 w-fit rounded-md mb-4">
+        <h1 class={"text-4xl md:text-6xl font-bold text-center"}>
+          {project.name}
+        </h1>
+      </div>
+
+      <div class="backdrop-blur-sm bg-black/30 rounded-md">
+          <p class={"text-center"}>
+            {project.desc}
+          </p>
+      </div>
+
+    </div>
+
     <Image
-    class={'w-full h-full object-contain'}
-      src={"/projects/" + project.name+'/'+ project.images[0]}
+      class={"h-full object-cover w-full object-center sticky z-10"}
+      src={"/projects/" + project.name + "/" + project.images[0]}
       height={500}
       width={500}
       alt={project.name}
