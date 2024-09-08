@@ -1,11 +1,14 @@
 import { bold } from 'kleur/colors';
-import { A as AstroError, E as EndpointDidNotReturnAResponse, I as InvalidComponentArgs, a as AstroGlobUsedOutside, b as AstroGlobNoMatch, M as MissingMediaQueryDirective, N as NoMatchingImport, O as OnlyResponseCanBeReturned, R as ResponseSentError, c as NoMatchingRenderer, d as NoClientOnlyHint, e as NoClientEntrypoint } from './assets-service_nbNwpeu_.mjs';
-import { escape } from 'html-escaper';
+import { A as AstroError, E as EndpointDidNotReturnAResponse, I as InvalidComponentArgs, a as AstroGlobUsedOutside, b as AstroGlobNoMatch, M as MissingMediaQueryDirective, N as NoMatchingImport, O as OnlyResponseCanBeReturned, R as ResponseSentError, c as NoMatchingRenderer, d as NoClientOnlyHint, e as NoClientEntrypoint } from './assets-service_CshDUYLC.mjs';
 import { clsx } from 'clsx';
+import { escape } from 'html-escaper';
+import { decodeBase64, encodeHexUpperCase, encodeBase64, decodeHex } from '@oslojs/encoding';
 import 'cssesc';
 
-const ASTRO_VERSION = "4.11.5";
+const ASTRO_VERSION = "4.15.4";
 const REROUTE_DIRECTIVE_HEADER = "X-Astro-Reroute";
+const REWRITE_DIRECTIVE_HEADER_KEY = "X-Astro-Rewrite";
+const REWRITE_DIRECTIVE_HEADER_VALUE = "yes";
 const ROUTE_TYPE_HEADER = "X-Astro-Route-Type";
 const DEFAULT_404_COMPONENT = "astro-default-404.astro";
 const REROUTABLE_STATUS_CODES = [404, 500];
@@ -118,8 +121,27 @@ function createAstro(site) {
 function isPromise(value) {
   return !!value && typeof value === "object" && "then" in value && typeof value.then === "function";
 }
+async function* streamAsyncIterator(stream) {
+  const reader = stream.getReader();
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) return;
+      yield value;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
 
 const escapeHTML = escape;
+class HTMLBytes extends Uint8Array {
+}
+Object.defineProperty(HTMLBytes.prototype, Symbol.toStringTag, {
+  get() {
+    return "HTMLBytes";
+  }
+});
 class HTMLString extends String {
   get [Symbol.toStringTag]() {
     return "HTMLString";
@@ -136,6 +158,49 @@ const markHTMLString = (value) => {
 };
 function isHTMLString(value) {
   return Object.prototype.toString.call(value) === "[object HTMLString]";
+}
+function markHTMLBytes(bytes) {
+  return new HTMLBytes(bytes);
+}
+function hasGetReader(obj) {
+  return typeof obj.getReader === "function";
+}
+async function* unescapeChunksAsync(iterable) {
+  if (hasGetReader(iterable)) {
+    for await (const chunk of streamAsyncIterator(iterable)) {
+      yield unescapeHTML(chunk);
+    }
+  } else {
+    for await (const chunk of iterable) {
+      yield unescapeHTML(chunk);
+    }
+  }
+}
+function* unescapeChunks(iterable) {
+  for (const chunk of iterable) {
+    yield unescapeHTML(chunk);
+  }
+}
+function unescapeHTML(str) {
+  if (!!str && typeof str === "object") {
+    if (str instanceof Uint8Array) {
+      return markHTMLBytes(str);
+    } else if (str instanceof Response && str.body) {
+      const body = str.body;
+      return unescapeChunksAsync(body);
+    } else if (typeof str.then === "function") {
+      return Promise.resolve(str).then((value) => {
+        return unescapeHTML(value);
+      });
+    } else if (str[Symbol.for("astro:slot-string")]) {
+      return str;
+    } else if (Symbol.iterator in str) {
+      return unescapeChunks(str);
+    } else if (Symbol.asyncIterator in str || hasGetReader(str)) {
+      return unescapeChunksAsync(str);
+    }
+  }
+  return markHTMLString(str);
 }
 
 const AstroJSX = "astro:jsx";
@@ -658,6 +723,52 @@ function maybeRenderHead() {
   return createRenderInstruction({ type: "maybe-head" });
 }
 
+const renderTemplateResultSym = Symbol.for("astro.renderTemplateResult");
+class RenderTemplateResult {
+  [renderTemplateResultSym] = true;
+  htmlParts;
+  expressions;
+  error;
+  constructor(htmlParts, expressions) {
+    this.htmlParts = htmlParts;
+    this.error = void 0;
+    this.expressions = expressions.map((expression) => {
+      if (isPromise(expression)) {
+        return Promise.resolve(expression).catch((err) => {
+          if (!this.error) {
+            this.error = err;
+            throw err;
+          }
+        });
+      }
+      return expression;
+    });
+  }
+  async render(destination) {
+    const expRenders = this.expressions.map((exp) => {
+      return renderToBufferDestination((bufferDestination) => {
+        if (exp || exp === 0) {
+          return renderChild(bufferDestination, exp);
+        }
+      });
+    });
+    for (let i = 0; i < this.htmlParts.length; i++) {
+      const html = this.htmlParts[i];
+      const expRender = expRenders[i];
+      destination.write(markHTMLString(html));
+      if (expRender) {
+        await expRender.renderToFinalDestination(destination);
+      }
+    }
+  }
+}
+function isRenderTemplateResult(obj) {
+  return typeof obj === "object" && !!obj[renderTemplateResultSym];
+}
+function renderTemplate(htmlParts, ...expressions) {
+  return new RenderTemplateResult(htmlParts, expressions);
+}
+
 const slotString = Symbol.for("astro:slot-string");
 class SlotString extends HTMLString {
   instructions;
@@ -727,11 +838,16 @@ async function renderSlots(result, slots = {}) {
   }
   return { slotInstructions, children };
 }
+function createSlotValueFromString(content) {
+  return function() {
+    return renderTemplate`${unescapeHTML(content)}`;
+  };
+}
 
 const Fragment = Symbol.for("astro:fragment");
 const Renderer = Symbol.for("astro:renderer");
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
+const encoder$1 = new TextEncoder();
+const decoder$1 = new TextDecoder();
 function stringifyChunk(result, chunk) {
   if (isRenderInstruction(chunk)) {
     const instruction = chunk;
@@ -790,7 +906,7 @@ function stringifyChunk(result, chunk) {
 }
 function chunkToString(result, chunk) {
   if (ArrayBuffer.isView(chunk)) {
-    return decoder.decode(chunk);
+    return decoder$1.decode(chunk);
   } else {
     return stringifyChunk(result, chunk);
   }
@@ -800,7 +916,7 @@ function chunkToByteArray(result, chunk) {
     return chunk;
   } else {
     const stringified = stringifyChunk(result, chunk);
-    return encoder.encode(stringified.toString());
+    return encoder$1.encode(stringified.toString());
   }
 }
 function isRenderInstance(obj) {
@@ -914,52 +1030,6 @@ function isAstroComponentInstance(obj) {
   return typeof obj === "object" && !!obj[astroComponentInstanceSym];
 }
 
-const renderTemplateResultSym = Symbol.for("astro.renderTemplateResult");
-class RenderTemplateResult {
-  [renderTemplateResultSym] = true;
-  htmlParts;
-  expressions;
-  error;
-  constructor(htmlParts, expressions) {
-    this.htmlParts = htmlParts;
-    this.error = void 0;
-    this.expressions = expressions.map((expression) => {
-      if (isPromise(expression)) {
-        return Promise.resolve(expression).catch((err) => {
-          if (!this.error) {
-            this.error = err;
-            throw err;
-          }
-        });
-      }
-      return expression;
-    });
-  }
-  async render(destination) {
-    const expRenders = this.expressions.map((exp) => {
-      return renderToBufferDestination((bufferDestination) => {
-        if (exp || exp === 0) {
-          return renderChild(bufferDestination, exp);
-        }
-      });
-    });
-    for (let i = 0; i < this.htmlParts.length; i++) {
-      const html = this.htmlParts[i];
-      const expRender = expRenders[i];
-      destination.write(markHTMLString(html));
-      if (expRender) {
-        await expRender.renderToFinalDestination(destination);
-      }
-    }
-  }
-}
-function isRenderTemplateResult(obj) {
-  return typeof obj === "object" && !!obj[renderTemplateResultSym];
-}
-function renderTemplate(htmlParts, ...expressions) {
-  return new RenderTemplateResult(htmlParts, expressions);
-}
-
 const DOCTYPE_EXP = /<!doctype html/i;
 async function renderToString(result, componentFactory, props, children, isPage = false, route) {
   const templateResult = await callComponentAsTemplateResultOrResponse(
@@ -1012,7 +1082,7 @@ async function renderToReadableStream(result, componentFactory, props, children,
             renderedFirstPageChunk = true;
             if (!result.partial && !DOCTYPE_EXP.test(String(chunk))) {
               const doctype = result.compressHTML ? "<!DOCTYPE html>" : "<!DOCTYPE html>\n";
-              controller.enqueue(encoder.encode(doctype));
+              controller.enqueue(encoder$1.encode(doctype));
             }
           }
           if (chunk instanceof Response) {
@@ -1148,7 +1218,7 @@ async function renderToAsyncIterable(result, componentFactory, props, children, 
         renderedFirstPageChunk = true;
         if (!result.partial && !DOCTYPE_EXP.test(String(chunk))) {
           const doctype = result.compressHTML ? "<!DOCTYPE html>" : "<!DOCTYPE html>\n";
-          buffer.push(encoder.encode(doctype));
+          buffer.push(encoder$1.encode(doctype));
         }
       }
       if (chunk instanceof Response) {
@@ -1197,6 +1267,118 @@ function getHTMLElementName(constructor) {
   if (definedName) return definedName;
   const assignedName = constructor.name.replace(/^HTML|Element$/g, "").replace(/[A-Z]/g, "-$&").toLowerCase().replace(/^-/, "html-");
   return assignedName;
+}
+
+const ALGORITHM = "AES-GCM";
+async function decodeKey(encoded) {
+  const bytes = decodeBase64(encoded);
+  return crypto.subtle.importKey("raw", bytes, ALGORITHM, true, ["encrypt", "decrypt"]);
+}
+const encoder = new TextEncoder();
+const decoder = new TextDecoder();
+const IV_LENGTH = 24;
+async function encryptString(key, raw) {
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH / 2));
+  const data = encoder.encode(raw);
+  const buffer = await crypto.subtle.encrypt(
+    {
+      name: ALGORITHM,
+      iv
+    },
+    key,
+    data
+  );
+  return encodeHexUpperCase(iv) + encodeBase64(new Uint8Array(buffer));
+}
+async function decryptString(key, encoded) {
+  const iv = decodeHex(encoded.slice(0, IV_LENGTH));
+  const dataArray = decodeBase64(encoded.slice(IV_LENGTH));
+  const decryptedBuffer = await crypto.subtle.decrypt(
+    {
+      name: ALGORITHM,
+      iv
+    },
+    key,
+    dataArray
+  );
+  const decryptedString = decoder.decode(decryptedBuffer);
+  return decryptedString;
+}
+
+const internalProps = /* @__PURE__ */ new Set([
+  "server:component-path",
+  "server:component-export",
+  "server:component-directive",
+  "server:defer"
+]);
+function containsServerDirective(props) {
+  return "server:component-directive" in props;
+}
+function safeJsonStringify(obj) {
+  return JSON.stringify(obj).replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029").replace(/</g, "\\u003c").replace(/>/g, "\\u003e").replace(/\//g, "\\u002f");
+}
+function renderServerIsland(result, _displayName, props, slots) {
+  return {
+    async render(destination) {
+      const componentPath = props["server:component-path"];
+      const componentExport = props["server:component-export"];
+      const componentId = result.serverIslandNameMap.get(componentPath);
+      if (!componentId) {
+        throw new Error(`Could not find server component name`);
+      }
+      for (const key2 of Object.keys(props)) {
+        if (internalProps.has(key2)) {
+          delete props[key2];
+        }
+      }
+      destination.write("<!--server-island-start-->");
+      const renderedSlots = {};
+      for (const name in slots) {
+        if (name !== "fallback") {
+          const content = await renderSlotToString(result, slots[name]);
+          renderedSlots[name] = content.toString();
+        } else {
+          await renderChild(destination, slots.fallback(result));
+        }
+      }
+      const key = await result.key;
+      const propsEncrypted = await encryptString(key, JSON.stringify(props));
+      const hostId = crypto.randomUUID();
+      const slash = result.base.endsWith("/") ? "" : "/";
+      const serverIslandUrl = `${result.base}${slash}_server-islands/${componentId}${result.trailingSlash === "always" ? "/" : ""}`;
+      destination.write(`<script async type="module" data-island-id="${hostId}">
+let componentId = ${safeJsonStringify(componentId)};
+let componentExport = ${safeJsonStringify(componentExport)};
+let script = document.querySelector('script[data-island-id="${hostId}"]');
+let data = {
+	componentExport,
+	encryptedProps: ${safeJsonStringify(propsEncrypted)},
+	slots: ${safeJsonStringify(renderedSlots)},
+};
+
+let response = await fetch('${serverIslandUrl}', {
+	method: 'POST',
+	body: JSON.stringify(data),
+});
+
+if(response.status === 200 && response.headers.get('content-type') === 'text/html') {
+	let html = await response.text();
+
+	// Swap!
+	while(script.previousSibling &&
+		script.previousSibling.nodeType !== 8 &&
+		script.previousSibling.data !== 'server-island-start') {
+		script.previousSibling.remove();
+	}
+	script.previousSibling?.remove();
+
+	let frag = document.createRange().createContextualFragment(html);
+	script.before(frag);
+}
+script.remove();
+</script>`);
+    }
+  };
 }
 
 const needsHeadRenderingSymbol = Symbol.for("astro.needsHeadRendering");
@@ -1316,9 +1498,7 @@ Did you forget to import the component or is it possible there is a typo?`
     }
     if (!renderer) {
       const extname = metadata.componentUrl?.split(".").pop();
-      renderer = renderers.filter(
-        ({ name }) => name === `@astrojs/${extname}` || name === extname
-      )[0];
+      renderer = renderers.find(({ name }) => name === `@astrojs/${extname}` || name === extname);
     }
   }
   let componentServerRenderEndTime;
@@ -1539,6 +1719,9 @@ async function renderHTMLComponent(result, Component, _props, slots = {}) {
   };
 }
 function renderAstroComponent(result, displayName, Component, props, slots = {}) {
+  if (containsServerDirective(props)) {
+    return renderServerIsland(result, displayName, props, slots);
+  }
   const instance = createAstroComponentInstance(result, displayName, Component, props, slots);
   return {
     async render(destination) {
@@ -1564,8 +1747,11 @@ async function renderComponent(result, displayName, Component, props, slots = {}
     handleCancellation
   );
   function handleCancellation(e) {
-    if (result.cancelled) return { render() {
-    } };
+    if (result.cancelled)
+      return {
+        render() {
+        }
+      };
     throw e;
   }
 }
@@ -1776,7 +1962,7 @@ async function renderPage(result, componentFactory, props, children, streaming, 
       true,
       route
     );
-    const bytes = encoder.encode(str);
+    const bytes = encoder$1.encode(str);
     return new Response(bytes, {
       headers: new Headers([
         ["Content-Type", "text/html; charset=utf-8"],
@@ -1807,7 +1993,7 @@ async function renderPage(result, componentFactory, props, children, streaming, 
   const init = result.response;
   const headers = new Headers(init.headers);
   if (!streaming && typeof body === "string") {
-    body = encoder.encode(body);
+    body = encoder$1.encode(body);
     headers.set("Content-Length", body.byteLength.toString());
   }
   if (route?.component.endsWith(".md")) {
@@ -1846,4 +2032,4 @@ function spreadAttributes(values = {}, _name, { class: scopedClassName } = {}) {
   return markHTMLString(output);
 }
 
-export { ASTRO_VERSION as A, DEFAULT_404_COMPONENT as D, Fragment as F, ROUTE_TYPE_HEADER as R, REROUTE_DIRECTIVE_HEADER as a, renderJSX as b, chunkToString as c, clientLocalsSymbol as d, clientAddressSymbol as e, renderPage as f, renderEndpoint as g, responseSentSymbol as h, isRenderInstruction as i, REROUTABLE_STATUS_CODES as j, createComponent as k, renderTemplate as l, renderComponent as m, createAstro as n, maybeRenderHead as o, addAttribute as p, renderHead as q, renderSlotToString as r, renderSlot as s, spreadAttributes as t };
+export { ASTRO_VERSION as A, DEFAULT_404_COMPONENT as D, Fragment as F, ROUTE_TYPE_HEADER as R, renderComponent as a, createAstro as b, createComponent as c, addAttribute as d, decodeKey as e, renderHead as f, renderSlot as g, REROUTE_DIRECTIVE_HEADER as h, decryptString as i, createSlotValueFromString as j, renderSlotToString as k, renderJSX as l, maybeRenderHead as m, chunkToString as n, isRenderInstruction as o, clientLocalsSymbol as p, clientAddressSymbol as q, renderTemplate as r, spreadAttributes as s, responseSentSymbol as t, unescapeHTML as u, renderPage as v, REWRITE_DIRECTIVE_HEADER_KEY as w, REWRITE_DIRECTIVE_HEADER_VALUE as x, renderEndpoint as y, REROUTABLE_STATUS_CODES as z };

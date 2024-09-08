@@ -164,7 +164,7 @@ const InvalidImageService = {
 const MissingImageDimension = {
   name: "MissingImageDimension",
   title: "Missing image dimensions",
-  message: (missingDimension, imageURL) => `Missing ${missingDimension === "both" ? "width and height attributes" : `${missingDimension} attribute`} for ${imageURL}. When using remote images, both dimensions are required unless in order to avoid CLS.`,
+  message: (missingDimension, imageURL) => `Missing ${missingDimension === "both" ? "width and height attributes" : `${missingDimension} attribute`} for ${imageURL}. When using remote images, both dimensions are required in order to avoid CLS.`,
   hint: "If your image is inside your `src` folder, you probably meant to import it instead. See [the Imports guide for more information](https://docs.astro.build/en/guides/imports/#other-assets). You can also use `inferSize={true}` for remote images to get the original dimensions."
 };
 const FailedToFetchRemoteImageDimensions = {
@@ -216,6 +216,12 @@ const IncompatibleDescriptorOptions = {
   title: "Cannot set both `densities` and `widths`",
   message: "Only one of `densities` or `widths` can be specified. In most cases, you'll probably want to use only `widths` if you require specific widths.",
   hint: "Those attributes are used to construct a `srcset` attribute, which cannot have both `x` and `w` descriptors."
+};
+const NoImageMetadata = {
+  name: "NoImageMetadata",
+  title: "Could not process image metadata.",
+  message: (imagePath) => `Could not process image metadata${imagePath ? ` for \`${imagePath}\`` : ""}.`,
+  hint: "This is often caused by a corrupted or malformed image. Re-exporting the image from your image editor may fix this issue."
 };
 const ResponseSentError = {
   name: "ResponseSentError",
@@ -638,7 +644,7 @@ async function loadSharp() {
   let sharpImport;
   try {
     sharpImport = (await import('sharp')).default;
-  } catch (e) {
+  } catch {
     throw new AstroError(MissingSharp);
   }
   sharpImport.cache(false);
@@ -691,4 +697,4 @@ const sharp$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: sharp_default
 }, Symbol.toStringTag, { value: 'Module' }));
 
-export { AstroError as A, isRemoteAllowed as B, ClientAddressNotAvailable as C, InvalidImageService as D, EndpointDidNotReturnAResponse as E, ExpectedImageOptions as F, GetStaticPathsRequired as G, ExpectedImage as H, InvalidComponentArgs as I, ExpectedNotESMImage as J, resolveSrc as K, LocalsNotAnObject as L, MissingMediaQueryDirective as M, NoMatchingImport as N, OnlyResponseCanBeReturned as O, PageNumberParamNotFound as P, isRemoteImage as Q, ResponseSentError as R, StaticClientAddressNotAvailable as S, FailedToFetchRemoteImageDimensions as T, isESMImportedImage as U, isLocalService as V, DEFAULT_HASH_PROPS as W, ImageMissingAlt as X, sharp$1 as Y, AstroGlobUsedOutside as a, AstroGlobNoMatch as b, NoMatchingRenderer as c, NoClientOnlyHint as d, NoClientEntrypoint as e, appendForwardSlash as f, MiddlewareNoDataOrNextCalled as g, MiddlewareNotAResponse as h, i18nNoLocaleFoundInPath as i, joinPaths as j, InvalidGetStaticPathsReturn as k, InvalidGetStaticPathsEntry as l, GetStaticPathsExpectedParams as m, GetStaticPathsInvalidRouteParam as n, NoMatchingStaticPathFound as o, PrerenderDynamicEndpointPathCollide as p, ReservedSlotName as q, PrerenderClientAddressNotAvailable as r, RewriteWithBodyUsed as s, trimSlashes as t, AstroResponseHeadersReassigned as u, fileExtension as v, slash as w, prependForwardSlash as x, removeTrailingForwardSlash as y, isRemotePath as z };
+export { AstroError as A, trimSlashes as B, NoMatchingStaticPathFound as C, DEFAULT_HASH_PROPS as D, EndpointDidNotReturnAResponse as E, FailedToFetchRemoteImageDimensions as F, GetStaticPathsRequired as G, PrerenderDynamicEndpointPathCollide as H, InvalidComponentArgs as I, ReservedSlotName as J, PrerenderClientAddressNotAvailable as K, LocalsNotAnObject as L, MissingMediaQueryDirective as M, NoMatchingImport as N, OnlyResponseCanBeReturned as O, PageNumberParamNotFound as P, ClientAddressNotAvailable as Q, ResponseSentError as R, StaticClientAddressNotAvailable as S, RewriteWithBodyUsed as T, AstroResponseHeadersReassigned as U, fileExtension as V, slash as W, prependForwardSlash as X, removeTrailingForwardSlash as Y, sharp$1 as Z, AstroGlobUsedOutside as a, AstroGlobNoMatch as b, NoMatchingRenderer as c, NoClientOnlyHint as d, NoClientEntrypoint as e, isRemoteAllowed as f, NoImageMetadata as g, ExpectedImageOptions as h, isRemotePath as i, ExpectedImage as j, ExpectedNotESMImage as k, isRemoteImage as l, isESMImportedImage as m, isLocalService as n, InvalidImageService as o, ImageMissingAlt as p, i18nNoLocaleFoundInPath as q, resolveSrc as r, appendForwardSlash as s, joinPaths as t, MiddlewareNoDataOrNextCalled as u, MiddlewareNotAResponse as v, InvalidGetStaticPathsReturn as w, InvalidGetStaticPathsEntry as x, GetStaticPathsExpectedParams as y, GetStaticPathsInvalidRouteParam as z };

@@ -19,6 +19,8 @@ const certifieds = docsCertifieds.sort((a, b) => {
     }
     return 0;
 });
+
+console.log(queryCertifieds);
 ---
 
 <div
@@ -49,12 +51,14 @@ const certifieds = docsCertifieds.sort((a, b) => {
 </div>
 
 <div class="mb-4 grid grid-cols-3 gap-1">
-    {certifieds.map((certified) => (
-        <CertifiedContainer
-            className="col-span-1 bg-sky-800 max-w-32"
-            href={"/certifieds/" + certified.id+'.pdf'}
-            title={certified.name}
-            image={"/certifieds/" + certified.id+'.jpg'}
-        />
-    ))}
+    {
+        certifieds.map((certified) => (
+            <CertifiedContainer
+                className="col-span-1 bg-sky-800 max-w-32"
+                href={"/certifieds/" + certified.id + ".pdf"}
+                title={certified.name}
+                image={"/certifieds/" + certified.id + ".jpg"}
+            />
+        ))
+    }
 </div>

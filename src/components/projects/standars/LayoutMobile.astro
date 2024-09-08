@@ -1,0 +1,191 @@
+---
+import Section from "../../share/Section.astro";
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+const { projectProp } = Astro.props;
+
+import "photoswipe/style.css";
+
+// Configurar e inicializar Photoswipe
+---
+
+<Section
+    className={" min-h-screen justify-start max-w-screen max-w-[100vw !important]  pb-10 pt-14 "}
+>
+    <div class="flex flex-col justify-center items-center md:hidden">
+        <div
+            class="backdrop-blur-sm bg-black/30 w-fit rounded-md flex gap-3 p-3 justify-center items-center"
+        >
+            <h1 class={"text-2xl xl:text-4xl font-bold text-center"}>
+                {projectProp.name}
+            </h1>
+        </div>
+    </div>
+
+    <!-- Contenedor principal de Swiper -->
+    <div class="swiper px-3 w-screen object-top md:pb-6 max-w-[80vw]">
+        <!-- Wrapper adicional requerido -->
+        <div class="swiper-wrapper flex items-center" id="my-slider">
+            <!-- Los slides -->
+
+            {
+                projectProp.images != null
+                    ? [...projectProp.images].map((image, i) => (
+                          <div class="swiper-slide">
+                              <a
+                                  class="swiper-slide"
+                                  href={
+                                      "/projects/" +
+                                      projectProp.name +
+                                      "/" +
+                                      image
+                                  }
+                                  data-pswp-width={
+                                    projectProp.type == "aplicación" ? 450 : 900
+                                  }
+                                  data-pswp-height={
+                                    projectProp.type == "aplicación" ? 900 : 450
+                                  }
+                                  target="_blank"
+                                  data-cropped="true"
+                              >
+                                  <Image
+                                      class={
+                                          "object-contain object-top md:max-h-[40rem] "
+                                      }
+                                      src={
+                                          "/projects/" +
+                                          projectProp.name +
+                                          "/" +
+                                          image
+                                      }
+                                      height={900}
+                                      width={900}
+                                      alt={projectProp.name + " " + i}
+                                  />
+                              </a>
+                          </div>
+                      ))
+                    : null
+            }
+        </div>
+        <!-- Botones de navegación -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+
+    <div class="flex flex-col justify-center items-center px-3 md:max-w-[50%]">
+        <div
+            class="backdrop-blur-sm bg-black/30 w-fit rounded-md mb-4 md:flex gap-3 p-3 justify-center items-center"
+        >
+            <h1
+                class={"text-2xl xl:text-4xl font-bold text-center hidden md:block"}
+            >
+                {projectProp.name}
+            </h1>
+            <div class="flex gap-4">
+                {
+                    projectProp.front != null
+                        ? [...projectProp.front].map((front, i) => (
+                              <Icon
+                                  name={`devicon:${front}`}
+                                  class="w-10 h-10 "
+                              />
+                          ))
+                        : null
+                }
+                {
+                    projectProp.back != null
+                        ? [...projectProp.back].map((back, i) => (
+                              <Icon
+                                  name={`devicon:${back}`}
+                                  class="w-10 h-10 "
+                              />
+                          ))
+                        : null
+                }
+            </div>
+        </div>
+
+        <div class="backdrop-blur-sm bg-black/30 rounded-md xl:text-lg p-2">
+            <p class={"text-center"}>
+                {projectProp.desc}
+            </p>
+        </div>
+        <div
+            class="flex items-center justify-center sm:justify-start backdrop-blur-sm bg-black/30 rounded-md xl:text-lg mt-8 gap-2 px-2"
+        >
+            <p class={"text-center"}>
+                {projectProp.dateStart + " - " + projectProp.dateEnd}
+            </p>
+            <Icon name={`prime:calendar`} class="w-8 h-8" />
+        </div>
+        <div class="flex items-center justify-center sm:justify-start gap-8">
+            {
+                projectProp.url != null && projectProp.url != "" ? (
+                    <a
+                        href={projectProp.url}
+                        target="_blank"
+                        class="font-semibold text-white mt-8"
+                    >
+                        <button class="bg-blue-600 text-white px-4 rounded-full min-w-32 flex justify-center items-center min-h-12 lg:text-xl">
+                            Visitar
+                        </button>
+                    </a>
+                ) : null
+            }
+            {
+                projectProp.repo != null && projectProp.repo != "" ? (
+                    <a
+                        href={projectProp.repo}
+                        target="_blank"
+                        class="font-semibold text-white mt-8"
+                    >
+                        <button class="bg-black text-white px-4 rounded-full min-w-32 flex gap-3 justify-center items-center min-h-12 lg:text-xl">
+                            Repositorio
+                            <Icon name={`prime:github`} class="w-8 h-8" />
+                        </button>
+                    </a>
+                ) : null
+            }
+
+            <!-- <a href="/profile.png" download class="text-sm font-semibold">
+        
+            <button
+              class="hidden sm:flex text-blue-600 hover:text-white hover:bg-blue-600 hover:text-white border-blue-600 border-2 text-blue-600 py-3 px-4 rounded-full flex justify-center items-center ml-4 w-44 min-h-14"
+            >
+                Contactame
+            </button>
+          </a> -->
+        </div>
+    </div>
+</Section>
+<script>
+    import PhotoSwipeLightbox from "photoswipe/lightbox";
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: "#my-slider",
+        children: "a",
+        pswpModule: () => import("photoswipe"),
+    });
+    lightbox.init();
+    // Core de Swiper y estilos
+    import Swiper from "swiper";
+    import "swiper/css";
+    // Módulo Navigation de Swiper y estilos
+    import { Navigation } from "swiper/modules";
+    import "swiper/css/navigation";
+
+    // Configurar Swiper
+    const swiper = new Swiper(".swiper", {
+        modules: [Navigation], // definir los módulos a usar
+        loop: true, // definir si los slides estarán en bucle
+        slidesPerView: 1, // agregar número de slides para la pantalla
+        spaceBetween: 0, // separación entre slides en px
+        navigation: {
+            // definir botones next y prev para el módulo Navigation
+            prevEl: ".swiper-button-prev",
+            nextEl: ".swiper-button-next",
+        },
+    });
+</script>

@@ -4,6 +4,7 @@ import { getFirestore, getDoc, doc } from "firebase/firestore";
 import Layout from "../../layouts/Layout.astro";
 import Section from "../../components/share/Section.astro";
 import { Image } from "astro:assets";
+import LayoutMobile from "../../components/projects/standars/LayoutMobile.astro";
 
 export async function getStaticPaths() {
   return [
@@ -28,35 +29,6 @@ if (!project) {
 }
 ---
 
-<Layout title="Ángel Calderón | Desarrollador Frontend">
-  <Section className={"p-[0!important] h-screen "}>
-    <div class="z-20 absolute flex flex-col justify-center items-center p-8">
-
-      <div class="backdrop-blur-sm bg-black/30 w-fit rounded-md mb-4">
-        <h1 class={"text-4xl md:text-6xl font-bold text-center"}>
-          {project.name}
-        </h1>
-      </div>
-
-      <div class="backdrop-blur-sm bg-black/30 rounded-md">
-          <p class={"text-center"}>
-            {project.desc}
-          </p>
-      </div>
-
-    </div>
-
-    <Image
-      class={"h-full object-cover w-full object-center sticky z-10"}
-      src={"/projects/" + project.name + "/" + project.images[0]}
-      height={500}
-      width={500}
-      alt={project.name}
-    />
-  </Section>
-  <Section className={"pt-8 md:h-screen  xl:h-[fit-content]"}>
-    <p>
-      {project.name}
-    </p>
-  </Section>
+<Layout title={`${project.name} | Ángel Calderón`} `>
+  <LayoutMobile projectProp={project} />
 </Layout>

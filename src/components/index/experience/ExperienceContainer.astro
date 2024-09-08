@@ -9,7 +9,7 @@ interface Props {
 const { enterprise, title, dates, description } = Astro.props;
 ---
 
-<li class="relative mb-6">
+<li class="relative mb-6 md:px-5">
     <div class="flex items-center">
         <div
             class="z-10 flex mr-2 items-center justify-center w-6 h-6 bg-blue-100 rounded-full ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 shrink-0"
@@ -26,13 +26,16 @@ const { enterprise, title, dates, description } = Astro.props;
                 ></path>
             </svg>
         </div>
-        <h3 class="text-base font-semibold">
+        <h3 class="text-base font-semibold lg:text-lg xl:text-xl">
             {enterprise} | {title}
         </h3>
     </div>
     <div class="mt-3">
-        <time class="block mb-2 text-sm font-normal leading-none">{dates}</time>
-        <p class="text-base font-normal 0">
+        <time
+            class="block mb-2 text-sm font-normal leading-none lg:text-md xl:text-lg"
+            >{dates}</time
+        >
+        <p class="text-base font-normal lg:text-md xl:text-lg">
             {description}
         </p>
     </div>

@@ -1,7 +1,6 @@
-import { A as AstroError, D as InvalidImageService, F as ExpectedImageOptions, H as ExpectedImage, J as ExpectedNotESMImage, K as resolveSrc, Q as isRemoteImage, T as FailedToFetchRemoteImageDimensions, U as isESMImportedImage, V as isLocalService, W as DEFAULT_HASH_PROPS, X as ImageMissingAlt } from './astro/assets-service_nbNwpeu_.mjs';
-import { k as createComponent, l as renderTemplate, o as maybeRenderHead, p as addAttribute, t as spreadAttributes, n as createAstro } from './astro/server_tkt9QHe_.mjs';
+import { A as AstroError, g as NoImageMetadata, F as FailedToFetchRemoteImageDimensions, h as ExpectedImageOptions, j as ExpectedImage, k as ExpectedNotESMImage, r as resolveSrc, l as isRemoteImage, m as isESMImportedImage, n as isLocalService, D as DEFAULT_HASH_PROPS, o as InvalidImageService, p as ImageMissingAlt } from './astro/assets-service_CshDUYLC.mjs';
+import { c as createComponent, r as renderTemplate, m as maybeRenderHead, d as addAttribute, s as spreadAttributes, b as createAstro } from './astro/server_DqBv7rMM.mjs';
 import * as mime from 'mrmime';
-import 'html-escaper';
 import 'clsx';
 
 function isImageMetadata(src) {
@@ -539,9 +538,9 @@ function parseViewbox(viewbox) {
   };
 }
 function parseAttributes(root) {
-  const width = root.match(extractorRegExps.width);
-  const height = root.match(extractorRegExps.height);
-  const viewbox = root.match(extractorRegExps.viewbox);
+  const width = extractorRegExps.width.exec(root);
+  const height = extractorRegExps.height.exec(root);
+  const viewbox = extractorRegExps.viewbox.exec(root);
   return {
     height: height && parseLength(height[2]),
     viewbox: viewbox && parseViewbox(viewbox[2]),
@@ -577,7 +576,7 @@ const SVG = {
   // Scan only the first kilo-byte to speed up the check on larger files
   validate: (input) => svgReg.test(toUTF8String(input, 0, 1e3)),
   calculate(input) {
-    const root = toUTF8String(input).match(extractorRegExps.root);
+    const root = extractorRegExps.root.exec(toUTF8String(input));
     if (root) {
       const attrs = parseAttributes(root[0]);
       if (attrs.width && attrs.height) {
@@ -764,7 +763,7 @@ const globalOptions = {
 function lookup(input) {
   const type = detector(input);
   if (typeof type !== "undefined") {
-    if (globalOptions.disabledTypes.indexOf(type) > -1) {
+    if (globalOptions.disabledTypes.includes(type)) {
       throw new TypeError("disabled file type: " + type);
     }
     const size = typeHandlers.get(type).calculate(input);
@@ -776,10 +775,38 @@ function lookup(input) {
   throw new TypeError("unsupported file type: " + type);
 }
 
-async function probe(url) {
+async function imageMetadata(data, src) {
+  try {
+    const result = lookup(data);
+    if (!result.height || !result.width || !result.type) {
+      throw new AstroError({
+        ...NoImageMetadata,
+        message: NoImageMetadata.message(src)
+      });
+    }
+    const { width, height, type, orientation } = result;
+    const isPortrait = (orientation || 0) >= 5;
+    return {
+      width: isPortrait ? height : width,
+      height: isPortrait ? width : height,
+      format: type,
+      orientation
+    };
+  } catch {
+    throw new AstroError({
+      ...NoImageMetadata,
+      message: NoImageMetadata.message(src)
+    });
+  }
+}
+
+async function inferRemoteSize(url) {
   const response = await fetch(url);
   if (!response.body || !response.ok) {
-    throw new Error("Failed to fetch image");
+    throw new AstroError({
+      ...FailedToFetchRemoteImageDimensions,
+      message: FailedToFetchRemoteImageDimensions.message(url)
+    });
   }
   const reader = response.body.getReader();
   let done, value;
@@ -795,24 +822,27 @@ async function probe(url) {
       tmp.set(value, accumulatedChunks.length);
       accumulatedChunks = tmp;
       try {
-        const dimensions = lookup(accumulatedChunks);
+        const dimensions = await imageMetadata(accumulatedChunks, url);
         if (dimensions) {
           await reader.cancel();
           return dimensions;
         }
-      } catch (error) {
+      } catch {
       }
     }
   }
-  throw new Error("Failed to parse the size");
+  throw new AstroError({
+    ...NoImageMetadata,
+    message: NoImageMetadata.message(url)
+  });
 }
 
 async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      './astro/assets-service_nbNwpeu_.mjs'
-    ).then(n => n.Y).catch((e) => {
+      './astro/assets-service_CshDUYLC.mjs'
+    ).then(n => n.Z).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;
       throw error;
@@ -849,17 +879,10 @@ async function getImage$1(options, imageConfig) {
     src: await resolveSrc(options.src)
   };
   if (options.inferSize && isRemoteImage(resolvedOptions.src)) {
-    try {
-      const result = await probe(resolvedOptions.src);
-      resolvedOptions.width ??= result.width;
-      resolvedOptions.height ??= result.height;
-      delete resolvedOptions.inferSize;
-    } catch {
-      throw new AstroError({
-        ...FailedToFetchRemoteImageDimensions,
-        message: FailedToFetchRemoteImageDimensions.message(resolvedOptions.src)
-      });
-    }
+    const result = await inferRemoteSize(resolvedOptions.src);
+    resolvedOptions.width ??= result.width;
+    resolvedOptions.height ??= result.height;
+    delete resolvedOptions.inferSize;
   }
   const originalFilePath = isESMImportedImage(resolvedOptions.src) ? resolvedOptions.src.fsPath : void 0;
   const clonedSrc = isESMImportedImage(resolvedOptions.src) ? (
@@ -924,7 +947,7 @@ const $$Image = createComponent(async ($$result, $$props, $$slots) => {
     additionalAttributes.srcset = image.srcSet.attribute;
   }
   return renderTemplate`${maybeRenderHead()}<img${addAttribute(image.src, "src")}${spreadAttributes(additionalAttributes)}${spreadAttributes(image.attributes)}>`;
-}, "C:/Users/Angel/OneDrive/Escritorio/Doble2/angelcalderon.dev/node_modules/astro/components/Image.astro", void 0);
+}, "/home/angel/Escritorio/Personal/web/angelcalderon.dev/node_modules/astro/components/Image.astro", void 0);
 
 const $$Astro = createAstro();
 const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
@@ -984,7 +1007,7 @@ const $$Picture = createComponent(async ($$result, $$props, $$slots) => {
     const srcsetAttribute = props.densities || !props.densities && !props.widths ? `${image.src}${image.srcSet.values.length > 0 ? ", " + image.srcSet.attribute : ""}` : image.srcSet.attribute;
     return renderTemplate`<source${addAttribute(srcsetAttribute, "srcset")}${addAttribute(mime.lookup(image.options.format ?? image.src) ?? `image/${image.options.format}`, "type")}${spreadAttributes(sourceAdditionalAttributes)}>`;
   })} <img${addAttribute(fallbackImage.src, "src")}${spreadAttributes(imgAdditionalAttributes)}${spreadAttributes(fallbackImage.attributes)}> </picture>`;
-}, "C:/Users/Angel/OneDrive/Escritorio/Doble2/angelcalderon.dev/node_modules/astro/components/Picture.astro", void 0);
+}, "/home/angel/Escritorio/Personal/web/angelcalderon.dev/node_modules/astro/components/Picture.astro", void 0);
 
 const imageConfig = {"service":{"entrypoint":"astro/assets/services/sharp","config":{}},"domains":[],"remotePatterns":[]};
 					const getImage = async (options) => await getImage$1(options, imageConfig);

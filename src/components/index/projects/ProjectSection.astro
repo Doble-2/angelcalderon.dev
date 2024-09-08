@@ -32,36 +32,28 @@ const projects = docsProjects.sort((a, b) => {
         </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-6">
         {
             [...projects].map((project, i) => (
-                <div
-                
-                  onmouseover={`() => {const element = document.getElementById("text${project.id}");if (element) {element.style.display = 'none';}}`}
-    onmouseout={`() => {const element = document.getElementById("text${project.id}");if (element) {element.style.display = 'block';}}`}
-                    style={`
+                <a
+                    href={`/projects/${project.id}`}
+                    class={`row-span-1 ${
+                        i === 0 || i === 3
+                            ? "col-span-2 sm:col-span-3"
+                            : "col-span-2"
+                    }`}
+                >
+                    <div
+                        onmouseover={`() => {const element = document.getElementById("text${project.id}");if (element) {element.style.display = 'none';}}`}
+                        onmouseout={`() => {const element = document.getElementById("text${project.id}");if (element) {element.style.display = 'block';}}`}
+                        style={`
                     background-image: url(/projects/${project.name.replace(
                         / /g,
                         "%20",
                     )}/${project.images[0]});`}
-                    class={` row-span-1 rounded-xl bg-opacity-20 bg-indigo-500 max-h-64 h-[40vh] bg-cover bg-top ${
-                        i === 0 || i === 3
-                            ? "col-span-1 sm:col-span-2"
-                            : "col-span-1"
-                    }`}
-                >
-                    <div id={`text${project.id}`} style="display:none" class=" flex flex-col items-center rounded-xl backdrop-blur-sm bg-black/40 h-full justify-center w-full gap-2 font-bold">
-                        {project.name}
-                        <a
-                            href={"/projects/" + project.id}
-                            class="text-sm font-semibold"
-                        >
-                            <button class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center w-44 min-h-8">
-                                Ver más
-                            </button>
-                        </a>
-                    </div>
-                </div>
+                        class={` rounded-xl bg-opacity-20 bg-black max-h-64 h-[40vh] bg-contain bg-no-repeat bg-center transition-transform duration-300 ease-in-out hover:scale-105 `}
+                    ></div>
+                </a>
             ))
         }
     </div>

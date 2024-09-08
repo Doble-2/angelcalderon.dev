@@ -1,6 +1,7 @@
-import { g as getConfiguredImageService, i as imageConfig } from './_astro_assets_uZamwGje.mjs';
-import { z as isRemotePath, B as isRemoteAllowed } from './astro/assets-service_nbNwpeu_.mjs';
+import { g as getConfiguredImageService, i as imageConfig } from '../chunks/_astro_assets_nHMoX7Ez.mjs';
+import { i as isRemotePath, f as isRemoteAllowed } from '../chunks/astro/assets-service_CshDUYLC.mjs';
 import * as mime from 'mrmime';
+export { renderers } from '../renderers.mjs';
 
 const fnv1a52 = (str) => {
   const len = str.length;
@@ -37,7 +38,7 @@ async function loadRemoteImage(src, headers) {
       return void 0;
     }
     return await res.arrayBuffer();
-  } catch (err) {
+  } catch {
     return void 0;
   }
 }
@@ -82,4 +83,11 @@ const GET = async ({ request }) => {
   }
 };
 
-export { GET };
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  GET
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };
