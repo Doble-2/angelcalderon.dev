@@ -8,7 +8,7 @@
     alt="avila image"
     class="object-cover object-center w-screen h-screen fixed top-0 left-0 z-0"
   />
-</div><!-- 
+</div>
 <script>
   import RaindropFX from "raindrop-fx";
   var canvas = document.getElementById("canvas") as HTMLCanvasElement;
@@ -19,25 +19,12 @@
     canvas: canvas,
     background: "/avila.jpg",
   });
-  let rain = false;
-  const button = document.getElementById("rain-btn");
 
   // Maneja los clics en cada botón.
 
-  button.addEventListener("click", () => {
-    if (!rain) {
-      rain = true;
+
       console.log(raindropFx);
       raindropFx.options.spawnLimit = 200;
       raindropFx.start();
-    } else {
-      //  rain = false;
-      console.log(raindropFx);
-
-      raindropFx.options.spawnLimit = 0;
-      rain = false;
-
-      raindropFx.stop();
-    }  });
+   
 </script>
- -->
