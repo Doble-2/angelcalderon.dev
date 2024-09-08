@@ -1,5 +1,5 @@
 {
-	"runtime": "nodejs18.x",
+	"runtime": "nodejs20.x",
 	"handler": "home/angel/Escritorio/Personal/web/angelcalderon.dev/.vercel/output/_functions/entry.mjs",
 	"launcherType": "Nodejs",
 	"supportsResponseStreaming": true
