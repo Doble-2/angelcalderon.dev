@@ -13,6 +13,7 @@
     "@astrojs/tailwind": "^5.1.0",
     "@iconify-json/devicon": "^1.2.0",
     "@iconify-json/prime": "^1.2.0",
+    "@vercel/speed-insights": "^1.0.12",
     "astro": "^4.15.4",
     "astro-icon": "^1.1.1",
     "astro-navbar": "^2.3.3",
