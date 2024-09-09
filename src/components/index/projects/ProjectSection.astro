@@ -36,6 +36,7 @@ const projects = docsProjects.sort((a, b) => {
         {
             [...projects].map((project, i) => (
                 <a
+                title={project.name}
                     href={`/projects/${project.id}`}
                     class={`row-span-1 ${
                         i === 0 || i === 3
