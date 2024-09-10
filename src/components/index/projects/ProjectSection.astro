@@ -4,6 +4,7 @@ import MobileProjectContainer from "./MobileProjectContainer.astro";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../../../firebase/client";
 import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
 
 const db = getFirestore(app);
 
@@ -36,7 +37,7 @@ const projects = docsProjects.sort((a, b) => {
         {
             [...projects].map((project, i) => (
                 <a
-                title={project.name}
+                    title={project.name}
                     href={`/projects/${project.id}`}
                     class={`row-span-1 ${
                         i === 0 || i === 3
@@ -53,7 +54,31 @@ const projects = docsProjects.sort((a, b) => {
                         "%20",
                     )}/${project.images[0]});`}
                         class={` rounded-xl bg-opacity-20 bg-black max-h-64 h-[40vh] bg-contain bg-no-repeat bg-center transition-transform duration-300 ease-in-out hover:scale-105 `}
-                    ></div>
+                    >
+                        <div class="flex flex-col gap-3 justify-between p-4 items-center pb-3 w-full h-full md:place-self-end place-self-center lg:col-span-7">
+                            <div class="flex gap-4 place-self-start justify-self-start	">
+                                {project.front != null
+                                    ? [...project.front].map((front, i) => (
+                                          <Icon
+                                              name={`devicon:${front}`}
+                                              class="w-10 h-10 "
+                                          />
+                                      ))
+                                    : null}
+                                {project.back != null
+                                    ? [...project.back].map((back, i) => (
+                                          <Icon
+                                              name={`devicon:${back}`}
+                                              class="w-10 h-10 "
+                                          />
+                                      ))
+                                    : null}
+                            </div>
+                            <button class="bg-blue-600 text-white py-3 px-4 rounded-full flex flex-col justify-center items-center w-44">
+                                {project.name}
+                            </button>
+                        </div>
+                    </div>
                 </a>
             ))
         }
