@@ -13,16 +13,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-isSupported().then((supported) => {
-  if (supported) {
-    // Inicializa Firebase Analytics
-    const analytics = getAnalytics(app);
-    // ...
-  } else {
-    console.log("Firebase Analytics no es compatible con este entorno.");
-  }
-}).catch((error) => {
-  console.error("Error al verificar la compatibilidad de Firebase Analytics:", error);
-});
-
+  isSupported().then((supported) => {
+    if (supported) {
+      // Inicializa Firebase Analytics
+      const analytics = getAnalytics(app);
+      console.log("Firebase Analytics inicializado correctamente.");
+    } else {
+      console.log("Firebase Analytics no es compatible con este entorno.");
+    }
+  }).catch((error) => {
+    console.error("Error al verificar la compatibilidad de Firebase Analytics:", error);
+  });
+  
 export default app;
