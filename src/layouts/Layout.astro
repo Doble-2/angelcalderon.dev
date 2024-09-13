@@ -2,12 +2,30 @@
 import Contact from "../components/Contact.astro";
 import NavBar from "../components/share/NavBar.astro";
 import Rainy from "../components/share/Rainy.astro";
-import  SpeedInsights  from "@vercel/speed-insights/astro"
+import SpeedInsights from "@vercel/speed-insights/astro";
+import { onMount } from "solid-js";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
 interface Props {
 	title: string;
 }
 
 const { title } = Astro.props;
+const firebaseConfig = {
+	apiKey: "YOUR_API_KEY",
+	authDomain: "YOUR_AUTH_DOMAIN",
+	projectId: "YOUR_PROJECT_ID",
+	storageBucket: "YOUR_STORAGE_BUCKET",
+	messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+	appId: "YOUR_APP_ID",
+	measurementId: "YOUR_MEASUREMENT_ID",
+};
+
+onMount(() => {
+	const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+});
 ---
 
 <!doctype html>
@@ -20,6 +38,7 @@ const { title } = Astro.props;
 		/>
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" href="/favicon_.png" />
+		<link rel="canonical" href="angelcalderon.dev/" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
@@ -27,10 +46,12 @@ const { title } = Astro.props;
 		<Rainy />
 
 		<main class="">
-			<div class="z-10 relative main-section text-white backdrop-blur-md bg-black/30">
+			<div
+				class="z-10 relative main-section text-white backdrop-blur-md bg-black/30"
+			>
 				<NavBar />
 				<slot />
-				<Contact/>
+				<Contact />
 			</div>
 
 			<!-- <div class="fixed bottom-4 right-4 z-30">
@@ -58,8 +79,7 @@ const { title } = Astro.props;
 				</button>
 			</div> -->
 		</main>
-		<SpeedInsights/>
-
+		<SpeedInsights />
 	</body>
 </html>
 
