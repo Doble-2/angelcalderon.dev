@@ -1,5 +1,11 @@
 ---
 import CertifiedContainer from "./CertifiedContainer.astro";
+
+interface Props {
+    lang: string;
+    t: (key: string) => string;
+}
+const { lang = 'es', t = (k) => k } = Astro.props;
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../../../firebase/client";
 
@@ -32,25 +38,17 @@ console.log(queryCertifieds);
                 <h2
                     class="text-3xl mb-2 font-extrabold md:text-3xl xl:text-4xl"
                 >
-                    Certificados
+                    {t('certificates')}
                 </h2>
             </div>
         </div>
 
         <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
-            Cuento con certificados en desarrollo web y móvil, habiendo
-            realizado cursos en plataformas como Platzi y Google Actívate.
-            Además, he participado en hackatones y eventos de tecnología,
-            obteniendo una mención especial en Yummy (2023) y un segundo lugar
-            en Lexpin (2024).
+            {t('certifieds_description_1')}
         </p>
 
         <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
-            En Codicon (Lexpin - 2024), lideré la programación de mi equipo y
-            desarrollé una IA para predicciones genéticas con Next.js y la API
-            de OpenAI. En Codicon (Yummy - 2023), contribuí como desarrollador
-            frontend, aplicando principios de UI/UX y comunicación efectiva,
-            destacándome por mi capacidad de resolución de problemas.
+            {t('certifieds_description_2')}
         </p>
     </div>
 </div>

@@ -4,9 +4,11 @@ interface Props {
     title: string;
     dates: string;
     description: string;
+    lang?: string;
+    t?: (key: string) => string;
 }
 
-const { enterprise, title, dates, description } = Astro.props;
+const { enterprise, title, dates, description, lang = 'es', t = (k) => k } = Astro.props;
 ---
 
 <li class="relative mb-6 md:px-5">
@@ -36,7 +38,7 @@ const { enterprise, title, dates, description } = Astro.props;
             >{dates}</time
         >
         <p class="text-md font-normal lg:text-md xl:text-lg">
-            {description}
+            {t(description)}
         </p>
     </div>
 </li>

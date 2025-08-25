@@ -2,6 +2,7 @@
 import Contact from "../components/Contact.astro";
 import NavBar from "../components/share/NavBar.astro";
 import Rainy from "../components/share/Rainy.astro";
+import translations from "../i18n";
 import SpeedInsights from "@vercel/speed-insights/astro";
 import { onMount } from "solid-js";
 import { initializeApp } from "firebase/app";
@@ -22,6 +23,18 @@ const firebaseConfig = {
 	measurementId: "YOUR_MEASUREMENT_ID",
 };
 
+// Idioma determinado en el servidor mediante cookie o Accept-Language
+let lang: string = 'es';
+const cookieHeader = Astro.request.headers.get('cookie') || '';
+const match = cookieHeader.match(/(?:^|;\s*)lang=([^;]+)/);
+if (match) { try { lang = decodeURIComponent(match[1]); } catch {} }
+else {
+	const accept = Astro.request.headers.get('accept-language') || '';
+	if (accept.toLowerCase().startsWith('en')) lang = 'en';
+}
+if (!['es','en'].includes(lang)) lang = 'es';
+const t = (key: string) => translations[lang]?.[key] || key;
+
 onMount(() => {
 	const app = initializeApp(firebaseConfig);
 	getAnalytics(app);
@@ -29,8 +42,12 @@ onMount(() => {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang} data-current-lang={lang}>
 	<head>
+		<script>
+		// Aplicar tema (evita FOUC)
+		(function(){try{var th=localStorage.getItem('theme')||'system';var prefers=window.matchMedia('(prefers-color-scheme: dark)').matches;var dark= th==='dark'||(th==='system'&&prefers);document.documentElement.setAttribute('data-theme', dark?'dark':'light');if(dark)document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');}catch(e){}})();
+		</script>
 		<meta charset="UTF-8" />
 		<meta
 			name="description"
@@ -49,7 +66,7 @@ onMount(() => {
 		<meta name="twitter:site" content="@angelcaldev">
 		<meta name="twitter:creator" content="@angelcaldev">
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" href="/favicon_2.png" />
+		<link rel="icon" href="/rect1-optimized.webp" />
 		<link rel="canonical" href="/" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
@@ -61,8 +78,8 @@ onMount(() => {
 			<div
 				class="z-10 relative main-section text-white backdrop-blur-md bg-black/30"
 			>
-				<NavBar />
-				<slot />
+				<NavBar lang={lang} t={t} />
+				<slot  />
 				<Contact />
 			</div>
 
@@ -94,6 +111,44 @@ onMount(() => {
 		<SpeedInsights />
 	</body>
 </html>
+<script is:inline>
+// Tema
+function setTheme(theme) {
+	if (theme === 'system') {
+		window.localStorage.removeItem('theme');
+		document.documentElement.removeAttribute('data-theme');
+	} else {
+		window.localStorage.setItem('theme', theme);
+		document.documentElement.setAttribute('data-theme', theme);
+	}
+	if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+		document.documentElement.classList.add('dark');
+	} else {
+		document.documentElement.classList.remove('dark');
+	}
+}
+function getTheme() {
+	return window.localStorage.getItem('theme') || 'system';
+}
+// Idioma
+function setLanguage(lang) {
+	document.cookie = `lang=${lang}; path=/;`;
+	window.localStorage.setItem('lang', lang);
+	location.reload();
+}
+function getLanguage() {
+	return window.localStorage.getItem('lang') || 'es';
+}
+document.addEventListener('DOMContentLoaded', () => {
+	setTheme(getTheme());
+	// Si el idioma de cookie y localStorage no coinciden, sincroniza y recarga
+	const cookieLang = document.cookie.match(/lang=([^;]+)/);
+	const localLang = getLanguage();
+	if (cookieLang && cookieLang[1] !== localLang) {
+		setLanguage(localLang);
+	}
+});
+</script>
 
 <style is:global>
 	:root {

@@ -1,18 +1,167 @@
 ---
 import { Image } from "astro:assets";
+
+interface Props {
+  lang: string;
+  t: (key: string) => string;
+}
+
+const { lang = 'es', t = (k) => k } = Astro.props;
 ---
 
 <!-- bg-neutral-800/[.3] -->
-<header class="z-20 absolute w-full py-2">
-   <a class="text-xl text-white flex justify-center items-center" href="/#">
-      <h2 class="text-xl xl:text-2xl text-white  font-semibold">Angelcalderon.dev</h2>
+<header class="z-20 fixed w-full py-2">
+   <div class="flex justify-between items-center w-full max-w-5xl mx-auto px-4">
+    <a class="text-xl text-white flex items-center gap-2" href="/#">
       <Image
-         loading="eager"
-         class="mx-1 w-10 h-10"
-         width={25}
-         height={28}
-         src={"/favicon_.webp"}
-         alt="icono de angel calderon"
+        loading="eager"
+        class="w-8 h-8 dark:invert"
+        width={15}
+        height={15}
+        src={"/rect1.png"}
+        alt="icono de angel calderon"
       />
-   </a>
+      <h2 class="text-xl xl:text-2xl text-black dark:text-white font-medium">
+        angelcalderon.dev
+      </h2>
+    </a>
+    <div class="flex items-center gap-2">
+      <!-- Theme Toggle -->
+      <div class="relative">
+  <button id="theme-toggle" class="liquid-glass-btn" aria-label={t('theme')} type="button" tabindex="0">
+          <svg id="theme-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2m11-11h-2M3 12H1m16.95 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
+        </button>
+        <div id="theme-menu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-neutral-900 rounded shadow-lg z-50">
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-theme="light">{t('light')}</button>
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-theme="dark">{t('dark')}</button>
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-theme="system">{t('system')}</button>
+        </div>
+      </div>
+      <!-- Language Toggle -->
+      <div class="relative">
+  <button id="lang-toggle" class="liquid-glass-btn" aria-label={t('language')} type="button" tabindex="0">
+          {lang === 'es' ? (
+            <span class="flex items-center gap-2">
+              <img src="https://hatscripts.github.io/circle-flags/flags/es.svg" alt="Español" class="w-5 h-5 rounded-full" />
+              <span>{t('español')}</span>
+            </span>
+          ) : (
+            <span class="flex items-center gap-2">
+              <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" alt="English" class="w-5 h-5 rounded-full" />
+              <span>{t('english')}</span>
+            </span>
+          )}
+        </button>
+        <div id="lang-menu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-neutral-900 rounded shadow-lg z-50">
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-lang="es">
+            <span class="flex items-center gap-2">
+              <img src="https://hatscripts.github.io/circle-flags/flags/es.svg" alt="Español" class="w-5 h-5 rounded-full" />
+              <span>{t('español')}</span>
+            </span>
+          </button>
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-lang="en">
+            <span class="flex items-center gap-2">
+              <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" alt="English" class="w-5 h-5 rounded-full" />
+              <span>{t('english')}</span>
+            </span>
+          </button>
+        </div>
+      </div>
+</header>
+<style>
+.liquid-glass-btn {
+  background: rgba(255,255,255,0.35);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(0,0,0,0.10);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0.7rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.liquid-glass-btn:hover {
+  background: rgba(255,255,255,0.55);
+  box-shadow: 0 6px 24px 0 rgba(0,0,0,0.13), 0 2px 8px 0 rgba(0,0,0,0.13);
+}
+</style>
+<!--
+
+-->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.07 7.07l-1.41-1.41M6.34 6.34L4.93 4.93m12.02 0l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>
+        </button>
+        <div id="lang-menu" class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-neutral-900 rounded shadow-lg z-50">
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-lang="es">Español</button>
+          <button class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800" data-lang="en">English</button>
+        </div>
+      </div>
+    </div>
+   </div>
+</header>
+<script is:inline>
+// Utilidades tema
+function setTheme(theme) {
+  window.localStorage.setItem('theme', theme);
+  // Aplicar inmediatamente sin esperar recarga
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.documentElement.classList.toggle('dark', isDark);
+}
+function getTheme() {
+  return window.localStorage.getItem('theme') || 'system';
+}
+// Utilidades idioma
+function setLanguage(lang) {
+  window.localStorage.setItem('lang', lang);
+  location.reload();
+}
+function getLanguage() {
+  return window.localStorage.getItem('lang') || 'es';
+}
+// Interactividad toggles
+document.addEventListener('DOMContentLoaded', () => {
+  // Aplicar tema existente al cargar
+  setTheme(window.localStorage.getItem('theme') || 'system');
+  // Theme
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeMenu = document.getElementById('theme-menu');
+  themeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    themeMenu.classList.toggle('hidden');
+  });
+  themeMenu.querySelectorAll('button[data-theme]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      setTheme(btn.getAttribute('data-theme'));
+      themeMenu.classList.add('hidden');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!themeBtn.contains(e.target) && !themeMenu.contains(e.target)) {
+      themeMenu.classList.add('hidden');
+    }
+  });
+  // Language
+  const langBtn = document.getElementById('lang-toggle');
+  const langMenu = document.getElementById('lang-menu');
+  langBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langMenu.classList.toggle('hidden');
+  });
+  langMenu.querySelectorAll('button[data-lang]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      setLanguage(btn.getAttribute('data-lang'));
+      langMenu.classList.add('hidden');
+    });
+  });
+  document.addEventListener('click', (e) => {
+    if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+      langMenu.classList.add('hidden');
+    }
+  });
+});
+</script>
+  
 </header>

@@ -1,5 +1,10 @@
 ---
 import { Image } from "astro:assets";
+interface Props {
+  lang: string;
+  t: (key: string) => string;
+}
+const { lang = 'es', t = (k) => k } = Astro.props;
 ---
 
 <div class="lg:mr-20 place-self-center lg:col-span-7 pt-6 md:pt-0">
@@ -9,25 +14,23 @@ import { Image } from "astro:assets";
     >
       Ángel Calderón
       <p class="text-3xl font-extrabold md:text-3xl xl:text-4xl">
-        Desarrollador Frontend
+        {t('frontend_developer')}
       </p>
     </h1>
   </div>
 
   <p class="max-w-2xl lg:mb-8 text-lg md:text-lg lg:text-xl xl:text-2xl">
-    Programador con experiencia en la creación de sitios web y aplicaciones
-    móviles. Especializado en desarrollo frontend con tecnologías como Flutter,
-    Dart, React, Astro, Next.js y TypeScript. <span class="hidden md:block">Aunque mi especialidad es el
-    frontend, también tengo conocimientos en tecnologías backend como PHP,
-    Node.js y Python, y en herramientas no-code como WordPress y Flutter Flow.</span>
-    Tengo 22 años y actualmente resido en Caracas, Venezuela.
+    {t('profile_description_1')}
+    <span class="hidden md:block">{t('profile_description_2')}</span>
+    {t('profile_description_3')}
+  </p>
   </p>
   <div class="flex items-center justify-center md:justify-start mt-10 md:mt-6">
     <a href="/Angel Calderon Semi-Senior.pdf" download class="font-semibold text-white">
       <button
         class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center min-h-12 lg:text-xl"
       >
-        Descargar curriculum
+    {t('download_cv')}
       </button>
     </a>
 
