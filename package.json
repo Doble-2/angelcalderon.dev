@@ -22,6 +22,7 @@
     "astro-navbar": "^2.3.3",
     "firebase": "^10.12.3",
     "firebase-admin": "^12.2.0",
+    "lucide-react": "^0.542.0",
     "photoswipe": "^5.4.4",
     "raindrop-fx": "^1.0.8",
     "react": "^19.1.1",

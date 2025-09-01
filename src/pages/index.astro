@@ -19,7 +19,7 @@ if (!['es','en'].includes(lang)) lang='es';
 const t = (key: string) => translations[lang]?.[key] || key;
 ---
 <Layout title="Ángel Calderón | Desarrollador Frontend">
-  <Section className={"pt-8 md:justify-between"}>
+  <Section className={"pt-8 md:justify-between bg-transparent"}>
     <ProfileSection lang={lang} t={t} />
   </Section>
 

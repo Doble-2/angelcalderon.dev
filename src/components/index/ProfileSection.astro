@@ -7,33 +7,46 @@ interface Props {
 const { lang = 'es', t = (k) => k } = Astro.props;
 ---
 
-<div class="lg:mr-20 place-self-center lg:col-span-7 pt-6 md:pt-0">
+<div class="lg:mr-20 place-self-center lg:col-span-7 pt-24 md:pt-4 text-white">
   <div class="">
-    <h1
+     <h1
       class="max-w-2xl mb-4 tracking-tight leading-none text-2xl font-bold md:text-1xl xl:text-2xl"
     >
-      Ángel Calderón
-      <p class="text-3xl font-extrabold md:text-3xl xl:text-4xl">
-        {t('frontend_developer')}
+      {t("frontend_developer")}
+      <p class="text-3xl mt-4 font-extrabold md:text-4xl 2xl:text-5xl text-blue-600">
+        Angel Calderon
       </p>
     </h1>
   </div>
 
-  <p class="max-w-2xl lg:mb-8 text-lg md:text-lg lg:text-xl xl:text-2xl">
+  <p class="max-w-2xl lg:mb-8 text-lg md:text-lg lg:text-xl xl:text-xl">
     {t('profile_description_1')}
     <span class="hidden md:block">{t('profile_description_2')}</span>
     {t('profile_description_3')}
   </p>
   </p>
-  <div class="flex items-center justify-center md:justify-start mt-10 md:mt-6">
+  <div class="flex items-center justify-start md:justify-start mt-10 md:mt-6 mb-4">
     <a href="/Angel Calderon Semi-Senior.pdf" download class="font-semibold text-white">
       <button
-        class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center min-h-12 lg:text-xl"
+        class="bg-blue-600 text-white py-3 px-5 rounded-lg flex justify-center items-center min-h-12 lg:text-xl"
       >
     {t('download_cv')}
       </button>
     </a>
-
+    <!-- GitHub button next to CV -->
+    <!-- Assumption: GitHub profile URL is https://github.com/angelcalderon; change if different -->
+    <a href="https://github.com/angelcalderon" target="_blank" rel="noopener noreferrer" class="font-semibold text-white ml-4">
+      <button
+        class="bg-[#24292f] text-white py-3 px-4 rounded-lg flex items-center gap-3 lg:text-lg"
+        aria-label="GitHub profile"
+        type="button"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </button>
+    </a>
     <!-- <a href="/profile.png" download class="text-sm font-semibold">
 
     <button
@@ -44,7 +57,7 @@ const { lang = 'es', t = (k) => k } = Astro.props;
   </a> -->
   </div>
 </div>
-<div class="sm:mt-0 lg:col-span-5 flex justify-center mt-2 ">
+<div class="sm:mt-0 lg:col-span-5 flex justify-center mt-2 motion-safe:animate-minbounce">
   <Image
     class="rounded-t-lg ProfileImage z-4 drop-shadow-xl"
     width={400}

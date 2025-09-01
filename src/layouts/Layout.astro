@@ -44,10 +44,6 @@ onMount(() => {
 <!doctype html>
 <html lang={lang} data-current-lang={lang}>
 	<head>
-		<script>
-		// Aplicar tema (evita FOUC)
-		(function(){try{var th=localStorage.getItem('theme')||'system';var prefers=window.matchMedia('(prefers-color-scheme: dark)').matches;var dark= th==='dark'||(th==='system'&&prefers);document.documentElement.setAttribute('data-theme', dark?'dark':'light');if(dark)document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');}catch(e){}})();
-		</script>
 		<meta charset="UTF-8" />
 		<meta
 			name="description"
@@ -74,11 +70,11 @@ onMount(() => {
 	<body class="max-w-screen">
 		<Rainy />
 
+		<NavBar lang={lang} t={t} />
 		<main class="">
 			<div
-				class="z-10 relative main-section text-white backdrop-blur-md bg-black/30"
+				class="z-10 main-section backdrop-blur-md bg-black/30"
 			>
-				<NavBar lang={lang} t={t} />
 				<slot  />
 				<Contact />
 			</div>
