@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+const { project, onClick, variant = 'compact', t } = Astro.props;
+---
+
+{variant === 'compact' ? (
+  <article class="cursor-pointer transition-all duration-300 hover:shadow-lg" role="button" tabindex="0" onclick={onClick}>
+    <div class="p-4 flex gap-4 items-start">
+      {project?.image
+        ? <Image src={project.image} alt={project.title} width={128} height={128} class="w-16 h-16 object-cover rounded-lg" />
+        : <div class="w-16 h-16 bg-gray-800 rounded-lg" />}
+      <div class="flex-1 min-w-0">
+        <h4 class="font-semibold text-sm mb-1 truncate">{project?.title}</h4>
+        <p class="text-xs text-muted-foreground mb-2 line-clamp-2">{project?.description}</p>
+        <span class="inline-block text-xs bg-muted/30 px-2 py-1 rounded">{project?.category}</span>
+      </div>
+    </div>
+  </article>
+) : (
+  <article class="neomorphic hover:shadow-xl transition-all duration-500 group overflow-hidden cursor-pointer">
+    <div class="relative overflow-hidden">
+      {project?.image
+        ? <Image src={project.image} alt={project.title} width={800} height={400} class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700" />
+        : <div class="w-full h-48 bg-gray-800" />}
+      <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <span class="absolute top-4 left-4 bg-white/20 backdrop-blur-md text-white border-white/20 px-3 py-1 rounded">{project?.category}</span>
+    </div>
+    <div class="p-6">
+      <h3 class="font-bold text-lg mb-3 group-hover:text-primary transition-colors">{project?.title}</h3>
+      <p class="text-muted-foreground mb-4 text-sm leading-relaxed">{project?.description}</p>
+      <div class="flex flex-wrap gap-2">
+        {(project?.technologies || []).map((tech) => (
+          <span class="text-xs bg-muted/20 px-2 py-1 rounded">{tech}</span>
+        ))}
+      </div>
+    </div>
+  </article>
+)}

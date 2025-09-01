@@ -11,8 +11,8 @@ const { className, href, title, image, color } = Astro.props;
     ]}
 >
     <Image
-        height={40}
-        width={40}
+        height={320}
+        width={512}
         loading="lazy"
         class="object-fill w-64"
         src={image}
@@ -23,11 +23,13 @@ const { className, href, title, image, color } = Astro.props;
     >
         {title}
         <a href={href} class="text-sm font-semibold">
-            <button
-                class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center w-44 min-h-8"
+            <span
+                class="bg-blue-600 text-white py-3 px-4 rounded-full flex justify-center items-center w-44 min-h-8 text-center"
+                role="button"
+                aria-label={`Ver más ${title}`}
             >
                 Ver más
-            </button>
+            </span>
         </a>
     </div>
 </div>

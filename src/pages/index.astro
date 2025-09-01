@@ -23,15 +23,15 @@ const t = (key: string) => translations[lang]?.[key] || key;
     <ProfileSection lang={lang} t={t} />
   </Section>
 
-  <Section className={" py-8"}>
+
+
+ <Section className={" "}>
+    <ProjectSection lang={lang} t={t} /> 
+  </Section>
+  <Section className={""}>
     <ExperienceSection lang={lang} t={t} />
   </Section>
-
- <!-- <Section className={" p-0 px-0"}>
-    <ProjectSection lang={lang} t={t} /> 
-  </Section>-->
-
-  <!-- <Section className={" py-8 flex-col flex md:flex-row"}>
+  <Section className={" flex-col flex md:flex-row"}>
     <CertifiedSection lang={lang} t={t} /> 
-  </Section>-->
+  </Section>
 </Layout>
