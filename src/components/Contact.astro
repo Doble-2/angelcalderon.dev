@@ -1,34 +1,127 @@
 ---
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 ---
 
-<div>
-    <div class="md:place-self-center lg:col-span-7 px-8 lg:px-16 py-4">
-        <div class="flex justify-center items-center">
-            <a title="linkedin"
-            href="https://www.linkedin.com/in/angeld2/" target="_blank">
-                <Icon name={`prime:linkedin`} class="w-8 h-8 xl:w-14 xl:h-14" />
-            </a>
-            <a title="github"
-             href="https://github.com/Doble-2" target="_blank">
-                <Icon name={`prime:github`} class="w-8 h-8 xl:w-14 xl:h-14" />
-            </a>
-            <a
-            title="whatsapp"
-                href="https://wa.me/584241922881?text=Hola%20acabo%20de%20ver%20tu%20portfolio%20y%20me%20encantar%C3%ADa%20ponerme%20en%20contacto%20contigo
-            "
-                target="_blank"
-            >
-                <Icon name={`prime:whatsapp`} class="w-8 h-8 xl:w-14 xl:h-14" />
-            </a>
-            <a
-            title="x"
-                href="https://x.com/angelcaldev?t=UQAHOXx_gSOoTZp9THuJ4g&s=09"
-                target="_blank"
-            >
-                <Icon name={`prime:twitter`} class="w-6 h-6 xl:w-10 xl:h-10" />
-            </a>
+<section id="contacto" class="max-w-4xl mx-auto px-6 py-12">
+    <div class="overflow-hidden rounded-2xl shadow-sm border border-gray-100 bg-white">
+        <div class="grid grid-cols-1 md:grid-cols-2 items-stretch">
+            <!-- Left: accent panel -->
+            <div class="p-6 md:p-8  text-foreground flex flex-col justify-center gap-4">
+                <div class="space-y-1">
+                    <h3 class="text-2xl font-semibold">Hablemos</h3>
+                    <p class=" max-w-md">¿Tienes un proyecto o consulta? Escríbeme y coordino respuesta en menos de 48h.</p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 w-full">
+                    <a
+                        class="flex-1 inline-flex items-center justify-center gap-3 bg-emerald-500 text-white px-3 py-2 rounded-lg shadow-sm hover:bg-emerald-600 transition"
+                        href="https://wa.me/584241922881?text=Hola%20Angel%2C%20te%20contacto%20desde%20tu%20portfolio"
+                        target="_blank" rel="noopener noreferrer"
+                        aria-label="Abrir WhatsApp"
+                    >
+                        <Icon name={`prime:whatsapp`} class="w-5 h-5" />
+                        <span class="font-medium">WhatsApp</span>
+                    </a>
+
+                    <a
+                        class="flex-1 inline-flex items-center justify-center gap-3 bg-black/5 border border-black/10 text-black px-3 py-2 rounded-lg hover:bg-white/10 transition"
+                        href="mailto:angel@angelcalderon.dev?subject=Contacto%20desde%20portfolio"
+                        aria-label="Enviar email"
+                    >
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8.5v7A2.5 2.5 0 0 0 5.5 18h13a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 18.5 6h-13A2.5 2.5 0 0 0 3 8.5z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.5l-9 6-9-6" />
+                        </svg>
+                        <span class="font-medium">Email</span>
+                    </a>
+                </div>
+
+                <div class="flex gap-4 mt-2">
+                    <a href="https://github.com/Doble-2" target="_blank" rel="noopener noreferrer" class="text-slate-800 hover:text-white">
+                        <Icon name={`prime:github`} class="w-6 h-6" />
+                    </a>
+                    <a href="https://www.linkedin.com/in/angeld2/" target="_blank" rel="noopener noreferrer" class="text-slate-800 hover:text-white">
+                        <Icon name={`prime:linkedin`} class="w-6 h-6" />
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: form panel -->
+            <div class="p-6 md:p-8 bg-white md:border-l md:border-gray-100">
+                <form id="contact-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-muted-foreground">Nombre</label>
+                            <input id="name" name="name" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-muted-foreground">Email</label>
+                            <input id="email" name="email" type="email" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-muted-foreground">Mensaje</label>
+                        <textarea id="message" name="message" rows="4" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold" id="submit-btn">Enviar</button>
+                        <button type="button" id="copy-email" class="text-sm text-muted-foreground hover:text-gray-900">Copiar email</button>
+                    </div>
+
+                    <div aria-live="polite" id="form-status" class="text-sm mt-2 text-muted-foreground"></div>
+                </form>
+
+                <script type="module">
+                    // Manejo cliente: intenta POST a /api/contact si existe, si no muestra instrucción
+                    const form = document.getElementById('contact-form');
+                    const status = document.getElementById('form-status');
+                    const submitBtn = document.getElementById('submit-btn');
+                    const copyBtn = document.getElementById('copy-email');
+
+                    copyBtn?.addEventListener('click', async () => {
+                        try {
+                            await navigator.clipboard.writeText('hola@angelcalderon.dev');
+                            status.textContent = 'Email copiado al portapapeles';
+                        } catch (e) {
+                            status.textContent = 'No se pudo copiar. Usa el enlace de Email.';
+                        }
+                    });
+
+                    form?.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        submitBtn.disabled = true;
+                        status.textContent = 'Enviando...';
+
+                        const data = {
+                            name: form.name.value,
+                            email: form.email.value,
+                            message: form.message.value,
+                        };
+
+                        try {
+                            const res = await fetch('/api/contact', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(data),
+                            });
+
+                            if (res.ok) {
+                                status.textContent = 'Gracias — tu mensaje fue enviado.';
+                                form.reset();
+                            } else {
+                                const json = await res.json().catch(() => ({}));
+                                status.textContent = json?.error || 'No fue posible enviar. Usa el email directo.';
+                            }
+                        } catch (err) {
+                            status.textContent = 'Error de red. Usa el email directo.';
+                        } finally {
+                            submitBtn.disabled = false;
+                        }
+                    });
+                </script>
+            </div>
         </div>
     </div>
-</div>
+
+</section>

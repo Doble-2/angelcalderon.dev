@@ -5,6 +5,7 @@ import {
   Database,
   Globe,
 } from "lucide-react";
+import TechnologyTag from "../projects/TechnologyTag";
 interface Props {
   lang: string;
   t: (key: string) => string;
@@ -12,8 +13,8 @@ interface Props {
 const { lang = "es", t = (k) => k } = Astro.props;
 
 const skills = [
-  { name: "Frontend", icon: Code, technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
-  { name: "Backend", icon: Database, technologies: ["Node.js", "Python", "PostgreSQL", "MongoDB"] },
+  { name: "Frontend", icon: Code, technologies: ["React", "Nextjs", "TypeScript", "TailwindCSS"] },
+  { name: "Backend", icon: Database, technologies: ["Nodejs", "Python", "PostgreSQL", "MongoDB"] },
   { name: "Design", icon: Palette, technologies: ["Figma", "Adobe XD", "UI/UX", "Prototyping"] },
   { name: "DevOps", icon: Globe, technologies: ["AWS", "Docker", "CI/CD", "Vercel"] },
 ];
@@ -51,14 +52,15 @@ const experiences = [
   </div>
 
   <!-- Skills grid -->
-  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
     {skills.map((skill) => (
       <div class="bg-white text-foreground flex flex-col gap-4 rounded-xl border py-6 shadow-sm neomorphic hover:shadow-lg transition-all duration-300 text-center p-6 backdrop-blur-xl">
         <skill.icon className="h-12 w-12 text-blue-600 mx-auto mb-2" />
         <h3 class="font-bold text-lg mb-1">{skill.name}</h3>
         <div class="flex flex-wrap justify-center gap-2">
           {(skill.technologies || []).map((tech) => (
-            <span class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-foreground text-xs font-medium">{tech}</span>
+            <TechnologyTag  tech={tech} />
+
           ))}
         </div>
       </div>

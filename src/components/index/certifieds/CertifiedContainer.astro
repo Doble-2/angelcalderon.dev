@@ -3,13 +3,13 @@ import { Image } from "astro:assets";
 const { className, href, title, image, lang = 'es', t = (k) => k } = Astro.props;
 ---
 
-<div class:list={["col-span-1 bg-sky-800 max-w-40 transition-transform duration-300 ease-in-out hover:scale-150 ", className]}>
+<div class:list={["col-span-1 bg-sky-800 max-w-40 transition-transform duration-300 ease-in-out hover:scale-150 rounded-lg ", className]}>
     <a href={href}  target="_blank" title={t(title)} class="">
         <Image
             height={40}
             width={40}
             loading="lazy"
-            class="object-cover h-full w-full"
+            class="object-cover h-full w-full rounded-lg"
             src={image}
             alt={t(title)}
         />

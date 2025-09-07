@@ -7,6 +7,7 @@ import SpeedInsights from "@vercel/speed-insights/astro";
 import { onMount } from "solid-js";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import Footer from "../components/share/footer.astro";
 
 interface Props {
 	title: string;
@@ -76,7 +77,7 @@ onMount(() => {
 				class="z-10 main-section backdrop-blur-md bg-black/30"
 			>
 				<slot  />
-				<Contact />
+				<Footer />
 			</div>
 
 			<!-- <div class="fixed bottom-4 right-4 z-30">
