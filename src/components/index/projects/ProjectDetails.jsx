@@ -147,7 +147,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
             </a>
             <button
               onClick={onNext}
-              className="ml-auto inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors group"
+              className="ml-auto inline-flex items-center gap-2 text-sm text-blue-500  s group"
               title={t("next_project")}
             >
               {t("next")}

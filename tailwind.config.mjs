@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	// Ensure these dynamic classes aren't purged during build
+	safelist: [
+		'text-white',
+		'text-neutral-900'
+	],
 	theme: {
 		extend: {
 			keyframes: {

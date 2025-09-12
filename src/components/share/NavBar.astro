@@ -146,7 +146,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
       header#site-header.scrolled a,
       header#site-header.scrolled h2,
       header#site-header.scrolled .liquid-glass-btn {
-        color: #0b1220 !important;
+        color: #0b1220;
       }
       header#site-header.scrolled .liquid-glass-btn {
    
@@ -157,7 +157,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
       :root.dark header#site-header.scrolled a,
       :root.dark header#site-header.scrolled h2,
       :root.dark header#site-header.scrolled .liquid-glass-btn {
-        color: #fff !important;
+        color: #fff;
       }
     </style>
     <!--
@@ -207,15 +207,18 @@ const { lang = "es", t = (k) => k } = Astro.props;
         if (scrolled) {
           if (isDark) {
             // keep text white in dark mode when scrolled
+            el.style.color = '#ffffff';
             el.classList.remove('text-neutral-900', 'text-black');
             el.classList.add('text-white');
           } else {
             // use dark text in light mode when scrolled
+            el.style.color = '#0b1220';
             el.classList.remove('text-white');
             el.classList.add('text-neutral-900');
           }
         } else {
           // not scrolled -> default: white text
+          el.style.color = '#ffffff';
           el.classList.remove('text-neutral-900', 'text-black');
           el.classList.add('text-white');
         }
