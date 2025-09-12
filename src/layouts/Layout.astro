@@ -123,6 +123,9 @@ function setTheme(theme) {
 	} else {
 		document.documentElement.classList.remove('dark');
 	}
+
+    // Notify client components the theme changed
+    try { window.dispatchEvent(new Event('theme-changed')); } catch (e) {}
 }
 function getTheme() {
 	return window.localStorage.getItem('theme') || 'system';

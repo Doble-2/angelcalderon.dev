@@ -164,19 +164,6 @@ const { lang = "es", t = (k) => k } = Astro.props;
 
 -->
   </div>
-  <div
-    id="lang-menu"
-    class="hidden absolute right-0 mt-2 w-32 bg-white  rounded shadow-lg z-50"
-  >
-    <button
-      class="block w-full text-left px-4 py-2 hover:bg-neutral-100"
-      data-lang="es">Español</button
-    >
-    <button
-      class="block w-full text-left px-4 py-2 hover:bg-neutral-100 "
-      data-lang="en">English</button
-    >
-  </div>
 </header>
 
 <script is:inline>
@@ -194,29 +181,59 @@ const { lang = "es", t = (k) => k } = Astro.props;
     // Language
     const langBtn = document.getElementById("lang-toggle");
     const langMenu = document.getElementById("lang-menu");
-    langBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      langMenu.classList.toggle("hidden");
-    });
-    langMenu.querySelectorAll("button[data-lang]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        setLanguage(btn.getAttribute("data-lang"));
-        langMenu.classList.add("hidden");
+    if (langBtn && langMenu) {
+      langBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        langMenu.classList.toggle("hidden");
       });
-    });
-    document.addEventListener("click", (e) => {
-      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-        langMenu.classList.add("hidden");
-      }
-    });
+      langMenu.querySelectorAll("button[data-lang]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          setLanguage(btn.getAttribute("data-lang"));
+          langMenu.classList.add("hidden");
+        });
+      });
+      document.addEventListener("click", (e) => {
+        if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+          langMenu.classList.add("hidden");
+        }
+      });
+    }
     // Header scroll behavior
     const header = document.getElementById("site-header");
+    const textTargets = header ? header.querySelectorAll('a, h2, .liquid-glass-btn') : [];
+    function applyTextColor(scrolled) {
+      const isDark = document.documentElement.classList.contains('dark');
+      textTargets.forEach((el) => {
+        if (scrolled) {
+          if (isDark) {
+            // keep text white in dark mode when scrolled
+            el.classList.remove('text-neutral-900', 'text-black');
+            el.classList.add('text-white');
+          } else {
+            // use dark text in light mode when scrolled
+            el.classList.remove('text-white');
+            el.classList.add('text-neutral-900');
+          }
+        } else {
+          // not scrolled -> default: white text
+          el.classList.remove('text-neutral-900', 'text-black');
+          el.classList.add('text-white');
+        }
+      });
+    }
+
     function onScroll() {
       if (!header) return;
-      if (window.scrollY > 20) header.classList.add("scrolled");
-      else header.classList.remove("scrolled");
+      const scrolled = window.scrollY > 20;
+      header.classList.toggle('scrolled', scrolled);
+      applyTextColor(scrolled);
     }
+
+    // Update on load and on scroll
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+
+    // If theme changes elsewhere, refresh the text colors (some layouts may dispatch this)
+    document.addEventListener('theme-changed', () => applyTextColor(window.scrollY > 20));
   });
 </script>
