@@ -178,6 +178,12 @@ const { lang = "es", t = (k) => k } = Astro.props;
   }
   // Interactividad toggles
   document.addEventListener("DOMContentLoaded", () => {
+    const NAV_DEBUG = (typeof window !== 'undefined') && (window.location.search.includes('navdebug=1') || window.localStorage.getItem('nav-debug') === '1');
+    function debug(...args) {
+      if (NAV_DEBUG) console.log('[NavBar debug]', ...args);
+    }
+    // expose a helper for interactive inspection from console
+    try { if (typeof window !== 'undefined') window.__navBarDebug = { NAV_DEBUG }; } catch(e) {}
     // Language
     const langBtn = document.getElementById("lang-toggle");
     const langMenu = document.getElementById("lang-menu");
@@ -201,9 +207,13 @@ const { lang = "es", t = (k) => k } = Astro.props;
     // Header scroll behavior
     const header = document.getElementById("site-header");
     const textTargets = header ? header.querySelectorAll('a, h2, .liquid-glass-btn') : [];
+    debug('header element', header);
+    debug('textTargets count', textTargets.length);
     function applyTextColor(scrolled) {
       const isDark = document.documentElement.classList.contains('dark');
+      debug('applyTextColor', { scrolled, isDark });
       textTargets.forEach((el) => {
+        const before = window.getComputedStyle ? window.getComputedStyle(el).color : null;
         if (scrolled) {
           if (isDark) {
             // keep text white in dark mode when scrolled
@@ -222,6 +232,8 @@ const { lang = "es", t = (k) => k } = Astro.props;
           el.classList.remove('text-neutral-900', 'text-black');
           el.classList.add('text-white');
         }
+        const after = window.getComputedStyle ? window.getComputedStyle(el).color : null;
+        debug('el', el, { before, after, inlineStyle: el.style.color, classes: el.className });
       });
     }
 
