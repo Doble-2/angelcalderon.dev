@@ -15,7 +15,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
   class="z-50 fixed top-0 left-0 right-0 w-full py-2 transition-colors duration-300"
 >
   <div class="flex justify-between items-center w-full mx-auto md:px-20 px-8">
-    <a class="text-xl text-white flex items-center gap-2" href="/#">
+    <a class="text-xl  flex items-center gap-2" href="/#">
       <Image
         loading="eager"
         class="w-6 h-6 logo-img"
@@ -24,7 +24,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
         src={"/rect1.png"}
         alt="icono de angel calderon"
       />
-      <h2 class="text-xl xl:text-xl text-white font-medium">
+      <h2 class="text-xl xl:text-xl  font-medium">
         angelcalderon.dev
       </h2>
     </a>
@@ -173,9 +173,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
     window.localStorage.setItem("lang", lang);
     location.reload();
   }
-  function getLanguage() {
-    return window.localStorage.getItem("lang") || "es";
-  }
+
   // Interactividad toggles
   document.addEventListener("DOMContentLoaded", () => {
     const NAV_DEBUG = (typeof window !== 'undefined') && (window.location.search.includes('navdebug=1') || window.localStorage.getItem('nav-debug') === '1');
@@ -210,22 +208,15 @@ const { lang = "es", t = (k) => k } = Astro.props;
     debug('header element', header);
     debug('textTargets count', textTargets.length);
     function applyTextColor(scrolled) {
-      const isDark = document.documentElement.classList.contains('dark');
-      debug('applyTextColor', { scrolled, isDark });
       textTargets.forEach((el) => {
         const before = window.getComputedStyle ? window.getComputedStyle(el).color : null;
         if (scrolled) {
-          if (isDark) {
-            // keep text white in dark mode when scrolled (force)
-            try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) { el.style.color = '#ffffff'; }
-            el.classList.remove('text-neutral-900', 'text-black');
-            el.classList.add('text-white');
-          } else {
+         
             // use dark text in light mode when scrolled (force)
             try { el.style.setProperty('color', '#0b1220', 'important'); } catch(e) { el.style.color = '#0b1220'; }
             el.classList.remove('text-white');
             el.classList.add('text-neutral-900');
-          }
+          
         } else {
           // not scrolled -> default: white text (force)
           try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) { el.style.color = '#ffffff'; }
@@ -260,6 +251,26 @@ const { lang = "es", t = (k) => k } = Astro.props;
         }
       });
       mo.observe(header, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // Observe style changes on each text target to detect who/when overwrites color
+    if (textTargets.length && window.MutationObserver) {
+      textTargets.forEach((el) => {
+        try {
+          const smo = new MutationObserver((mutations) => {
+            for (const m of mutations) {
+              if (m.type === 'attributes' && m.attributeName === 'style') {
+                const now = new Date().toISOString();
+                const comp = window.getComputedStyle ? window.getComputedStyle(el).color : null;
+                debug('Style mutation on', el.tagName, 'at', now, { inline: el.getAttribute('style'), computed: comp, classes: el.className });
+              }
+            }
+          });
+          smo.observe(el, { attributes: true, attributeFilter: ['style'] });
+        } catch (e) {
+          debug('failed to observe style for', el, e);
+        }
+      });
     }
 
     // If theme changes elsewhere, refresh the text colors (some layouts may dispatch this)
