@@ -216,24 +216,24 @@ const { lang = "es", t = (k) => k } = Astro.props;
         const before = window.getComputedStyle ? window.getComputedStyle(el).color : null;
         if (scrolled) {
           if (isDark) {
-            // keep text white in dark mode when scrolled
-            el.style.color = '#ffffff';
+            // keep text white in dark mode when scrolled (force)
+            try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) { el.style.color = '#ffffff'; }
             el.classList.remove('text-neutral-900', 'text-black');
             el.classList.add('text-white');
           } else {
-            // use dark text in light mode when scrolled
-            el.style.color = '#0b1220';
+            // use dark text in light mode when scrolled (force)
+            try { el.style.setProperty('color', '#0b1220', 'important'); } catch(e) { el.style.color = '#0b1220'; }
             el.classList.remove('text-white');
             el.classList.add('text-neutral-900');
           }
         } else {
-          // not scrolled -> default: white text
-          el.style.color = '#ffffff';
+          // not scrolled -> default: white text (force)
+          try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) { el.style.color = '#ffffff'; }
           el.classList.remove('text-neutral-900', 'text-black');
           el.classList.add('text-white');
         }
         const after = window.getComputedStyle ? window.getComputedStyle(el).color : null;
-        debug('el', el, { before, after, inlineStyle: el.style.color, classes: el.className });
+        debug('el', el, { before, after, inlineStyle: el.style.getPropertyValue('color'), classes: el.className });
       });
     }
 
@@ -247,6 +247,20 @@ const { lang = "es", t = (k) => k } = Astro.props;
     // Update on load and on scroll
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+
+    // Observe mutations on the header in case some other code toggles the class
+    if (header && window.MutationObserver) {
+      const mo = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          if (m.type === 'attributes' && m.attributeName === 'class') {
+            const has = header.classList.contains('scrolled');
+            debug('MutationObserver detected class change, has scrolled:', has);
+            applyTextColor(has);
+          }
+        }
+      });
+      mo.observe(header, { attributes: true, attributeFilter: ['class'] });
+    }
 
     // If theme changes elsewhere, refresh the text colors (some layouts may dispatch this)
     document.addEventListener('theme-changed', () => applyTextColor(window.scrollY > 20));
