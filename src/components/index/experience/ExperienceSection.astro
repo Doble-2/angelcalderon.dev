@@ -12,11 +12,18 @@ interface Props {
 }
 const { lang = "es", t = (k) => k } = Astro.props;
 
+const gradients = [
+  "from-blue-400 via-indigo-500 to-purple-500",
+  "from-emerald-400 via-teal-400 to-cyan-500",
+  "from-pink-400 via-rose-400 to-yellow-400",
+  "from-orange-400 via-amber-400 to-yellow-500",
+];
+
 const skills = [
-  { name: "Frontend", icon: Code, technologies: ["React", "Nextjs", "TypeScript", "TailwindCSS"] },
-  { name: "Backend", icon: Database, technologies: ["Nodejs", "Python", "PostgreSQL", "MongoDB"] },
-  { name: "Design", icon: Palette, technologies: ["Figma", "Adobe XD", "UI/UX", "Prototyping"] },
-  { name: "DevOps", icon: Globe, technologies: ["AWS", "Docker", "CI/CD", "Vercel"] },
+  { name: "Frontend", icon: Code, technologies: ["React", "Nextjs", "TypeScript", "TailwindCSS"], gradient: gradients[0] },
+  { name: "Backend", icon: Database, technologies: ["Nodejs", "Python", "PostgreSQL", "MongoDB"], gradient: gradients[1] },
+  { name: "Design", icon: Palette, technologies: ["Figma", "Adobe XD", "UI/UX", "Prototyping"], gradient: gradients[2] },
+  { name: "DevOps", icon: Globe, technologies: ["AWS", "Docker", "CI/CD", "Vercel"], gradient: gradients[3] },
 ];
 
 const experiences = [
@@ -46,21 +53,25 @@ const experiences = [
 
 <section class="max-w-6xl mx-auto px-4">
   <div class="text-center mb-8">
-    <h2 class="text-3xl font-extrabold">{t('professional_experience')}</h2>
-    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto">{t('experience_description_1')}</p>
-    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto">{t('experience_description_2')}</p>
+    <h2 class="text-4xl font-bold">{t('professional_experience')}</h2>
+    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto text-xl">{t('experience_description_1')}</p>
+    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto text-xl">{t('experience_description_2')}</p>
   </div>
 
   <!-- Skills grid -->
-  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 ">
-    {skills.map((skill) => (
-      <div class="bg-white text-foreground flex flex-col gap-4 rounded-xl border py-6 shadow-sm neomorphic hover:shadow-lg transition-all duration-300 text-center p-6 backdrop-blur-xl">
-        <skill.icon className="h-12 w-12  mx-auto mb-2" />
-        <h3 class="font-bold text-lg mb-1">{skill.name}</h3>
+  <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+    {skills.map((skill, idx) => (
+      <div class="bg-white text-foreground flex flex-col gap-4 rounded-2xl border border-transparent hover:border-gray-200/60 py-6 shadow-md hover:shadow-xl transition-all duration-300 text-center p-6 backdrop-blur-sm">
+        <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transform transition-transform duration-300 hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
+          <div class={`w-12 h-12 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${skill.gradient}`}>
+            <skill.icon className="h-6 w-6" />
+          </div>
+        </div>
+        <h3 class="font-semibold text-lg mb-1">{skill.name}</h3>
+        <p class="text-sm text-muted-foreground mb-3">{t(`${skill.name.toLowerCase()}_summary`)}</p>
         <div class="flex flex-wrap justify-center gap-2">
           {(skill.technologies || []).map((tech) => (
-            <TechnologyTag  tech={tech} />
-
+            <TechnologyTag tech={tech} />
           ))}
         </div>
       </div>

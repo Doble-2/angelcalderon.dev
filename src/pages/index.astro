@@ -7,34 +7,39 @@ import Section from "../components/share/Section.astro";
 import Layout from "../layouts/Layout.astro";
 import Contact from "../components/Contact.astro";
 import translations from "../i18n";
-let lang: string = 'es';
-const cookieHeader = Astro.request.headers.get('cookie') || '';
+let lang: string = "es";
+const cookieHeader = Astro.request.headers.get("cookie") || "";
 const match = cookieHeader.match(/(?:^|;\s*)lang=([^;]+)/);
-if (match) { try { lang = decodeURIComponent(match[1]); } catch {} }
-else {
-  const accept = Astro.request.headers.get('accept-language') || '';
-  if (accept.toLowerCase().startsWith('en')) lang = 'en';
+if (match) {
+  try {
+    lang = decodeURIComponent(match[1]);
+  } catch {}
+} else {
+  const accept = Astro.request.headers.get("accept-language") || "";
+  if (accept.toLowerCase().startsWith("en")) lang = "en";
 }
-if (!['es','en'].includes(lang)) lang='es';
+if (!["es", "en"].includes(lang)) lang = "es";
 const t = (key: string) => translations[lang]?.[key] || key;
 ---
+
 <Layout title="Ángel Calderón | Desarrollador Frontend">
-  <Section className={"pt-8 md:justify-between bg-transparent min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] flex-col md:flex-row"}>
+  <Section
+    className={"pt-8 md:justify-between bg-[transparent!important] min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] flex-col md:flex-row"}
+  >
     <ProfileSection lang={lang} t={t} />
   </Section>
 
-
- <Section className={""}>
+  <Section className={""}>
     <ExperienceSection lang={lang} t={t} />
   </Section>
- <Section className={" "}>
-    <ProjectSection lang={lang} t={t} /> 
+  <Section className={" "}>
+    <ProjectSection lang={lang} t={t} />
   </Section>
- 
+
   <Section className={" flex-col flex md:flex-row"}>
-    <CertifiedSection lang={lang} t={t} /> 
+    <CertifiedSection lang={lang} t={t} />
   </Section>
-  
+
   <Section className={" "}>
     <Contact lang={lang} t={t} />
   </Section>

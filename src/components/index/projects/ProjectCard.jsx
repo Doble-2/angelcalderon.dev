@@ -14,8 +14,8 @@ const ProjectCard = ({ project, isActive, onClick }) => {
             onClick={onClick}
             title={project.title || project.name}
             aria-pressed={isActive}
-            className={`group bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-shadow duration-200 focus:outline-none min-h-[44px]`}
-            whileHover={{ scale: 1.10 }}
+            className={`group hover:shadow-xl  bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-shadow duration-200 focus:outline-none min-h-[44px]`}
+            whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.985 }}
             style={{ border: '1px solid rgba(0,0,0,0.06)', ...activeStyle }}
         >

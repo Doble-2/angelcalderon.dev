@@ -1,17 +1,25 @@
 ---
-import { Image } from "astro:assets";
-const { className, href, title, image, lang = 'es', t = (k) => k } = Astro.props;
+const { className = '', href = '#', title = '', image = '', lang = 'es', t = (k) => k, variant = 'normal' } = Astro.props;
 ---
 
-<div class:list={["col-span-1 bg-sky-800 max-w-40 transition-transform duration-300 ease-in-out hover:scale-150 rounded-lg ", className]}>
-    <a href={href}  target="_blank" title={t(title)} class="">
-        <Image
-            height={40}
-            width={40}
-            loading="lazy"
-            class="object-cover h-full w-full rounded-lg"
-            src={image}
-            alt={t(title)}
-        />
+<div class={`relative rounded-lg bg-white overflow-hidden transition-transform duration-200 ease-in-out hover:shadow-lg ${className}`}>
+    <a href={href} target="_blank" title={t(title)} class="flex items-center gap-3 p-2" rel="noopener noreferrer">
+        <div class={`flex-shrink-0 overflow-hidden rounded-md bg-gray-100 ${variant === 'row' ? 'w-20 h-14 sm:w-24 sm:h-16' : variant === 'compact' ? 'w-16 h-12' : 'w-24 h-16'}`}>
+            <img
+                src={image}
+                alt={t(title)}
+                class="object-center object-cover w-full h-full"
+                loading="lazy"
+            />
+        </div>
+
+        <div class="flex-1 min-w-0">
+            <h3 class="text-sm font-medium text-foreground truncate">{t(title)}</h3>
+            <p class="text-xs text-muted-foreground truncate mt-1">{/* opcional: issuer o fecha si disponible */}</p>
+        </div>
+
+        <div class="flex-shrink-0">
+            <span class="inline-flex items-center rounded-full bg-primary-600 text-white text-xs px-3 py-1">{t('open')}</span>
+        </div>
     </a>
 </div>

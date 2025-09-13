@@ -1,127 +1,188 @@
 ---
 import { Icon } from "astro-icon/components";
+import { SendIcon } from "lucide-react";
 ---
 
-<section id="contacto" class="max-w-4xl mx-auto px-6 py-12">
-    <div class="overflow-hidden rounded-2xl shadow-sm border border-gray-100 bg-white">
-        <div class="grid grid-cols-1 md:grid-cols-2 items-stretch">
-            <!-- Left: accent panel -->
-            <div class="p-6 md:p-8  text-foreground flex flex-col justify-center gap-4">
-                <div class="space-y-1">
-                    <h3 class="text-2xl font-semibold">Hablemos</h3>
-                    <p class=" max-w-md">¿Tienes un proyecto o consulta? Escríbeme y coordino respuesta en menos de 48h.</p>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-3 w-full">
-                    <a
-                        class="flex-1 inline-flex items-center justify-center gap-3 bg-emerald-500 text-white px-3 py-2 rounded-lg shadow-sm hover:bg-emerald-600 transition"
-                        href="https://wa.me/584241922881?text=Hola%20Angel%2C%20te%20contacto%20desde%20tu%20portfolio"
-                        target="_blank" rel="noopener noreferrer"
-                        aria-label="Abrir WhatsApp"
-                    >
-                        <Icon name={`prime:whatsapp`} class="w-5 h-5" />
-                        <span class="font-medium">WhatsApp</span>
-                    </a>
-
-                    <a
-                        class="flex-1 inline-flex items-center justify-center gap-3 bg-black/5 border border-black/10 text-black px-3 py-2 rounded-lg hover:bg-white/10 transition"
-                        href="mailto:angel@angelcalderon.dev?subject=Contacto%20desde%20portfolio"
-                        aria-label="Enviar email"
-                    >
-                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8.5v7A2.5 2.5 0 0 0 5.5 18h13a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 18.5 6h-13A2.5 2.5 0 0 0 3 8.5z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 8.5l-9 6-9-6" />
-                        </svg>
-                        <span class="font-medium">Email</span>
-                    </a>
-                </div>
-
-                <div class="flex gap-4 mt-2">
-                    <a href="https://github.com/Doble-2" target="_blank" rel="noopener noreferrer" class="text-slate-800 hover:text-white">
-                        <Icon name={`prime:github`} class="w-6 h-6" />
-                    </a>
-                    <a href="https://www.linkedin.com/in/angeld2/" target="_blank" rel="noopener noreferrer" class="text-slate-800 hover:text-white">
-                        <Icon name={`prime:linkedin`} class="w-6 h-6" />
-                    </a>
-                </div>
-            </div>
-
-            <!-- Right: form panel -->
-            <div class="p-6 md:p-8 bg-white md:border-l md:border-gray-100">
-                <form id="contact-form" class="space-y-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label for="name" class="block text-sm font-medium text-muted-foreground">Nombre</label>
-                            <input id="name" name="name" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-muted-foreground">Email</label>
-                            <input id="email" name="email" type="email" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                        </div>
-                    </div>
-                    <div>
-                        <label for="message" class="block text-sm font-medium text-muted-foreground">Mensaje</label>
-                        <textarea id="message" name="message" rows="4" required class="mt-1 w-full bg-gray-50 border border-gray-200 text-gray-900 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold" id="submit-btn">Enviar</button>
-                        <button type="button" id="copy-email" class="text-sm text-muted-foreground hover:text-gray-900">Copiar email</button>
-                    </div>
-
-                    <div aria-live="polite" id="form-status" class="text-sm mt-2 text-muted-foreground"></div>
-                </form>
-
-                <script type="module">
-                    // Manejo cliente: intenta POST a /api/contact si existe, si no muestra instrucción
-                    const form = document.getElementById('contact-form');
-                    const status = document.getElementById('form-status');
-                    const submitBtn = document.getElementById('submit-btn');
-                    const copyBtn = document.getElementById('copy-email');
-
-                    copyBtn?.addEventListener('click', async () => {
-                        try {
-                            await navigator.clipboard.writeText('hola@angelcalderon.dev');
-                            status.textContent = 'Email copiado al portapapeles';
-                        } catch (e) {
-                            status.textContent = 'No se pudo copiar. Usa el enlace de Email.';
-                        }
-                    });
-
-                    form?.addEventListener('submit', async (e) => {
-                        e.preventDefault();
-                        submitBtn.disabled = true;
-                        status.textContent = 'Enviando...';
-
-                        const data = {
-                            name: form.name.value,
-                            email: form.email.value,
-                            message: form.message.value,
-                        };
-
-                        try {
-                            const res = await fetch('/api/contact', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(data),
-                            });
-
-                            if (res.ok) {
-                                status.textContent = 'Gracias — tu mensaje fue enviado.';
-                                form.reset();
-                            } else {
-                                const json = await res.json().catch(() => ({}));
-                                status.textContent = json?.error || 'No fue posible enviar. Usa el email directo.';
-                            }
-                        } catch (err) {
-                            status.textContent = 'Error de red. Usa el email directo.';
-                        } finally {
-                            submitBtn.disabled = false;
-                        }
-                    });
-                </script>
-            </div>
-        </div>
+<section id="contacto" class="max-w-xl min-w-[600px] mx-auto px-6 py-12">
+  <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+    <div class="text-center">
+      <h3 class="text-2xl font-semibold">Hablemos</h3>
+    
     </div>
 
+    <div class="mt-6">
+      <form id="contact-form" class="space-y-3">
+        <div>
+          <label
+            for="name"
+            class="block text-sm font-medium text-muted-foreground"
+            >Nombre</label
+          >
+          <input
+            placeholder="Tu nombre"
+            id="name"
+            name="name"
+            required
+            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+          />
+        </div>
+
+        <div>
+          <label
+            for="email"
+            class="block text-sm font-medium text-muted-foreground">Email</label
+          >
+          <input
+            placeholder="tu@correo.com"
+            id="email"
+            name="email"
+            type="email"
+            required
+            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+          />
+        </div>
+
+        <div>
+          <label
+            for="message"
+            class="block text-sm font-medium text-muted-foreground"
+            >Mensaje</label
+          >
+          <textarea
+            placeholder="Escribe tu mensaje..."
+            id="message"
+            name="message"
+            rows="4"
+            required
+            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+          <button
+            type="submit"
+            id="submit-btn"
+            aria-live="polite"
+            class="inline-flex bg-blue-600 items-center gap-2 px-4 py-2 rounded-md font-medium text-white transform transition duration-150 active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-accent/30"
+          >
+            <!-- send icon -->
+            <SendIcon id="send-icon" className="w-4 h-4" />
+            <span class="sr-only">Enviar</span>
+          </button>
+
+          <button
+            type="button"
+            id="copy-email"
+            class="inline-flex items-center justify-center w-9 h-9 rounded-md text-muted-foreground hover:bg-gray-100 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/30"
+            aria-label="Copiar email"
+            title="Copiar email"
+          >
+            <!-- clipboard icon -->
+            <svg
+              id="copy-icon"
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              ><rect x="9" y="9" width="13" height="13" rx="2" ry="2"
+              ></rect><path
+                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              ></path></svg
+            >
+          </button>
+        </div>
+
+        <div
+          aria-live="polite"
+          id="form-status"
+          class="text-sm mt-2 text-muted-foreground text-center min-h-[20px] leading-5 transition-colors"
+        >
+        </div>
+      </form>
+    </div>
+  </div>
 </section>
+
+<script type="module">
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("form-status");
+  const submitBtn = document.getElementById("submit-btn");
+  const copyBtn = document.getElementById("copy-email");
+
+  function showTempCheck(iconEl) {
+    if (!iconEl) return;
+    const original = iconEl.innerHTML;
+    iconEl.innerHTML =
+      '<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>';
+    iconEl.classList.add("scale-95");
+    setTimeout(() => {
+      iconEl.innerHTML = original;
+      iconEl.classList.remove("scale-95");
+    }, 1500);
+  }
+
+  copyBtn?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText("hola@angelcalderon.dev");
+      status.textContent = "Email copiado al portapapeles";
+      status.classList.remove("text-red-500");
+      status.classList.add("text-green-600");
+      // animate icon
+      const copyIcon = document.getElementById("copy-icon");
+      if (copyIcon) {
+        copyIcon.classList.add("scale-90");
+      }
+    } catch (e) {
+      status.textContent = "No se pudo copiar. Usa el enlace de Email.";
+      status.classList.remove("text-green-600");
+      status.classList.add("text-red-500");
+    }
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    status.textContent = "Enviando...";
+    status.classList.remove("text-red-500", "text-green-600");
+
+    const data = {
+      name: form.name.value,
+      email: form.email.value,
+      message: form.message.value,
+    };
+
+    try {
+      // button press animation
+      submitBtn.classList.add("scale-95");
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        status.textContent = "Gracias — tu mensaje fue enviado.";
+        status.classList.add("text-green-600");
+        form.reset();
+        // show check on send icon
+        const sendIcon = document.getElementById("send-icon");
+        showTempCheck(sendIcon);
+      } else {
+        const json = await res.json().catch(() => ({}));
+        status.textContent =
+          json?.error || "No fue posible enviar. Usa el email directo.";
+        status.classList.add("text-red-500");
+      }
+    } catch (err) {
+      status.textContent = "Error de red. Usa el email directo.";
+      status.classList.add("text-red-500");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("scale-95");
+    }
+  });
+</script>

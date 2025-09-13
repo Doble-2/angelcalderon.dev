@@ -2,10 +2,10 @@
 import CertifiedContainer from "./CertifiedContainer.astro";
 
 interface Props {
-    lang: string;
-    t: (key: string) => string;
+  lang: string;
+  t: (key: string) => string;
 }
-const { lang = 'es', t = (k) => k } = Astro.props;
+const { lang = "es", t = (k) => k } = Astro.props;
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import app from "../../../firebase/client";
 
@@ -14,54 +14,50 @@ const db = getFirestore(app);
 const queryCertifieds = await getDocs(collection(db, "certifieds"));
 const docsCertifieds = [];
 queryCertifieds.forEach((doc) => {
-    docsCertifieds.push({ ...doc.data(), id: doc.id });
+  docsCertifieds.push({ ...doc.data(), id: doc.id });
 });
-const certifieds = docsCertifieds.sort((a, b) => {
-    if (a.order > b.order) {
-        return -1;
-    }
-    if (a.order < b.order) {
-        return 1;
-    }
-    return 0;
-});
-
-console.log(queryCertifieds);
+const certifieds = docsCertifieds.sort((a, b) => b.order - a.order);
 ---
+<div class="px-4 flex flex-col w-full gap-2">
+
 
 <div
-    class="flex items-center main-section sm:flex max-w-screen-xl mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 md:w-2/4"
+  class=" flex items-center  sm:flex  mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 "
 >
-    <div class="flex-col">
-        <div class="mb-4 sm:mb-0 sm:mr-12 place-self-center lg:col-span-7">
-            <div class="">
-                <h2
-                    class="text-3xl mb-2 font-extrabold md:text-3xl xl:text-4xl"
-                >
-                    {t('certificates')}
-                </h2>
-            </div>
-        </div>
-
-        <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
-            {t('certifieds_description_1')}
-        </p>
-
-        <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
-            {t('certifieds_description_2')}
-        </p>
+  <div class="flex-col text-center">
+    <div class="mb-4 sm:mb-0 sm:mr-12 place-self-center lg:col-span-7">
+      <div class="">
+        <h2 class="text-3xl mb-2 font-extrabold md:text-3xl xl:text-4xl">
+          {t("certificates")}
+        </h2>
+      </div>
     </div>
+
+    <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
+      {t("certifieds_description_1")}
+    </p>
+
+    <p class="max-w-2xl mb-2 text-lg md:text-lg lg:text-xl">
+      {t("certifieds_description_2")}
+    </p>
+  </div>
 </div>
 
-<div class="mb-4 grid grid-cols-3 gap-1 md:w-2/4">
-    {
-        certifieds.map((certified) => (
-            <CertifiedContainer
-                className="col-span-1 bg-sky-800 max-w-32"
-                href={"/certifieds/" + certified.id + ".pdf"}
-                title={certified.name}
-                image={"/certifieds/" + certified.id + ".jpg"}
-            />
-        ))
-    }
+<div class="mb-6 max-w-screen-xl mx-auto">
+  {
+    certifieds.length > 0 && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {certifieds.map((certified) => (
+          <CertifiedContainer
+            className="w-full"
+            variant="row"
+            href={"/certifieds/" + certified.id + ".pdf"}
+            title={certified.name}
+            image={"/certifieds/" + certified.id + ".jpg"}
+          />
+        ))}
+      </div>
+    )
+  }
+</div>
 </div>

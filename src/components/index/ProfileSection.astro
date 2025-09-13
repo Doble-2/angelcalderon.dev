@@ -10,16 +10,16 @@ const { lang = 'es', t = (k) => k } = Astro.props;
 <div class="lg:mr-20 place-self-center lg:col-span-7 pt-24 md:pt-4 text-white">
   <div class="">
      <h1
-      class="max-w-2xl mb-4 tracking-tight leading-none text-2xl font-bold md:text-1xl xl:text-2xl"
+      class="max-w-2xl mb-4 tracking-tight leading-none text-2xl md:text-3xl lg:text-4xl font-bold"
     >
       {t("frontend_developer")}
-      <p class="text-3xl mt-4 font-extrabold md:text-4xl 2xl:text-5xl text-blue-600">
+      <p class=" text-4xl md:text-5xl lg:text-6xl  py-3 font-extrabold  bg-gradient-to-r from-blue-400 via-blue-700 to-purple-700 bg-clip-text text-transparent">
         Angel Calderon
       </p>
     </h1>
   </div>
 
-  <p class="max-w-2xl lg:mb-8 text-lg md:text-lg lg:text-xl xl:text-xl">
+  <p class="max-w-2xl lg:mb-8 text-xl">
     {t('profile_description_1')}
     <span class="hidden md:block">{t('profile_description_2')}</span>
     {t('profile_description_3')}
