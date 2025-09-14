@@ -1,17 +1,16 @@
 ---
 import app from "../../firebase/client";
-import { getFirestore, getDoc, doc } from "firebase/firestore";
+import { getFirestore, getDocs, collection, where, query } from "firebase/firestore";
 import Layout from "../../layouts/Layout.astro";
-import Section from "../../components/share/Section.astro";
 import LayoutMobile from "../../components/projects/standars/LayoutMobile.astro";
 import LayoutDesktop from "../../components/projects/standars/LayoutDesktop.astro";
 
 export async function getStaticPaths() {
   return [
-    { params: { id: "4aarFXK78isi8ZZnRMtd" } },
-    { params: { id: "Cjixr4E8gBWNdfdyRbOI" } },
-    { params: { id: "pBKFvSyVaCAedozCEKsE" } },
-    { params: { id: "z8hlAP2vQnSTKVcX6H1v" } },
+    { params: { id: "Born AI" } },
+    { params: { id: "Appod" } },
+    { params: { id: "Dona tu Vuelto" } },
+    { params: { id: "Onbox" } },
   ];
 }
 const { id } = Astro.params;
@@ -20,9 +19,9 @@ if (!id) {
 }
 
 const db = getFirestore(app);
-const docRef = doc(db, "projects", id);
-var docSnap = await getDoc(docRef);
-const project = docSnap.data();
+const q = query(collection(db, "projects"), where("name", "==", id));
+const querySnap = await getDocs(q);
+const project = querySnap.docs.length > 0 ? querySnap.docs[0].data() : null;
 
 if (!project) {
   return Astro.redirect("/404");

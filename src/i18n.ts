@@ -2,8 +2,9 @@ export default {
   es: {
     home: "Inicio",
     about: "Sobre mí",
-    projects: "Proyectos",
+    projects: "Proyectos destacados",
     contact: "Contacto",
+    
     theme: "Tema",
     language: "Idioma",
     light: "Claro",
@@ -42,12 +43,32 @@ export default {
   next: "Siguiente",
   no_projects_found: "No se encontraron proyectos",
   no_projects_found_desc: "Por el momento no hay proyectos para mostrar.",
-    // Agrega más claves según lo que uses en el sitio
+  // Summaries para skills
+  frontend_summary: "Desarrollo de interfaces web modernas, rápidas y accesibles usando React, Next.js y TypeScript.",
+  backend_summary: "Construcción de APIs robustas y escalables con Node.js, Python y bases de datos relacionales/noSQL.",
+  design_summary: "Diseño de experiencias digitales atractivas y funcionales, prototipado y UI/UX.",
+  devops_summary: "Automatización de despliegues, integración continua y gestión de infraestructura en la nube.",
+         title: "Hablemos",
+      name: "Nombre",
+      namePlaceholder: "Tu nombre",
+      email: "Email",
+      emailPlaceholder: "tu@correo.com",
+      message: "Mensaje",
+      messagePlaceholder: "Escribe tu mensaje...",
+      send: "Enviar",
+      copyEmail: "Copiar email",
+      copied: "Email copiado al portapapeles",
+      copyError: "No se pudo copiar. Usa el enlace de Email.",
+      sending: "Enviando...",
+      success: "Gracias — tu mensaje fue enviado.",
+      sendError: "No fue posible enviar. Usa el email directo.",
+      networkError: "Error de red. Usa el email directo."
+  
   },
   en: {
     home: "Home",
     about: "About",
-    projects: "Projects",
+    projects: "Featured Projects",
     contact: "Contact",
     theme: "Theme",
     language: "Language",
@@ -87,6 +108,27 @@ export default {
   next: "Next",
   no_projects_found: "No projects found",
   no_projects_found_desc: "There are no projects to show right now.",
-    // Add more keys as needed
+
+  title: "Let's talk",
+  name: "Name",
+  namePlaceholder: "Your name",
+  email: "Email",
+  emailPlaceholder: "your@email.com",
+  message: "Message",
+  messagePlaceholder: "Write your message...",
+  send: "Send",
+  copyEmail: "Copy email",
+  copied: "Email copied to clipboard",
+  copyError: "Could not copy. Use the email link.",
+  sending: "Sending...",
+  success: "Thank you — your message was sent.",
+  sendError: "Could not send. Use direct email.",
+  networkError: "Network error. Use direct email.",
+  // Summaries for skills
+  frontend_summary: "Modern, fast and accessible web interfaces using React, Next.js and TypeScript.",
+  backend_summary: "Building robust and scalable APIs with Node.js, Python and relational/noSQL databases.",
+  design_summary: "Designing attractive and functional digital experiences, prototyping and UI/UX.",
+  devops_summary: "Automating deployments, continuous integration and cloud infrastructure management.",
+  
   },
 };

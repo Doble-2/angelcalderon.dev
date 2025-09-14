@@ -1,61 +1,75 @@
 ---
 import { Icon } from "astro-icon/components";
 import { SendIcon } from "lucide-react";
+import i18n from "../i18n";
+
+interface Props {
+  lang: string;
+  t: (key: string) => string;
+}
+const { lang = 'es', t = (k) => k } = Astro.props;
+
 ---
 
 <section id="contacto" class="max-w-xl md:min-w-[600px] mx-auto px-4 py-12">
   <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
     <div class="text-center">
-      <h3 class="text-2xl font-semibold">Hablemos</h3>
+    <h3 class="text-2xl font-semibold">{t('title')}</h3>
     
     </div>
 
     <div class="mt-6">
       <form id="contact-form" class="space-y-3">
         <div>
-          <label
-            for="name"
-            class="block text-sm font-medium text-muted-foreground"
-            >Nombre</label
-          >
-          <input
-            placeholder="Tu nombre"
-            id="name"
-            name="name"
-            required
-            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
-          />
+         
+            <label
+              for="name"
+              class="block text-sm font-medium text-muted-foreground"
+              >{t('name')}</label
+            >
+       
+            <input
+              placeholder={t('namePlaceholder')}
+              id="name"
+              name="name"
+              required
+              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+            />
         </div>
 
         <div>
-          <label
-            for="email"
-            class="block text-sm font-medium text-muted-foreground">Email</label
-          >
-          <input
-            placeholder="tu@correo.com"
-            id="email"
-            name="email"
-            type="email"
-            required
-            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
-          />
+   
+            <label
+              for="email"
+              class="block text-sm font-medium text-muted-foreground">{t('email')}</label
+            >
+        
+            <input
+              placeholder={t('emailPlaceholder')}
+              id="email"
+              name="email"
+              type="email"
+              required
+              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+            />
         </div>
 
         <div>
-          <label
-            for="message"
-            class="block text-sm font-medium text-muted-foreground"
-            >Mensaje</label
-          >
-          <textarea
-            placeholder="Escribe tu mensaje..."
-            id="message"
-            name="message"
-            rows="4"
-            required
-            class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
-          ></textarea>
+       
+            <label
+              for="message"
+              class="block text-sm font-medium text-muted-foreground"
+              >{t('message')}</label
+            >
+    
+            <textarea
+              placeholder={t('messagePlaceholder')}
+              id="message"
+              name="message"
+              rows="4"
+              required
+              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+            ></textarea>
         </div>
 
         <div class="flex items-center justify-end gap-3">
@@ -67,15 +81,16 @@ import { SendIcon } from "lucide-react";
           >
             <!-- send icon -->
             <SendIcon id="send-icon" className="w-4 h-4" />
-            <span class="sr-only">Enviar</span>
+         
+              <span class="sr-only">{t('send')}</span>
           </button>
 
           <button
             type="button"
             id="copy-email"
             class="inline-flex items-center justify-center w-9 h-9 rounded-md text-muted-foreground hover:bg-gray-100 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/30"
-            aria-label="Copiar email"
-            title="Copiar email"
+            aria-label={t('copyEmail')}
+            title={t('copyEmail')}
           >
             <!-- clipboard icon -->
             <svg
@@ -108,6 +123,16 @@ import { SendIcon } from "lucide-react";
 </section>
 
 <script type="module">
+  // Diccionario y lang inyectados desde Astro
+  const i18n = JSON.parse(`__I18N__`);
+  const lang = `__LANG__`;
+
+  function tJS(key) {
+    const [section, subkey] = key.split('.');
+    if (i18n[lang] && i18n[lang][subkey]) return i18n[lang][subkey];
+    return key;
+  }
+
   const form = document.getElementById("contact-form");
   const status = document.getElementById("form-status");
   const submitBtn = document.getElementById("submit-btn");
@@ -128,7 +153,7 @@ import { SendIcon } from "lucide-react";
   copyBtn?.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText("hola@angelcalderon.dev");
-      status.textContent = "Email copiado al portapapeles";
+      status.textContent = tJS('copied');
       status.classList.remove("text-red-500");
       status.classList.add("text-green-600");
       // animate icon
@@ -137,7 +162,7 @@ import { SendIcon } from "lucide-react";
         copyIcon.classList.add("scale-90");
       }
     } catch (e) {
-      status.textContent = "No se pudo copiar. Usa el enlace de Email.";
+      status.textContent = tJS('copyError');
       status.classList.remove("text-green-600");
       status.classList.add("text-red-500");
     }
@@ -146,7 +171,7 @@ import { SendIcon } from "lucide-react";
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     submitBtn.disabled = true;
-    status.textContent = "Enviando...";
+    status.textContent = tJS('sending');
     status.classList.remove("text-red-500", "text-green-600");
 
     const data = {
@@ -165,7 +190,7 @@ import { SendIcon } from "lucide-react";
       });
 
       if (res.ok) {
-        status.textContent = "Gracias — tu mensaje fue enviado.";
+        status.textContent = tJS('success');
         status.classList.add("text-green-600");
         form.reset();
         // show check on send icon
@@ -174,11 +199,11 @@ import { SendIcon } from "lucide-react";
       } else {
         const json = await res.json().catch(() => ({}));
         status.textContent =
-          json?.error || "No fue posible enviar. Usa el email directo.";
+          json?.error || tJS('sendError');
         status.classList.add("text-red-500");
       }
     } catch (err) {
-      status.textContent = "Error de red. Usa el email directo.";
+      status.textContent = tJS('networkError');
       status.classList.add("text-red-500");
     } finally {
       submitBtn.disabled = false;
