@@ -8,7 +8,6 @@ interface Props {
   t: (key: string) => string;
 }
 const { lang = 'es', t = (k) => k } = Astro.props;
-
 ---
 
 <section id="contacto" class="max-w-xl md:min-w-[600px] mx-auto px-4 py-12">
@@ -122,92 +121,6 @@ const { lang = 'es', t = (k) => k } = Astro.props;
   </div>
 </section>
 
-<script type="module">
-  // Diccionario y lang inyectados desde Astro
-  const i18n = JSON.parse(`__I18N__`);
-  const lang = `__LANG__`;
 
-  function tJS(key) {
-    const [section, subkey] = key.split('.');
-    if (i18n[lang] && i18n[lang][subkey]) return i18n[lang][subkey];
-    return key;
-  }
 
-  const form = document.getElementById("contact-form");
-  const status = document.getElementById("form-status");
-  const submitBtn = document.getElementById("submit-btn");
-  const copyBtn = document.getElementById("copy-email");
-
-  function showTempCheck(iconEl) {
-    if (!iconEl) return;
-    const original = iconEl.innerHTML;
-    iconEl.innerHTML =
-      '<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>';
-    iconEl.classList.add("scale-95");
-    setTimeout(() => {
-      iconEl.innerHTML = original;
-      iconEl.classList.remove("scale-95");
-    }, 1500);
-  }
-
-  copyBtn?.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText("hola@angelcalderon.dev");
-      status.textContent = tJS('copied');
-      status.classList.remove("text-red-500");
-      status.classList.add("text-green-600");
-      // animate icon
-      const copyIcon = document.getElementById("copy-icon");
-      if (copyIcon) {
-        copyIcon.classList.add("scale-90");
-      }
-    } catch (e) {
-      status.textContent = tJS('copyError');
-      status.classList.remove("text-green-600");
-      status.classList.add("text-red-500");
-    }
-  });
-
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    submitBtn.disabled = true;
-    status.textContent = tJS('sending');
-    status.classList.remove("text-red-500", "text-green-600");
-
-    const data = {
-      name: form.name.value,
-      email: form.email.value,
-      message: form.message.value,
-    };
-
-    try {
-      // button press animation
-      submitBtn.classList.add("scale-95");
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        status.textContent = tJS('success');
-        status.classList.add("text-green-600");
-        form.reset();
-        // show check on send icon
-        const sendIcon = document.getElementById("send-icon");
-        showTempCheck(sendIcon);
-      } else {
-        const json = await res.json().catch(() => ({}));
-        status.textContent =
-          json?.error || tJS('sendError');
-        status.classList.add("text-red-500");
-      }
-    } catch (err) {
-      status.textContent = tJS('networkError');
-      status.classList.add("text-red-500");
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.classList.remove("scale-95");
-    }
-  });
-</script>
+<script src="/src/components/contact.client.js" type="module"></script>
