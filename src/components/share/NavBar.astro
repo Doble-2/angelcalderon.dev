@@ -44,7 +44,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
                   alt="Español"
                   class="w-4 h-4 rounded-full"
                 />
-                <span>{t("español")}</span>
+                <span class="hidden md:inline">{t("español")}</span>
               </span>
             ) : (
               <span class="flex items-center gap-2">
@@ -53,7 +53,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
                   alt="English"
                   class="w-4 h-4 rounded-full"
                 />
-                <span class="text-sm">{t("english")}</span>
+                <span class="text-sm hidden md:inline">{t("english")}</span>
               </span>
             )
           }

@@ -3,8 +3,8 @@ import app from "../../firebase/client";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import Layout from "../../layouts/Layout.astro";
 import Section from "../../components/share/Section.astro";
-import { Image } from "astro:assets";
 import LayoutMobile from "../../components/projects/standars/LayoutMobile.astro";
+import LayoutDesktop from "../../components/projects/standars/LayoutDesktop.astro";
 
 export async function getStaticPaths() {
   return [
@@ -27,8 +27,26 @@ const project = docSnap.data();
 if (!project) {
   return Astro.redirect("/404");
 }
+// valores por defecto seguros
+const cover = project.cover || (project.images && project.images[0]) || "/rect1-optimized.webp";
+const description = project.description || project.summary || "";
+const tech = project.tech || project.technologies || [];
+const images = project.images || (project.gallery && project.gallery.images) || [];
+const liveUrl = project.url || project.live || null;
+const repoUrl = project.repo || project.repository || null;
+// helper para normalizar rutas de imagen (si viene 'home.webp' -> '/home.webp')
+const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
 ---
 
-<Layout title={`${project.name} | Ángel Calderón`} `>
-  <LayoutMobile projectProp={project} />
+<Layout title={`${project.name} | Ángel Calderón`}>
+  <!-- Mobile -->
+  <div class="md:hidden">
+    <LayoutMobile projectProp={{ ...project, cover, description, tech, images, url: liveUrl, repo: repoUrl }} />
+  </div>
+
+  <!-- Desktop: use shared LayoutDesktop component -->
+  <div class="hidden md:block">
+    <LayoutDesktop projectProp={{ ...project, cover, description, tech, images, url: liveUrl, repo: repoUrl }} />
+  </div>
+
 </Layout>
