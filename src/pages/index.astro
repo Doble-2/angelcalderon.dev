@@ -28,12 +28,12 @@ const t = (key: string) => translations[lang]?.[key] || key;
   >
     <ProfileSection lang={lang} t={t} />
   </Section>
+  <Section className={" "}>
+    <ProjectSection lang={lang} t={t} />
+  </Section>
 
   <Section className={""}>
     <ExperienceSection lang={lang} t={t} />
-  </Section>
-  <Section className={" "}>
-    <ProjectSection lang={lang} t={t} />
   </Section>
 
   <Section className={" flex-col flex md:flex-row"}>
