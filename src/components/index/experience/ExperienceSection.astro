@@ -31,22 +31,19 @@ const experiences = [
     year: "Feb 2024 - Jul 2024",
     title: "Semi-Senior Mobile Developer",
     company: "DeepCompany",
-    description:
-      "Contribuí al desarrollo de aplicaciones móviles utilizando Flutter, enfocándome en la experiencia del usuario, el rendimiento y la estética visual.",
+    descriptionKey: "exp_deepcompany_2024",
   },
   {
     year: "Jul 2023 - Dic 2023",
     title: "Frontend Developer",
     company: "OverGroup",
-    description:
-      "Desarrollé interfaces web y móviles con Next.js y TailwindCSS; participé en proyectos cripto y de pagos.",
+    descriptionKey: "exp_overgroup_2023",
   },
   {
     year: "Abr 2022 - Dic 2023",
     title: "Junior Developer",
     company: "Colpixtec",
-    description:
-      "Trabajé con JavaScript, PHP y MySQL, contribuyendo al desarrollo de un marketplace y consumiendo APIs REST.",
+    descriptionKey: "exp_colpixtec_2022",
   },
 ];
 ---
@@ -67,8 +64,7 @@ const experiences = [
             <skill.icon className="h-6 w-6" />
           </div>
         </div>
-        <h3 class="font-semibold text-lg mb-1">{skill.name}</h3>
-        <p class="text-sm text-muted-foreground mb-3">{t(`${skill.name.toLowerCase()}_summary`)}</p>
+  <h3 class="font-semibold text-lg mb-1">{t(skill.name.toLowerCase())}</h3>
         <div class="flex flex-wrap justify-center gap-2">
           {(skill.technologies || []).map((tech) => (
             <TechnologyTag tech={tech} />
@@ -76,6 +72,23 @@ const experiences = [
         </div>
       </div>
     ))}
+  </div>
+
+  <!-- Experience timeline -->
+  <div class="mt-10">
+    <ol class="space-y-6">
+      {experiences.map((exp) => (
+        <li class="bg-white/90 p-6 rounded-2xl shadow-sm">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h4 class="font-semibold">{exp.title} — <span class="font-normal">{exp.company}</span></h4>
+              <time class="text-sm text-muted-foreground">{exp.year}</time>
+            </div>
+          </div>
+          <p class="mt-3 text-muted-foreground">{t(exp.descriptionKey)}</p>
+        </li>
+      ))}
+    </ol>
   </div>
 
 </section>

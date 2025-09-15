@@ -10,10 +10,18 @@ import { getAnalytics } from "firebase/analytics";
 import Footer from "../components/share/footer.astro";
 
 interface Props {
-	title: string;
+	title?: string;
+	description?: string;
+	image?: string;
+	url?: string;
 }
 
-const { title } = Astro.props;
+const {
+  title = 'Angel Calderon - Desarrollador Web/Mobile',
+  description = 'Angel Calderon - Desarrollador Web/Mobile freelance en Caracas, Venezuela. Experto en Flutter, React, Next.js y Python. Portfolio profesional para reclutadores y clientes.',
+  image = '/profile.png',
+  url = Astro.request.url || '/'
+} = Astro.props;
 const firebaseConfig = {
 	apiKey: "YOUR_API_KEY",
 	authDomain: "YOUR_AUTH_DOMAIN",
@@ -46,31 +54,37 @@ onMount(() => {
 <html lang={lang} data-current-lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			name="description"
-			content="Programador con experiencia en la creación de sitios web y aplicaciones móviles. Especializado en desarrollo frontend con tecnologías como Flutter, Dart, React, Astro, Next.js y TypeScript. | este es mi portfolio, descubre mis proyectos y ponte en contacto conmigo"
-		/>
-		<meta property="twitter:image" content="/profile.png">
+		<meta name="description" content={description} />
+		<meta name="keywords" content="Angel Calderon, desarrollador web, desarrollador mobile, freelance, Caracas, Venezuela, Flutter, React, Next.js, Python, Astro, TypeScript, devops, diseño, Figma, portafolio, proyectos, programador, frontend, backend, español, inglés, recruiter, contratación, tecnología" />
+		<link rel="alternate" hreflang="es" href="/" />
+		<link rel="alternate" hreflang="en" href="/en" />
+		<meta name="author" content="Angel Calderon" />
+		<meta name="geo.placename" content="Caracas, Venezuela" />
+		<meta name="geo.region" content="VE" />
+		<meta name="geo.position" content="10.4806;-66.9036" />
+		<meta property="twitter:image" content={image}>
 		<meta property="twitter:title" content={title}>
-		<meta property="twitter:description" content="Programador con experiencia en la creación de sitios web y aplicaciones móviles. Especializado en desarrollo frontend con tecnologías como Flutter, Dart, React, Astro, Next.js y TypeScript. | este es mi portfolio, descubre mis proyectos y ponte en contacto conmigo">
-		<meta property="og:image" content="/profile.png">
+		<meta property="twitter:description" content={description}>
+		<meta property="og:image" content={image}>
 		<meta property="og:title" content={title}>
-		<meta property="og:description" content="Programador con experiencia en la creación de sitios web y aplicaciones móviles. Especializado en desarrollo frontend con tecnologías como Flutter, Dart, React, Astro, Next.js y TypeScript. | este es mi portfolio, descubre mis proyectos y ponte en contacto conmigo">
+		<meta property="og:description" content={description}>
 		<meta property="og:type" content="website">
-		<meta property="og:url" content="/">
+		<meta property="og:url" content={url}>
 		<meta property="og:site_name" content="Angel Calderon">
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:site" content="@angelcaldev">
 		<meta name="twitter:creator" content="@angelcaldev">
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" href="/rect1-optimized.webp" />
-		<link rel="canonical" href="/" />
+		<link rel="canonical" href={url} />
+		<meta name="robots" content="index, follow" />
+		<a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a>
 		<!-- Inter font -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+		<title>{title} | Caracas, Venezuela</title>
 	</head>
 	<body class="max-w-screen">
 		<Rainy />

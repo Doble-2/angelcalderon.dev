@@ -28,16 +28,23 @@ if (!project) {
 }
 // valores por defecto seguros
 const cover = project.cover || (project.images && project.images[0]) || "/rect1-optimized.webp";
-const description = project.description || project.summary || "";
+const description = (project.description || project.summary || "").trim();
 const tech = project.tech || project.technologies || [];
 const images = project.images || (project.gallery && project.gallery.images) || [];
 const liveUrl = project.url || project.live || null;
 const repoUrl = project.repo || project.repository || null;
 // helper para normalizar rutas de imagen (si viene 'home.webp' -> '/home.webp')
 const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
+
+// Metadatos dinámicos para SEO/Redes
+const truncate = (str, n = 150) => (str && str.length > n ? str.slice(0, n).trim().replace(/[,\s]+[^,\s]+$/, '...') : str);
+const pageTitle = `${project.name} | Angel Calderon - Desarrollador Web/Mobile`;
+const pageDescription = truncate(description || `Proyecto ${project.name} desarrollado por Angel Calderon usando ${((tech || []).slice(0,4)).join(', ')}.` , 160);
+const pageImage = localSrc(cover);
+const pageUrl = Astro.request?.url || `/projects/${encodeURIComponent(id)}`;
 ---
 
-<Layout title={`${project.name} | Ángel Calderón`}>
+<Layout title={pageTitle} description={pageDescription} image={pageImage} url={pageUrl}>
   <!-- Mobile -->
   <div class="md:hidden">
     <LayoutMobile projectProp={{ ...project, cover, description, tech, images, url: liveUrl, repo: repoUrl }} />
@@ -49,3 +56,23 @@ const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : 
   </div>
 
 </Layout>
+
+<script type="application/ld+json">
+  {JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": project.name,
+    "headline": project.name,
+    "description": pageDescription,
+    "image": pageImage,
+    "url": pageUrl,
+    "author": {
+      "@type": "Person",
+      "name": "Angel Calderon",
+      "url": "https://angelcalderon.dev"
+    },
+    "datePublished": project.publishedAt || project.date || undefined,
+    "dateModified": project.updatedAt || project.modified || undefined,
+    "keywords": (tech || []).slice(0,10).join(', ')
+  })}
+</script>

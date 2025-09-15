@@ -130,7 +130,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
             <a
               className="inline-flex items-center gap-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-blue-500 transition"
               href={`/projects/${encodeURIComponent(
-                project.id || project.name
+                project.name
               )}`}
             >
               <Eye size={16} />

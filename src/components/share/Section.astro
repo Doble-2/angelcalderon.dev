@@ -2,11 +2,15 @@
 const { className } = Astro.props;
 ---
 
-<div
+<section
+  role={Astro.props.role || 'region'}
+  aria-label={Astro.props.ariaLabel || 'section'}
   class:list={[
     " min-h-[65vh] bg-white/80 gap-2 grid items-center main-section md:flex  px-8 py-8 mx-auto lg:gap-8 xl:gap-0  lg:px-16 ",
     className,
   ]}
 >
-  <slot />
-</div>
+  <div class="w-full">
+    <slot />
+  </div>
+</section>

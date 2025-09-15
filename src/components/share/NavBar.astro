@@ -13,16 +13,17 @@ const { lang = "es", t = (k) => k } = Astro.props;
 <header
   id="site-header"
   class="z-50 fixed top-0 left-0 right-0 py-2 transition-colors duration-300"
+  role="banner"
 >
   <div class="flex justify-between items-center w-full mx-auto px-8">
-    <a class="text-xl flex items-center gap-2" href="/#">
+    <a class="text-xl flex items-center gap-2" href="/#" aria-label="Inicio - Angel Calderon">
       <Image
         loading="eager"
         class="w-6 h-6 logo-img"
         width={12}
         height={12}
         src={"/rect1.png"}
-        alt="icono de angel calderon"
+        alt="Logo de Angel Calderon"
       />
       <h2 class="text-xl font-medium">angelcalderon.dev</h2>
     </a>
