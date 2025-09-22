@@ -29,10 +29,12 @@ export default {
     experience_description_2:
       "Me especializo en convertir ideas en features entregables: optimizo rendimiento, accesibilidad y procesos para maximizar el valor del negocio.",
   certificates: "Certificados",
+  exp_cryptoportfolio_2024: "Desarrollé una plataforma web para gestión de portafolios cripto con Next.js y TailwindCSS; integré APIs de terceros para datos en tiempo real y optimicé la experiencia de usuario con SSR y SSG.",
   exp_deepcompany_2024: "Desarrollé funcionalidades para apps móviles en Flutter, mejorando rendimiento y UX mediante arquitecturas limpias y optimizaciones en el ciclo de render; colaboré con diseño para lanzar features visuales y responsivas.",
   exp_overgroup_2023: "Implementé interfaces web y PWA con Next.js y TailwindCSS, integrando soluciones de pagos y módulos para proyectos cripto; entregué features escalables y con enfoque en accesibilidad y seguridad.",
   exp_colpixtec_2022: "Desarrollé funcionalidades full‑stack para un marketplace usando JavaScript, PHP y MySQL; integré APIs REST y mejoré procesos de despliegue y pruebas para acelerar entregas.",
-    certifieds_description_1:
+  
+  certifieds_description_1:
       "Algunos de mis logros y certificaciones obtenidas.",
     certifieds_description_2:
       "Reflejan mi compromiso con el aprendizaje continuo.",

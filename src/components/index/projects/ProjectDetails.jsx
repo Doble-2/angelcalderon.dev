@@ -23,6 +23,90 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
   const demoUrl =
     project.demo || project.deployed || project.link || project.url || "#";
 
+  // --- Date helpers -------------------------------------------------
+  const safeDate = (d) => {
+    if (!d) return null;
+    // If it's already a Date
+    if (d instanceof Date && !isNaN(d)) return d;
+    // If it's a string, try multiple formats
+    if (typeof d === "string") {
+      const s = d.trim();
+      // Accept dd/mm/yyyy or d/m/yyyy
+      const dmY = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+      if (dmY.test(s)) {
+        const [dd, mm, yyyy] = s.split("/").map((x) => parseInt(x, 10));
+        // JS Date months are 0-based
+        const parsed = new Date(yyyy, mm - 1, dd);
+        if (!isNaN(parsed)) return parsed;
+      }
+      // Try direct ISO-like parse (YYYY-MM or YYYY-MM-DD or full ISO)
+      const tryDirect = new Date(s);
+      if (!isNaN(tryDirect)) return tryDirect;
+      // YYYY-MM -> add day
+      if (/^\d{4}-\d{2}$/.test(s)) return new Date(s + "-01");
+      // YYYY -> add month/day
+      if (/^\d{4}$/.test(s)) return new Date(s + "-01-01");
+    }
+    return null;
+  };
+
+  const formatDate = (dRaw) => {
+    const d = safeDate(dRaw);
+    if (!d) return "--";
+    try {
+      // Always display as dd/mm/yyyy per request
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = d.getFullYear();
+      return `${dd}/${mm}/${yyyy}`;
+    } catch (e) {
+      return d.toLocaleDateString();
+    }
+  };
+
+  const computeDuration = (startRaw, endRaw) => {
+    const start = safeDate(startRaw);
+    const end = safeDate(endRaw) || new Date();
+    if (!start) return null;
+    // ensure chronological
+    let earlier = start;
+    let later = end;
+    if (later < earlier) {
+      earlier = end;
+      later = start;
+    }
+    // compute months difference
+    let months = (later.getFullYear() - earlier.getFullYear()) * 12 + (later.getMonth() - earlier.getMonth());
+    if (later.getDate() < earlier.getDate()) months -= 1;
+    if (months < 0) months = 0;
+
+    // If less than 1 month, compute days (inclusive)
+    if (months === 0) {
+      // normalize times to midnight to avoid DST/timezone issues
+      const startMid = new Date(earlier.getFullYear(), earlier.getMonth(), earlier.getDate());
+      const endMid = new Date(later.getFullYear(), later.getMonth(), later.getDate());
+      const msPerDay = 24 * 60 * 60 * 1000;
+      const days = Math.round((endMid - startMid) / msPerDay) + 1; // inclusive count
+      if (days <= 1) return lang === "en" ? "1 day" : "1 día";
+      return lang === "en" ? `${days} days` : `${days} días`;
+    }
+
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+    const parts = [];
+    if (years > 0) parts.push(`${years} ${years === 1 ? (lang === "en" ? "year" : "año") : (lang === "en" ? "years" : "años")}`);
+    if (remMonths > 0) parts.push(`${remMonths} ${remMonths === 1 ? (lang === "en" ? "month" : "mes") : (lang === "en" ? "months" : "meses")}`);
+    if (parts.length === 0) return lang === "en" ? "Less than a month" : "Menos de un mes";
+    return parts.join(", ");
+  };
+
+  const computedDuration = computeDuration(project.dateStart, project.dateEnd);
+  const displayDuration = project.duration || computedDuration || "--";
+
+  // Use formatted dates for display
+  const formattedStart = formatDate(project.dateStart);
+  const formattedEnd = project.dateEnd ? formatDate(project.dateEnd) : "--";
+
   // accent color from project.color (expected format: "R G B", e.g. "255 255 255")
   const accentVals = project?.color
     ? project.color.replace(/\s+/g, ",")
@@ -113,7 +197,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
                 {t("project_dates")}
               </div>
               <div className="font-medium text-slate-900 ">
-                {project.dateStart || "--"} — {project.dateEnd || "--"}
+                {formattedStart} — {formattedEnd}
               </div>
             </div>
             <div>
@@ -121,7 +205,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
                 {t("duration")}
               </div>
               <div className="font-medium text-slate-900 ">
-                {project.duration || "--"}
+                {displayDuration}
               </div>
             </div>
           </div>
