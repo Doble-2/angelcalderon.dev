@@ -16,10 +16,31 @@ export default function ProjectsClient({
     return k;
   };
   // Asegurarse de que siempre haya proyectos para mostrar, usando datos de ejemplo si es necesario
-  const effectiveProjects = useMemo(() =>
-    projects && projects.length ? projects :  [],
-    [projects]
-  );
+  const effectiveProjects = useMemo(() => {
+    if (!projects || !projects.length) return [];
+    // Orden: mayor 'order' primero.
+    // 'order' puede venir como string: convertir a número.
+    // Si no es parseable -> usar -Infinity para que quede al final.
+    const toOrderNumber = (val) => {
+      if (val === null || val === undefined) return -Infinity;
+      if (typeof val === "number" && !isNaN(val)) return val;
+      if (typeof val === "string") {
+        const trimmed = val.trim();
+        if (!trimmed) return -Infinity;
+        const num = Number(trimmed);
+        return isNaN(num) ? -Infinity : num;
+      }
+      return -Infinity;
+    };
+    return [...projects].sort((a, b) => {
+      const ao = toOrderNumber(a.order);
+      const bo = toOrderNumber(b.order);
+      if (bo !== ao) return bo - ao; // descendente
+      const an = (a.name || "").toLowerCase();
+      const bn = (b.name || "").toLowerCase();
+      return an.localeCompare(bn);
+    });
+  }, [projects]);
   
   const [active, setActive] = useState(0);
 

@@ -185,7 +185,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               {t("technologies_used")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {(project.front || project.technologies || []).map((tech) => (
+              {(project.front || project.back || []).map((tech) => (
                 <TechnologyTag key={tech} tech={tech} />
               ))}
             </div>
