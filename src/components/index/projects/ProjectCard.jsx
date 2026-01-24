@@ -7,11 +7,13 @@ const ProjectCard = ({ project, isActive, onClick }) => {
             ? `/projects/${encodeURIComponent(p.name)}/ico.png`
             : "/placeholder.svg";
 
-    const activeStyle = isActive && project?.color ? { boxShadow: `0 8px 24px rgba(${project.color},0.12)`, borderColor: `rgba(${project.color},0.18)` } : {};
+    const accentVals = project?.color ? String(project.color).replace(/\s+/g, ",") : null;
+    const activeStyle = isActive && accentVals ? { boxShadow: `0 8px 24px rgba(${accentVals},0.12)`, borderColor: `rgba(${accentVals},0.18)` } : {};
 
     return (
         <motion.button
             onClick={onClick}
+            type="button"
             title={project.title || project.name}
             aria-pressed={isActive}
             className={`group hover:shadow-xl  bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-shadow duration-200 focus:outline-none min-h-[44px]`}
@@ -23,6 +25,10 @@ const ProjectCard = ({ project, isActive, onClick }) => {
                 src={buildIco(project)}
                 alt={project.title || project.name}
                 className="w-10 h-10 sm:w-14 sm:h-14 object-contain flex-shrink-0 bg-background/50 rounded-md"
+                width="56"
+                height="56"
+                loading="lazy"
+                decoding="async"
             />
 
                     {/* ocultar textos en pantallas móviles para tarjetas más compactas */}

@@ -115,6 +115,10 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
   const borderAccent = `rgba(${accentVals}, 0.12)`;
   const highlightBg = `radial-gradient(circle at 20% 10%, rgba(${accentVals}, 0.12), rgba(${accentVals}, 0.04) 30%, transparent 50%)`;
 
+  const technologies = Array.from(
+    new Set([...(project.front || []), ...(project.back || [])].filter(Boolean))
+  );
+
   return (
     <motion.div
       key={project.id || project.name}
@@ -142,6 +146,8 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               src={buildImage(project)}
               alt={project.title || project.name}
               className="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute left-4 bottom-4">
@@ -185,7 +191,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               {t("technologies_used")}
             </h3>
             <div className="flex flex-wrap gap-2">
-              {(project.front || project.back || []).map((tech) => (
+              {technologies.map((tech) => (
                 <TechnologyTag key={tech} tech={tech} />
               ))}
             </div>

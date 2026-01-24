@@ -1,38 +1,26 @@
 ---
-import app from "../../firebase/client";
-import { getFirestore, getDocs, collection, where, query } from "firebase/firestore";
+import { getProjectByName } from "../../data/projects";
 import Layout from "../../layouts/Layout.astro";
 import LayoutMobile from "../../components/projects/standars/LayoutMobile.astro";
 import LayoutDesktop from "../../components/projects/standars/LayoutDesktop.astro";
 
-export async function getStaticPaths() {
-  return [
-    { params: { id: "Born AI" } },
-    { params: { id: "Appod" } },
-    { params: { id: "Dona tu Vuelto" } },
-    { params: { id: "Onbox" } },
-  ];
-}
 const { id } = Astro.params;
 if (!id) {
   return Astro.redirect("/404");
 }
 
-const db = getFirestore(app);
-const q = query(collection(db, "projects"), where("name", "==", id));
-const querySnap = await getDocs(q);
-const project = querySnap.docs.length > 0 ? querySnap.docs[0].data() : null;
+const project = getProjectByName(id) || null;
 
 if (!project) {
   return Astro.redirect("/404");
 }
 // valores por defecto seguros
-const cover = project.cover || (project.images && project.images[0]) || "/rect1-optimized.webp";
-const description = (project.description || project.summary || "").trim();
-const tech = project.tech || project.technologies || [];
-const images = project.images || (project.gallery && project.gallery.images) || [];
-const liveUrl = project.url || project.live || null;
-const repoUrl = project.repo || project.repository || null;
+const cover = (project.images && project.images[0]) || "/rect1-optimized.webp";
+const description = (project.description || "").trim();
+const tech = Array.from(new Set([...(project.front || []), ...((project.back || []) ?? [])].filter(Boolean)));
+const images = project.images || [];
+const liveUrl = project.url || null;
+const repoUrl = project.repo || null;
 // helper para normalizar rutas de imagen (si viene 'home.webp' -> '/home.webp')
 const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
 
@@ -47,12 +35,12 @@ const pageUrl = Astro.request?.url || `/projects/${encodeURIComponent(id)}`;
 <Layout title={pageTitle} description={pageDescription} image={pageImage} url={pageUrl}>
   <!-- Mobile -->
   <div class="md:hidden">
-    <LayoutMobile projectProp={{ ...project, cover, description, tech, images, url: liveUrl, repo: repoUrl }} />
+    <LayoutMobile projectProp={{ ...project, cover, desc: project.description, description, tech, images, url: liveUrl, repo: repoUrl }} />
   </div>
 
   <!-- Desktop: use shared LayoutDesktop component -->
   <div class="hidden md:block">
-    <LayoutDesktop projectProp={{ ...project, cover, description, tech, images, url: liveUrl, repo: repoUrl }} />
+    <LayoutDesktop projectProp={{ ...project, cover, desc: project.description, description, tech, images, url: liveUrl, repo: repoUrl }} />
   </div>
 
 </Layout>
@@ -71,8 +59,8 @@ const pageUrl = Astro.request?.url || `/projects/${encodeURIComponent(id)}`;
       "name": "Angel Calderon",
       "url": "https://angelcalderon.dev"
     },
-    "datePublished": project.publishedAt || project.date || undefined,
-    "dateModified": project.updatedAt || project.modified || undefined,
+    "datePublished": project.dateStart || undefined,
+    "dateModified": project.dateEnd || undefined,
     "keywords": (tech || []).slice(0,10).join(', ')
   })}
 </script>

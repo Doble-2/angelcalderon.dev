@@ -1,22 +1,14 @@
 ---
 import CertifiedContainer from "./CertifiedContainer.astro";
+import { getCertifieds } from "../../../data/certifieds";
 
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
 const { lang = "es", t = (k) => k } = Astro.props;
-import { getFirestore, collection, getDocs } from "firebase/firestore";
-import app from "../../../firebase/client";
 
-const db = getFirestore(app);
-
-const queryCertifieds = await getDocs(collection(db, "certifieds"));
-const docsCertifieds = [];
-queryCertifieds.forEach((doc) => {
-  docsCertifieds.push({ ...doc.data(), id: doc.id });
-});
-const certifieds = docsCertifieds.sort((a, b) => b.order - a.order);
+const certifieds = getCertifieds();
 ---
 <div class="px-4 flex flex-col w-full gap-2">
 
@@ -51,9 +43,9 @@ const certifieds = docsCertifieds.sort((a, b) => b.order - a.order);
           <CertifiedContainer
             className="w-full"
             variant="row"
-            href={"/certifieds/" + certified.id + ".pdf"}
+            href={"/certifieds/" + certified.slug + ".pdf"}
             title={certified.name}
-            image={"/certifieds/" + certified.id + ".jpg"}
+            image={"/certifieds/" + certified.slug + ".jpg"}
           />
         ))}
       </div>

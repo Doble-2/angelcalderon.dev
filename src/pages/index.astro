@@ -7,18 +7,9 @@ import Section from "../components/share/Section.astro";
 import Layout from "../layouts/Layout.astro";
 import Contact from "../components/Contact.astro";
 import translations from "../i18n";
-let lang: string = "es";
-const cookieHeader = Astro.request.headers.get("cookie") || "";
-const match = cookieHeader.match(/(?:^|;\s*)lang=([^;]+)/);
-if (match) {
-  try {
-    lang = decodeURIComponent(match[1]);
-  } catch {}
-} else {
-  const accept = Astro.request.headers.get("accept-language") || "";
-  if (accept.toLowerCase().startsWith("en")) lang = "en";
-}
-if (!["es", "en"].includes(lang)) lang = "es";
+import { resolveLangFromRequest } from "../lib/lang";
+
+const lang = resolveLangFromRequest(Astro.request);
 const t = (key: string) => translations[lang]?.[key] || key;
 ---
 

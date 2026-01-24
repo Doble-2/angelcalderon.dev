@@ -1,0 +1,174 @@
+18:09:07 [content] Syncing content
+18:09:07 [content] Synced content
+18:09:07 [types] Generated 55ms
+18:09:07 [check] Getting diagnostics for Astro files in /home/doble2/Escritorio/Personal/angelcalderon.dev...
+[96msrc/components/Contact.astro[0m:[93m2[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Icon' is declared but its value is never read.
+
+[7m2[0m import { Icon } from "astro-icon/components";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/Contact.astro[0m:[93m132[0m:[93m9[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m132[0m <script src="/contact.client.js" type="module"></script>
+[7m   [0m [93m        ~~~[0m
+
+[96msrc/components/index/ProfileSection.astro[0m:[93m7[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m7[0m const { lang = 'es', t = (k) => k } = Astro.props;
+[7m [0m [93m        ~~~~[0m
+
+[96msrc/components/index/certifieds/CertifiedContainer.astro[0m:[93m2[0m:[93m79[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'k' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m2[0m const { className = '', href = '#', title = '', image = '', lang = 'es', t = (k) => k, variant = 'normal' } = Astro.props;
+[7m [0m [93m                                                                              ~[0m
+[96msrc/components/index/certifieds/CertifiedContainer.astro[0m:[93m2[0m:[93m61[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m2[0m const { className = '', href = '#', title = '', image = '', lang = 'es', t = (k) => k, variant = 'normal' } = Astro.props;
+[7m [0m [93m                                                            ~~~~[0m
+
+[96msrc/components/index/certifieds/CertifiedSection.astro[0m:[93m9[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m9[0m const { lang = "es", t = (k) => k } = Astro.props;
+[7m [0m [93m        ~~~~[0m
+
+[96msrc/components/index/experience/ExperienceContainer.astro[0m:[93m11[0m:[93m48[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m11[0m const { enterprise, title, dates, description, lang = 'es', t = (k) => k } = Astro.props;
+[7m  [0m [93m                                               ~~~~[0m
+
+[96msrc/components/index/experience/ExperienceSection.astro[0m:[93m66[0m:[93m25[0m - [93mwarning[0m[90m ts(6133): [0m'idx' is declared but its value is never read.
+
+[7m66[0m     {skills.map((skill, idx) => (
+[7m  [0m [93m                        ~~~[0m
+[96msrc/components/index/experience/ExperienceSection.astro[0m:[93m29[0m:[93m7[0m - [93mwarning[0m[90m ts(6133): [0m'experiences' is declared but its value is never read.
+
+[7m29[0m const experiences = [
+[7m  [0m [93m      ~~~~~~~~~~~[0m
+[96msrc/components/index/experience/ExperienceSection.astro[0m:[93m13[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m13[0m const { lang = "es", t = (k) => k } = Astro.props;
+[7m  [0m [93m        ~~~~[0m
+
+[96msrc/components/index/projects/DesktopProjectContainer.astro[0m:[93m4[0m:[93m40[0m - [93mwarning[0m[90m ts(6133): [0m'color' is declared but its value is never read.
+
+[7m4[0m const { className, href, title, image, color } = Astro.props;
+[7m [0m [93m                                       ~~~~~[0m
+
+[96msrc/components/index/projects/FeaturedProject.astro[0m:[93m3[0m:[93m21[0m - [93mwarning[0m[90m ts(6133): [0m'lang' is declared but its value is never read.
+
+[7m3[0m const { project, t, lang } = Astro.props;
+[7m [0m [93m                    ~~~~[0m
+
+[96msrc/components/index/projects/ProjectCard.astro[0m:[93m32[0m:[93m45[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'tech' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m32[0m         {(project?.technologies || []).map((tech) => (
+[7m  [0m [93m                                            ~~~~[0m
+[96msrc/components/index/projects/ProjectCard.astro[0m:[93m3[0m:[93m48[0m - [93mwarning[0m[90m ts(6133): [0m't' is declared but its value is never read.
+
+[7m3[0m const { project, onClick, variant = 'compact', t } = Astro.props;
+[7m [0m [93m                                               ~[0m
+
+[96msrc/components/projects/standars/LayoutDesktop.astro[0m:[93m42[0m:[93m39[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'b' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m42[0m                 projectProp.back.map((b) => <TechnologyTag tech={b} />)
+[7m  [0m [93m                                      ~[0m
+[96msrc/components/projects/standars/LayoutDesktop.astro[0m:[93m38[0m:[93m40[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'f' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m38[0m                 projectProp.front.map((f) => <TechnologyTag tech={f} />)
+[7m  [0m [93m                                       ~[0m
+[96msrc/components/projects/standars/LayoutDesktop.astro[0m:[93m19[0m:[93m43[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'img' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m19[0m           images={projectProp.images.map((img) =>
+[7m  [0m [93m                                          ~~~[0m
+[96msrc/components/projects/standars/LayoutDesktop.astro[0m:[93m8[0m:[93m19[0m - [93mwarning[0m[90m ts(7044): [0mParameter 's' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m8[0m const localSrc = (s) =>
+[7m [0m [93m                  ~[0m
+[96msrc/components/projects/standars/LayoutDesktop.astro[0m:[93m2[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'ArrowRight' is declared but its value is never read.
+
+[7m2[0m import { ArrowRight, ExternalLinkIcon } from "lucide-react";
+[7m [0m [93m         ~~~~~~~~~~[0m
+
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m40[0m:[93m39[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'b' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m40[0m                 projectProp.back.map((b) => <TechnologyTag tech={b} />)
+[7m  [0m [93m                                      ~[0m
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m36[0m:[93m40[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'f' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m36[0m                 projectProp.front.map((f) => <TechnologyTag tech={f} />)
+[7m  [0m [93m                                       ~[0m
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m22[0m:[93m42[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'img' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m22[0m           images={projectProp.images.map(img => localSrc('/projects/' + projectProp.name + '/' + img))}
+[7m  [0m [93m                                         ~~~[0m
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m12[0m:[93m19[0m - [93mwarning[0m[90m ts(7044): [0mParameter 's' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m12[0m const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
+[7m  [0m [93m                  ~[0m
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Icon' is declared but its value is never read.
+
+[7m3[0m import { Icon } from "astro-icon/components";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/projects/standars/LayoutMobile.astro[0m:[93m118[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'swiper' is declared but its value is never read.
+
+[7m118[0m     const swiper = new Swiper(".swiper", {
+[7m   [0m [93m          ~~~~~~[0m
+
+[96msrc/components/share/NavBar.astro[0m:[93m136[0m:[93m40[0m - [93mwarning[0m[90m ts(6133): [0m'e' is declared but its value is never read.
+
+[7m136[0m         btn.addEventListener("click", (e) => {
+[7m   [0m [93m                                       ~[0m
+
+[96msrc/components/share/footer.astro[0m:[93m2[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m2[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/share/footer.astro[0m:[93m29[0m:[93m13[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m29[0m     <script type="application/ld+json">
+[7m  [0m [93m            ~~~~[0m
+
+[96msrc/firebase/client.js[0m:[93m19[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'analytics' is declared but its value is never read.
+
+[7m19[0m       const analytics = getAnalytics(app);
+[7m  [0m [93m            ~~~~~~~~~[0m
+
+[96msrc/layouts/ClientLayout.jsx[0m:[93m8[0m:[93m40[0m - [93mwarning[0m[90m ts(6133): [0m'title' is declared but its value is never read.
+
+[7m8[0m export default function ClientLayout({ title, children }) {
+[7m [0m [93m                                       ~~~~~[0m
+
+[96msrc/layouts/Layout.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Contact' is declared but its value is never read.
+
+[7m3[0m import Contact from "../components/Contact.astro";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/projects/[id].astro[0m:[93m28[0m:[93m19[0m - [93mwarning[0m[90m ts(7044): [0mParameter 'str' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m28[0m const truncate = (str, n = 150) => (str && str.length > n ? str.slice(0, n).trim().replace(/[,\s]+[^,\s]+$/, '...') : str);
+[7m  [0m [93m                  ~~~[0m
+[96msrc/pages/projects/[id].astro[0m:[93m25[0m:[93m19[0m - [93mwarning[0m[90m ts(7044): [0mParameter 's' implicitly has an 'any' type, but a better type may be inferred from usage.
+
+[7m25[0m const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
+[7m  [0m [93m                  ~[0m
+[96msrc/pages/projects/[id].astro[0m:[93m48[0m:[93m9[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m48[0m <script type="application/ld+json">
+[7m  [0m [93m        ~~~~[0m
+
+Result (46 files): 
+- 0 errors
+- 0 warnings
+- 34 hints
+

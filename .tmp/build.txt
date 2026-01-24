@@ -1,0 +1,45 @@
+18:09:24 [content] Syncing content
+18:09:24 [content] Synced content
+18:09:24 [types] Generated 34ms
+18:09:24 [build] output: "server"
+18:09:24 [build] mode: "server"
+18:09:24 [build] directory: /home/doble2/Escritorio/Personal/angelcalderon.dev/dist/
+18:09:24 [build] adapter: @astrojs/vercel
+18:09:24 [build] Collecting build info...
+18:09:24 [build] ✓ Completed in 120ms.
+18:09:24 [build] Building server entrypoints...
+18:09:26 [vite] ✓ built in 2.05s
+18:09:26 [build] ✓ Completed in 2.08s.
+
+ building client (vite) 
+18:09:26 [vite] transforming...
+18:09:29 [vite] ✓ 2115 modules transformed.
+18:09:29 [WARN] [vite] Generated an empty chunk: "Rainy.astro_astro_type_script_index_0_lang".
+18:09:29 [vite] rendering chunks...
+18:09:29 [vite] computing gzip size...
+18:09:29 [vite] dist/client/_astro/LayoutMobile.vHIubPVI.css                                        8.01 kB │ gzip:  3.23 kB
+18:09:29 [vite] dist/client/_astro/ProjectGalleryDesktop.D4kLIKu5.js                                0.40 kB │ gzip:  0.30 kB
+18:09:29 [vite] dist/client/_astro/jsx-runtime.D_zvdyIk.js                                          0.73 kB │ gzip:  0.46 kB
+18:09:29 [vite] dist/client/_astro/ImageModal.zhgT1XV4.js                                           0.79 kB │ gzip:  0.44 kB
+18:09:29 [vite] dist/client/_astro/ProjectGalleryMobile.BKCq-GOk.js                                 0.83 kB │ gzip:  0.53 kB
+18:09:29 [vite] dist/client/_astro/index.DtoOFyvK.js                                                8.01 kB │ gzip:  3.10 kB
+18:09:29 [vite] dist/client/_astro/photoswipe.esm.CKV1Bsxh.js                                      60.41 kB │ gzip: 17.48 kB
+18:09:29 [vite] dist/client/_astro/LayoutMobile.astro_astro_type_script_index_0_lang.B9WWd-RV.js   88.88 kB │ gzip: 27.16 kB
+18:09:29 [vite] dist/client/_astro/client.BBKXMyYs.js                                             179.42 kB │ gzip: 56.61 kB
+18:09:29 [vite] dist/client/_astro/ProjectsClient.DnmGoIgX.js                                     187.89 kB │ gzip: 68.97 kB
+18:09:29 [vite] ✓ built in 2.80s
+
+ prerendering static routes 
+18:09:29 ✓ Completed in 33ms.
+
+18:09:29 [build] Rearranging server assets...
+18:09:29 [WARN] [@astrojs/vercel] 
+	The local Node.js version (23) is not supported by Vercel Serverless Functions.
+	Your project will use Node.js 22 as the runtime instead.
+	Consider switching your local version to 22.
+
+18:09:29 [@astrojs/vercel] Bundling function ../../../../dist/server/entry.mjs
+18:09:32 [build] Waiting for integration "@astrojs/vercel", hook "astro:build:done"...
+18:09:34 [@astrojs/vercel] Copying static files to .vercel/output/static
+18:09:34 [build] Server built in 9.89s
+18:09:34 [build] Complete!

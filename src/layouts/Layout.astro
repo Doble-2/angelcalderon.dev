@@ -4,10 +4,8 @@ import Contact from "../components/Contact.astro";
 import NavBar from "../components/share/NavBar.astro";
 import Rainy from "../components/share/Rainy.astro";
 import translations from "../i18n";
+import { resolveLangFromRequest } from "../lib/lang";
 import SpeedInsights from "@vercel/speed-insights/astro";
-import { onMount } from "solid-js";
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import Footer from "../components/share/footer.astro";
 
 interface Props {
@@ -15,40 +13,20 @@ interface Props {
 	description?: string;
 	image?: string;
 	url?: string;
+	lang?: 'es' | 'en';
 }
 
 const {
   title = 'Angel Calderon - Desarrollador Web/Mobile',
   description = 'Angel Calderon - Desarrollador Web/Mobile freelance en Caracas, Venezuela. Experto en Flutter, React, Next.js y Python. Portfolio profesional para reclutadores y clientes.',
   image = '/profile.png',
-  url = Astro.request.url || '/'
+	url = Astro.request.url || '/',
+	lang: forcedLang,
 } = Astro.props;
-const firebaseConfig = {
-	apiKey: "YOUR_API_KEY",
-	authDomain: "YOUR_AUTH_DOMAIN",
-	projectId: "YOUR_PROJECT_ID",
-	storageBucket: "YOUR_STORAGE_BUCKET",
-	messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-	appId: "YOUR_APP_ID",
-	measurementId: "YOUR_MEASUREMENT_ID",
-};
 
 // Idioma determinado en el servidor mediante cookie o Accept-Language
-let lang: string = 'es';
-const cookieHeader = Astro.request.headers.get('cookie') || '';
-const match = cookieHeader.match(/(?:^|;\s*)lang=([^;]+)/);
-if (match) { try { lang = decodeURIComponent(match[1]); } catch {} }
-else {
-	const accept = Astro.request.headers.get('accept-language') || '';
-	if (accept.toLowerCase().startsWith('en')) lang = 'en';
-}
-if (!['es','en'].includes(lang)) lang = 'es';
+const lang = resolveLangFromRequest(Astro.request, forcedLang);
 const t = (key: string) => translations[lang]?.[key] || key;
-
-onMount(() => {
-	const app = initializeApp(firebaseConfig);
-	getAnalytics(app);
-});
 ---
 
 <!doctype html>
@@ -79,7 +57,7 @@ onMount(() => {
 		<link rel="icon" href="/rect1-optimized.webp" />
 		<link rel="canonical" href={url} />
 		<meta name="robots" content="index, follow" />
-		<a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a>
+		
 		<!-- Inter font -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,10 +66,11 @@ onMount(() => {
 		<title>{title} | Caracas, Venezuela</title>
 	</head>
 	<body class="max-w-screen">
+		<a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a>
 		<Rainy />
 
 		<NavBar lang={lang} t={t} />
-		<main class="">
+		<main id="main-content" class="">
 			<div
 				class="z-10 main-section backdrop-blur-md bg-black/30"
 			>

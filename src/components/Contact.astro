@@ -122,5 +122,11 @@ const { lang = 'es', t = (k) => k } = Astro.props;
 </section>
 
 
+<script is:inline define:vars={{ i18n, lang }}>
+  window.__I18N__ = i18n;
+  window.__LANG__ = lang;
+</script>
+
+
 
 <script src="/contact.client.js" type="module"></script>

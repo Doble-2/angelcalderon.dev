@@ -1,0 +1,39 @@
+---
+import ExperienceSection from "../../components/index/experience/ExperienceSection.astro";
+import ProfileSection from "../../components/index/ProfileSection.astro";
+import ProjectSection from "../../components/index/projects/ProjectSection.astro";
+import CertifiedSection from "../../components/index/certifieds/CertifiedSection.astro";
+import Section from "../../components/share/Section.astro";
+import Layout from "../../layouts/Layout.astro";
+import Contact from "../../components/Contact.astro";
+import translations from "../../i18n";
+
+const lang: 'en' = 'en';
+const t = (key: string) => translations[lang]?.[key] || key;
+---
+
+<Layout lang={lang} title="Angel Calderon | Frontend Developer">
+  <Section
+    className={
+      "pt-8 md:justify-between bg-[transparent!important] min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] flex-col md:flex-row"
+    }
+  >
+    <ProfileSection lang={lang} t={t} />
+  </Section>
+
+  <Section className={" "}>
+    <ProjectSection lang={lang} t={t} />
+  </Section>
+
+  <Section className={""}>
+    <ExperienceSection lang={lang} t={t} />
+  </Section>
+
+  <Section className={" flex-col flex md:flex-row"}>
+    <CertifiedSection lang={lang} t={t} />
+  </Section>
+
+  <Section className={" "}>
+    <Contact lang={lang} t={t} />
+  </Section>
+</Layout>

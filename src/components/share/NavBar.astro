@@ -102,7 +102,12 @@ const { lang = "es", t = (k) => k } = Astro.props;
   // Utilidades tema
   // Utilidades idioma
   function setLanguage(lang) {
-    window.localStorage.setItem("lang", lang);
+    try {
+      document.cookie = `lang=${lang}; path=/;`;
+    } catch (e) {}
+    try {
+      window.localStorage.setItem("lang", lang);
+    } catch (e) {}
     location.reload();
   }
 

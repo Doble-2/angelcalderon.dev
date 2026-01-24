@@ -1,40 +1,13 @@
 ---
-import FeaturedProject from "./FeaturedProject.astro";
-import ProjectCard from "./ProjectCard.astro";
 import ProjectsClient from "./ProjectsClient.astro";
+import { getProjects } from "../../../data/projects";
 
 interface Props {
     lang: string;
     t: (key: string) => string;
 }
 const { lang = 'es', t = (k) => k } = Astro.props;
-import { getFirestore, collection, getDocs } from "firebase/firestore";
-import app from "../../../firebase/client";
-import { Image } from "astro:assets";
-import { Icon } from "astro-icon/components";
-
-const db = getFirestore(app);
-let projects = [];
-try {
-    const queryProjects = await getDocs(collection(db, "projects"));
-    const docsProjects = [];
-    queryProjects.forEach((doc) => {
-        docsProjects.push({ ...doc.data(), id: doc.id });
-    });
-    projects = docsProjects.sort((a, b) => {
-        if (a.order > b.order) {
-            return -1;
-        }
-        if (a.order < b.order) {
-            return 1;
-        }
-        return 0;
-    });
-} catch (e) {
-    // If fetching projects fails during build/SSR, log and continue with empty list
-    console.error('Failed to fetch projects:', e);
-    projects = [];
-}
+const projects = getProjects();
 ---
 
 <section id="proyectos" class=" px-4 relative z-10 overflow-hidden w-full" data-server-projects-count={projects.length}>
@@ -93,4 +66,4 @@ try {
             </a>
         </button>
     </div> -->
-</div>
+

@@ -1,12 +1,14 @@
 window.addEventListener("DOMContentLoaded", () => {
   let i18n, lang;
   try {
-    i18n = JSON.parse(window.__I18N__);
+    const raw = window.__I18N__;
+    i18n = typeof raw === "string" ? JSON.parse(raw) : raw;
     lang = window.__LANG__;
   } catch {
     i18n = {};
     lang = "es";
   }
+  if (!lang) lang = "es";
   function tJS(key) {
     if (i18n[lang] && i18n[lang][key]) return i18n[lang][key];
     if (i18n[lang] && i18n[lang].contact && i18n[lang].contact[key]) return i18n[lang].contact[key];
