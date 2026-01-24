@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+    --accent-gradient: linear-gradient(
+      45deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-light)) 30%,
+      white 60%
+    );
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+      'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+    background: #13151a;
+  }
+
+  code {
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+      Bitstream Vera Sans Mono, Courier New, monospace;
+  }
+}
+
+@layer components {
+  /* Shared UI: glass button */
+  .liquid-glass-btn {
+    color: inherit;
+    background: rgba(255, 255, 255, 0.077);
+    border-radius: 16px;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1), 0 1.5px 4px 0 rgba(0, 0, 0, 0.1);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 0.7rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+
+  .liquid-glass-btn:hover {
+    box-shadow: 0 6px 24px 0 rgba(0, 0, 0, 0.13), 0 2px 8px 0 rgba(0, 0, 0, 0.13);
+  }
+
+  /* Nav header states */
+  header#site-header {
+    color: #fff;
+  }
+
+  :root.dark header#site-header {
+    color: #fff;
+  }
+
+  header#site-header img.logo-img {
+    filter: invert(1);
+    transition: filter 180ms ease-in-out;
+  }
+
+  header#site-header.scrolled img.logo-img {
+    filter: invert(0);
+  }
+
+  header#site-header.scrolled {
+    background: var(--gray-500, #ffffff45);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 0 0 12px 12px;
+  }
+
+  header#site-header.scrolled a,
+  header#site-header.scrolled h2,
+  header#site-header.scrolled .liquid-glass-btn {
+    color: #0b1220;
+  }
+
+  header#site-header.scrolled .liquid-glass-btn {
+    border-color: rgba(0, 0, 0, 0.06);
+  }
+
+  :root.dark header#site-header.scrolled a,
+  :root.dark header#site-header.scrolled h2,
+  :root.dark header#site-header.scrolled .liquid-glass-btn {
+    color: #fff;
+  }
+
+  /* Shared UI: link card */
+  .link-card {
+    list-style: none;
+    display: flex;
+    padding: 1px;
+    background-color: #23262d;
+    background-image: none;
+    background-size: 400%;
+    border-radius: 7px;
+    background-position: 100%;
+    transition: background-position 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+
+  .link-card > a {
+    width: 100%;
+    text-decoration: none;
+    line-height: 1.4;
+    padding: calc(1.5rem - 1px);
+    border-radius: 8px;
+    color: white;
+    background-color: #23262d;
+    opacity: 0.8;
+  }
+
+  .link-card h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-card p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .link-card:is(:hover, :focus-within) {
+    background-position: 0;
+    background-image: var(--accent-gradient);
+  }
+
+  .link-card:is(:hover, :focus-within) h2 {
+    color: rgb(var(--accent-light));
+  }
+}

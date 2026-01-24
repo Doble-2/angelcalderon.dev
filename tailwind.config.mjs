@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+	darkMode: 'class',
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	// Ensure these dynamic classes aren't purged during build
 	safelist: [
@@ -18,7 +19,7 @@ export default {
 						animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
 					},
 					'50%': {
-						transform: 'translateY(-05%)',
+						transform: 'translateY(-5%)',
 						animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
 					},
 				},
