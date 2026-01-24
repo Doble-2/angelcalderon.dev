@@ -1,6 +1,6 @@
 ---
 import CertifiedContainer from "./CertifiedContainer.astro";
-import { getCertifieds } from "../../../data/certifieds";
+import { getCollection } from "astro:content";
 
 interface Props {
   lang: string;
@@ -8,7 +8,10 @@ interface Props {
 }
 const { lang = "es", t = (k) => k } = Astro.props;
 
-const certifieds = getCertifieds();
+const entries = await getCollection("certifieds");
+const certifieds = entries
+  .map((e) => ({ id: e.id, ...e.data }))
+  .sort((a, b) => Number(b.order) - Number(a.order));
 ---
 <div class="px-4 flex flex-col w-full gap-2">
 
@@ -43,9 +46,9 @@ const certifieds = getCertifieds();
           <CertifiedContainer
             className="w-full"
             variant="row"
-            href={"/certifieds/" + certified.slug + ".pdf"}
+            href={"/certifieds/" + certified.asset + ".pdf"}
             title={certified.name}
-            image={"/certifieds/" + certified.slug + ".jpg"}
+            image={"/certifieds/" + certified.asset + ".jpg"}
           />
         ))}
       </div>

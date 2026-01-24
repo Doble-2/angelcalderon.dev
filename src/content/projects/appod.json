@@ -1,0 +1,15 @@
+{
+  "name": "Appod",
+  "order": 10,
+  "color": "51 145 255",
+  "dateStart": "10/01/2024",
+  "dateEnd": "17/08/2025",
+  "description": "APPOD es mi proyecto personal más preciado: una aplicación móvil que consume la API APOD de la NASA para ver y descargar imágenes astronómicas históricas. Desarrollada con Flutter (Frontend) y un Backend ligero en Python, ofrece Login con Firebase y funcionalidad completa. Superó las 500 solicitudes en su primera semana y está a esperas para publicarse en Play Store",
+  "front": ["flutter"],
+  "back": ["python"],
+  "images": ["home.webp", "apod.webp", "settings.png", "load.webp"],
+  "role": "Mobile Developer",
+  "type": "aplicación",
+  "url": "https://appod.angelcalderon.dev/",
+  "repo": "https://github.com/Doble-2/apod-nasa"
+}

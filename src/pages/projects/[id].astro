@@ -1,5 +1,5 @@
 ---
-import { getProjectByName } from "../../data/projects";
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import LayoutMobile from "../../components/projects/standars/LayoutMobile.astro";
 import LayoutDesktop from "../../components/projects/standars/LayoutDesktop.astro";
@@ -9,7 +9,9 @@ if (!id) {
   return Astro.redirect("/404");
 }
 
-const project = getProjectByName(id) || null;
+const entries = await getCollection("projects");
+const entry = entries.find((e) => e.id === id || e.data.name === id) || null;
+const project = entry ? ({ id: entry.id, ...entry.data } as any) : null;
 
 if (!project) {
   return Astro.redirect("/404");

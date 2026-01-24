@@ -1,13 +1,17 @@
 ---
 import ProjectsClient from "./ProjectsClient.astro";
-import { getProjects } from "../../../data/projects";
+import { getCollection } from "astro:content";
 
 interface Props {
     lang: string;
     t: (key: string) => string;
 }
 const { lang = 'es', t = (k) => k } = Astro.props;
-const projects = getProjects();
+
+const entries = await getCollection("projects");
+const projects = entries
+    .map((e) => ({ id: e.id, ...e.data }))
+    .sort((a, b) => Number(b.order) - Number(a.order));
 ---
 
 <section id="proyectos" class=" px-4 relative z-10 overflow-hidden w-full" data-server-projects-count={projects.length}>

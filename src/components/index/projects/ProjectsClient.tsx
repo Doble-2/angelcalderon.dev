@@ -56,7 +56,7 @@ export default function ProjectsClient({
       return an.localeCompare(bn);
     });
   }, [projects]);
-  
+
   const [active, setActive] = useState(0);
 
   // Si cambia la lista y el índice queda fuera de rango, resetea.
@@ -64,7 +64,7 @@ export default function ProjectsClient({
     if (effectiveProjects.length === 0) return;
     if (active >= effectiveProjects.length) setActive(0);
   }, [active, effectiveProjects.length]);
-  
+
   const activeProject = effectiveProjects[active] || null;
 
   const handleNextProject = () => {
@@ -75,7 +75,9 @@ export default function ProjectsClient({
     return (
       <div className="p-8 text-center bg-muted/50 rounded-xl">
         <h3 className="font-semibold">{t("no_projects_found")}</h3>
-        <p className="text-sm text-muted-foreground mt-1">{t("no_projects_found_desc")}</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t("no_projects_found_desc")}
+        </p>
       </div>
     );
   }
@@ -87,7 +89,10 @@ export default function ProjectsClient({
       setActive((prev) => (prev + 1) % effectiveProjects.length);
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
-      setActive((prev) => (prev - 1 + effectiveProjects.length) % effectiveProjects.length);
+      setActive(
+        (prev) =>
+          (prev - 1 + effectiveProjects.length) % effectiveProjects.length,
+      );
     }
   };
 
