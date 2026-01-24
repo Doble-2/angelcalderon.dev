@@ -24,10 +24,23 @@ const images = project.images || [];
 const liveUrl = project.url || null;
 const repoUrl = project.repo || null;
 // helper para normalizar rutas de imagen (si viene 'home.webp' -> '/home.webp')
-const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
+const localSrc = (s: string) =>
+  s
+    ? s.startsWith("http")
+      ? s
+      : s.startsWith("/")
+        ? s
+        : "/" + s
+    : "";
 
 // Metadatos dinámicos para SEO/Redes
-const truncate = (str, n = 150) => (str && str.length > n ? str.slice(0, n).trim().replace(/[,\s]+[^,\s]+$/, '...') : str);
+const truncate = (str: string, n: number = 150) =>
+  str && str.length > n
+    ? str
+        .slice(0, n)
+        .trim()
+        .replace(/[,\s]+[^,\s]+$/, "...")
+    : str;
 const pageTitle = `${project.name} | Angel Calderon - Desarrollador Web/Mobile`;
 const pageDescription = truncate(description || `Proyecto ${project.name} desarrollado por Angel Calderon usando ${((tech || []).slice(0,4)).join(', ')}.` , 160);
 const pageImage = localSrc(cover);
@@ -47,7 +60,7 @@ const pageUrl = Astro.request?.url || `/projects/${encodeURIComponent(id)}`;
 
 </Layout>
 
-<script type="application/ld+json">
+<script is:inline type="application/ld+json">
   {JSON.stringify({
     "@context": "https://schema.org",
     "@type": "CreativeWork",

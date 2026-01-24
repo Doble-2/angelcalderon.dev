@@ -4,11 +4,10 @@ interface Props {
     title: string;
     dates: string;
     description: string;
-    lang?: string;
     t?: (key: string) => string;
 }
 
-const { enterprise, title, dates, description, lang = 'es', t = (k) => k } = Astro.props;
+const { enterprise, title, dates, description, t = (k: string) => k } = Astro.props as Props;
 ---
 
 <li class="relative mb-6 md:px-5">

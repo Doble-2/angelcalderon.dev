@@ -1,0 +1,14 @@
+
+> angelcalderon.dev@0.2.1 astro /home/doble2/Escritorio/Personal/angelcalderon.dev
+> astro check
+
+18:30:24 [vite] Re-optimizing dependencies because lockfile has changed
+18:30:24 [content] Syncing content
+18:30:24 [content] Synced content
+18:30:24 [types] Generated 391ms
+18:30:24 [check] Getting diagnostics for Astro files in /home/doble2/Escritorio/Personal/angelcalderon.dev...
+Result (44 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+

@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
 import { SendIcon } from "lucide-react";
 import i18n from "../i18n";
 
@@ -7,7 +6,7 @@ interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { lang = 'es', t = (k) => k } = Astro.props;
+const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
 ---
 
 <section id="contacto" class="max-w-xl md:min-w-[600px] mx-auto px-4 py-12">
@@ -129,4 +128,4 @@ const { lang = 'es', t = (k) => k } = Astro.props;
 
 
 
-<script src="/contact.client.js" type="module"></script>
+<script is:inline src="/contact.client.js" type="module"></script>

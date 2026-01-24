@@ -1,0 +1,22 @@
+node:internal/modules/cjs/loader:1408
+  throw err;
+  ^
+
+Error: Cannot find module '@astrojs/ts-plugin/package.json'
+Require stack:
+- /home/doble2/Escritorio/Personal/angelcalderon.dev/[eval]
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1405:15)
+    at Function.resolve (node:internal/modules/helpers:145:19)
+    at [eval]:1:9
+    at runScriptInThisContext (node:internal/vm:209:10)
+    at node:internal/process/execution:449:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:447:60)
+    at evalFunction (node:internal/process/execution:280:30)
+    at evalTypeScript (node:internal/process/execution:292:3)
+    at node:internal/main/eval_string:71:3 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/home/doble2/Escritorio/Personal/angelcalderon.dev/[eval]' ]
+}
+
+Node.js v23.11.0

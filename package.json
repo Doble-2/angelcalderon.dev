@@ -36,6 +36,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@astrojs/ts-plugin": "^1.10.6",
     "@types/nodemailer": "^7.0.5"
   }
 }

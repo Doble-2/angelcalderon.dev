@@ -10,7 +10,7 @@ interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { lang = "es", t = (k) => k } = Astro.props;
+const { t = (k: string) => k } = Astro.props as Props;
 
 const gradients = [
   "from-blue-400 via-indigo-500 to-purple-500",
@@ -25,33 +25,6 @@ const skills = [
   { name: "Design", icon: Palette, technologies: ["Figma",  "UI/UX", "Prototyping"], gradient: gradients[2] },
   { name: "DevOps", icon: Globe, technologies: ["Vercel"], gradient: gradients[3] },
 ];
-
-const experiences = [
-  {
-    year: "Mar 2025 - Presente",
-    title: "Frontend Developer",
-    company: "Cryptoportfolio",
-    descriptionKey: "exp_cryptoportfolio_2025",
-  },
-  {
-    year: "Feb 2024 - Jul 2024",
-    title: "Semi-Senior Mobile Developer",
-    company: "DeepCompany",
-    descriptionKey: "exp_deepcompany_2024",
-  },
-  {
-    year: "Jul 2023 - Dic 2023",
-    title: "Frontend Developer",
-    company: "OverGroup",
-    descriptionKey: "exp_overgroup_2023",
-  },
-  {
-    year: "Abr 2022 - Dic 2023",
-    title: "Junior Developer",
-    company: "Colpixtec",
-    descriptionKey: "exp_colpixtec_2022",
-  },
-];
 ---
 
 <section class="max-w-6xl mx-auto px-4">
@@ -63,7 +36,7 @@ const experiences = [
 
   <!-- Skills grid -->
   <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-    {skills.map((skill, idx) => (
+    {skills.map((skill) => (
       <div class="bg-white text-foreground flex flex-col gap-4 rounded-2xl border border-transparent hover:border-gray-200/60 py-6 shadow-md hover:shadow-xl transition-all duration-300 text-center p-6 backdrop-blur-sm">
         <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transform transition-transform duration-300 hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
           <div class={`w-12 h-12 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${skill.gradient}`}>
@@ -72,7 +45,7 @@ const experiences = [
         </div>
   <h3 class="font-semibold text-lg mb-1">{t(skill.name.toLowerCase())}</h3>
         <div class="flex flex-wrap justify-center gap-2">
-          {(skill.technologies || []).map((tech) => (
+          {((skill.technologies || []) as string[]).map((tech: string) => (
             <TechnologyTag tech={tech} />
           ))}
         </div>

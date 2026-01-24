@@ -1,5 +1,21 @@
 ---
-const { className = '', href = '#', title = '', image = '', lang = 'es', t = (k) => k, variant = 'normal' } = Astro.props;
+interface Props {
+    className?: string;
+    href?: string;
+    title?: string;
+    image?: string;
+    variant?: "normal" | "row" | "compact";
+    t?: (key: string) => string;
+}
+
+const {
+    className = "",
+    href = "#",
+    title = "",
+    image = "",
+    t = (k: string) => k,
+    variant = "normal",
+} = Astro.props as Props;
 ---
 
 <div class={`relative rounded-lg bg-white overflow-hidden transition-transform duration-200 ease-in-out hover:shadow-lg ${className}`}>

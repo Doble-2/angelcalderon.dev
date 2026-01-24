@@ -6,6 +6,7 @@ import Contact from "../components/Contact.astro";
 import Rainy from "../components/share/Rainy.astro";
 
 export default function ClientLayout({ title, children }) {
+  void title;
   const [lang, setLang] = useState(() =>
     typeof window !== "undefined" ? window.localStorage.getItem("lang") || "es" : "es"
   );

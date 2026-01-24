@@ -1,12 +1,16 @@
 ---
-import { ArrowRight, ExternalLinkIcon } from "lucide-react";
+import { ExternalLinkIcon } from "lucide-react";
 import TechnologyTag from "../../index/projects/TechnologyTag";
 import Section from "../../share/Section.astro";
 import ProjectGalleryDesktop from "./ProjectGalleryDesktop.jsx";
 
-const { projectProp } = Astro.props;
-const localSrc = (s) =>
+const { projectProp } = Astro.props as { projectProp: any };
+const localSrc = (s: string) =>
   s ? (s.startsWith("http") ? s : s.startsWith("/") ? s : "/" + s) : "";
+
+const images = (projectProp?.images ?? []) as string[];
+const front = (projectProp?.front ?? []) as string[];
+const back = (projectProp?.back ?? []) as string[];
 ---
 
 <Section className={" min-h-screen"}>
@@ -16,7 +20,7 @@ const localSrc = (s) =>
       <div class="col-span-8">
         <ProjectGalleryDesktop
           client:only="react"
-          images={projectProp.images.map((img) =>
+          images={images.map((img: string) =>
             localSrc("/projects/" + projectProp.name + "/" + img)
           )}
           name={projectProp.name}
@@ -34,12 +38,10 @@ const localSrc = (s) =>
           </h4>
           <div class="flex flex-wrap gap-2">
             {
-              projectProp.front &&
-                projectProp.front.map((f) => <TechnologyTag tech={f} />)
+              front.map((f: string) => <TechnologyTag tech={f} />)
             }
             {
-              projectProp.back &&
-                projectProp.back.map((b) => <TechnologyTag tech={b} />)
+              back.map((b: string) => <TechnologyTag tech={b} />)
             }
           </div>
         </div>

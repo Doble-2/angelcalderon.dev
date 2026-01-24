@@ -1,0 +1,13 @@
+
+> angelcalderon.dev@0.2.1 astro /home/doble2/Escritorio/Personal/angelcalderon.dev
+> astro check
+
+18:27:01 [content] Syncing content
+18:27:01 [content] Synced content
+18:27:01 [types] Generated 320ms
+18:27:01 [check] Getting diagnostics for Astro files in /home/doble2/Escritorio/Personal/angelcalderon.dev...
+Result (44 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+

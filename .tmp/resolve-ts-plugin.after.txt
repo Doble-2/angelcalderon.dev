@@ -1,0 +1,1 @@
+/home/doble2/Escritorio/Personal/angelcalderon.dev/node_modules/.pnpm/@astrojs+ts-plugin@1.10.6/node_modules/@astrojs/ts-plugin/package.json

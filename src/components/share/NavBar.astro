@@ -133,7 +133,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
         langMenu.classList.toggle("hidden");
       });
       langMenu.querySelectorAll("button[data-lang]").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
+        btn.addEventListener("click", () => {
           setLanguage(btn.getAttribute("data-lang"));
           langMenu.classList.add("hidden");
         });

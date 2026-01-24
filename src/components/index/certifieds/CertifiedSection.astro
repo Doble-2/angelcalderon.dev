@@ -6,7 +6,7 @@ interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { lang = "es", t = (k) => k } = Astro.props;
+const { t = (k: string) => k } = Astro.props as Props;
 
 const entries = await getCollection("certifieds");
 const certifieds = entries

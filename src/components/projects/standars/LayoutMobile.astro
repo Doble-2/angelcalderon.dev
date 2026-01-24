@@ -1,6 +1,5 @@
 ---
 import Section from "../../share/Section.astro";
-import { Icon } from "astro-icon/components";
 import ProjectGalleryMobile from "./ProjectGalleryMobile.jsx";
 
 const { projectProp } = Astro.props;
@@ -9,7 +8,18 @@ import "photoswipe/style.css";
 import TechnologyTag from "../../index/projects/TechnologyTag";
 import { ExternalLinkIcon } from "lucide-react";
 
-const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : '/' + s) : '';
+const localSrc = (s: string) =>
+  s
+    ? s.startsWith("http")
+      ? s
+      : s.startsWith("/")
+        ? s
+        : "/" + s
+    : "";
+
+const images = (projectProp?.images ?? []) as string[];
+const front = (projectProp?.front ?? []) as string[];
+const back = (projectProp?.back ?? []) as string[];
 
 // Configurar e inicializar Photoswipe
 ---
@@ -19,7 +29,9 @@ const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : 
         <!-- Galería interactiva island -->
         <ProjectGalleryMobile
           client:only="react"
-          images={projectProp.images.map(img => localSrc('/projects/' + projectProp.name + '/' + img))}
+          images={images.map((img: string) =>
+            localSrc("/projects/" + projectProp.name + "/" + img)
+          )}
           name={projectProp.name}
         />
 
@@ -32,12 +44,10 @@ const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : 
         <!-- Tech icons -->
         <div class="flex gap-3 items-center">
              {
-              projectProp.front &&
-                projectProp.front.map((f) => <TechnologyTag tech={f} />)
+              front.map((f: string) => <TechnologyTag tech={f} />)
             }
             {
-              projectProp.back &&
-                projectProp.back.map((b) => <TechnologyTag tech={b} />)
+              back.map((b: string) => <TechnologyTag tech={b} />)
             }
         </div>
 
@@ -115,7 +125,7 @@ const localSrc = (s) => s ? (s.startsWith('http') ? s : s.startsWith('/') ? s : 
     import "swiper/css/navigation";
 
     // Configurar Swiper
-    const swiper = new Swiper(".swiper", {
+    new Swiper(".swiper", {
         modules: [Navigation], // definir los módulos a usar
         loop: true, // definir si los slides estarán en bucle
         slidesPerView: 1, // agregar número de slides para la pantalla

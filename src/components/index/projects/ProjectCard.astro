@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-const { project, onClick, variant = 'compact', t } = Astro.props;
+const { project, onClick, variant = 'compact' } = Astro.props;
 ---
 
 {variant === 'compact' ? (
@@ -29,7 +29,7 @@ const { project, onClick, variant = 'compact', t } = Astro.props;
       <h3 class="font-bold text-lg mb-3 group-hover:text-primary transition-colors">{project?.title}</h3>
       <p class="text-muted-foreground mb-4 text-sm leading-relaxed">{project?.description}</p>
       <div class="flex flex-wrap gap-2">
-        {(project?.technologies || []).map((tech) => (
+        {((project?.technologies || []) as string[]).map((tech: string) => (
           <span class="text-xs bg-muted/20 px-2 py-1 rounded">{tech}</span>
         ))}
       </div>

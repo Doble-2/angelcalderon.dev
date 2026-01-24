@@ -81,6 +81,9 @@ importers:
         specifier: ^5.9.3
         version: 5.9.3
     devDependencies:
+      '@astrojs/ts-plugin':
+        specifier: ^1.10.6
+        version: 1.10.6
       '@types/nodemailer':
         specifier: ^7.0.5
         version: 7.0.5
@@ -149,6 +152,9 @@ packages:
   '@astrojs/telemetry@3.3.0':
     resolution: {integrity: sha512-UFBgfeldP06qu6khs/yY+q1cDAaArM2/7AEIqQ9Cuvf7B1hNLq0xDrZkct+QoIGyjq56y8IaE2I3CTvG99mlhQ==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0}
+
+  '@astrojs/ts-plugin@1.10.6':
+    resolution: {integrity: sha512-Ke5CNwxn/ozsh6THJKuayUlBToa3uiPDi2oSwcXmTdeiJ0PGr+UkdQJf9hdMgBjbIka9fhnSn3UhYamfNfJ73A==}
 
   '@astrojs/vercel@8.2.7':
     resolution: {integrity: sha512-QeozkGU/0qch8MZlKJDKt+Dp8IUKA/E4MxnecVz1J0eVaXB6ao/HYcW7Tcr8LpWYU77Twhc60SgHIjrE3j2nYg==}
@@ -3337,6 +3343,16 @@ snapshots:
       which-pm-runs: 1.1.0
     transitivePeerDependencies:
       - supports-color
+
+  '@astrojs/ts-plugin@1.10.6':
+    dependencies:
+      '@astrojs/compiler': 2.13.0
+      '@astrojs/yaml2ts': 0.2.2
+      '@jridgewell/sourcemap-codec': 1.5.5
+      '@volar/language-core': 2.4.27
+      '@volar/typescript': 2.4.27
+      semver: 7.7.2
+      vscode-languageserver-textdocument: 1.0.12
 
   '@astrojs/vercel@8.2.7(@aws-sdk/credential-provider-web-identity@3.972.1)(astro@5.13.5(@types/node@24.3.1)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.972.1))(jiti@1.21.7)(rollup@4.50.0)(typescript@5.9.3)(yaml@2.8.1))(react@19.1.1)(rollup@4.50.0)':
     dependencies:

@@ -2,6 +2,9 @@
 import { Image } from "astro:assets";
 
 const { className, href, title, image, color } = Astro.props;
+// `color` queda para compatibilidad, pero este componente no lo usa.
+// Evita warning de variable no usada.
+void color;
 ---
 
 <div
