@@ -71,7 +71,7 @@ const t = (key: string) => translations[lang]?.[key] || key;
 		<NavBar lang={lang} t={t} />
 		<main id="main-content" class="">
 			<div
-				class="z-10 main-section backdrop-blur-md bg-black/30"
+				class="z-10 main-section backdrop-blur-sm sm:backdrop-blur-md bg-black/30"
 			>
 				<slot  />
 				<Footer />

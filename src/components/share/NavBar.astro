@@ -15,7 +15,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
   class="z-50 fixed top-0 left-0 right-0 py-2 transition-colors duration-300"
   role="banner"
 >
-  <div class="flex justify-between items-center w-full mx-auto px-8">
+  <div class="container-page flex justify-between items-center">
     <a class="text-xl flex items-center gap-2" href="/#" aria-label="Inicio - Angel Calderon">
       <Image
         loading="eager"
@@ -61,10 +61,10 @@ const { lang = "es", t = (k) => k } = Astro.props;
         </button>
         <div
           id="lang-menu"
-          class="hidden absolute right-0 mt-2 w-32 bg-white dark:bg-neutral-900 rounded shadow-lg z-50"
+          class="theme-light hidden absolute right-0 mt-2 w-36 bg-background text-foreground border border-border rounded-xl shadow-lg z-50 overflow-hidden"
         >
           <button
-            class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            class="block w-full text-left px-4 py-2 hover:bg-muted"
             data-lang="es"
           >
             <span class="flex items-center gap-2">
@@ -77,7 +77,7 @@ const { lang = "es", t = (k) => k } = Astro.props;
             </span>
           </button>
           <button
-            class="block w-full text-left px-4 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            class="block w-full text-left px-4 py-2 hover:bg-muted"
             data-lang="en"
           >
             <span class="flex items-center gap-2">
@@ -117,9 +117,6 @@ const { lang = "es", t = (k) => k } = Astro.props;
       typeof window !== "undefined" &&
       (window.location.search.includes("navdebug=1") ||
         window.localStorage.getItem("nav-debug") === "1");
-    function debug(...args) {
-      if (NAV_DEBUG) console.log("[NavBar debug]", ...args);
-    }
     // expose a helper for interactive inspection from console
     try {
       if (typeof window !== "undefined") window.__navBarDebug = { NAV_DEBUG };
@@ -146,45 +143,9 @@ const { lang = "es", t = (k) => k } = Astro.props;
     }
     // Header scroll behavior
     const header = document.getElementById("site-header");
-    const textTargets = header
-      ? header.querySelectorAll("a, h2, .liquid-glass-btn")
-      : [];
 
-    function applyTextColor(scrolled) {
-      textTargets.forEach((el) => {
-        const before = window.getComputedStyle
-          ? window.getComputedStyle(el).color
-          : null;
-        if (scrolled) {
-          // use dark text in light mode when scrolled (force)
-          try {
-            el.style.setProperty("color", "#0b1220", "important");
-          } catch (e) {
-            el.style.color = "#0b1220";
-          }
-          el.classList.remove("text-white");
-          el.classList.add("text-neutral-900");
-        } else {
-          // not scrolled -> default: white text (force)
-          try {
-            el.style.setProperty("color", "#ffffff", "important");
-          } catch (e) {
-            el.style.color = "#ffffff";
-          }
-          el.classList.remove("text-neutral-900", "text-black");
-          el.classList.add("text-white");
-        }
-        const after = window.getComputedStyle
-          ? window.getComputedStyle(el).color
-          : null;
-        debug("el", el, {
-          before,
-          after,
-          inlineStyle: el.style.getPropertyValue("color"),
-          classes: el.className,
-        });
-      });
-    }
+    // NOTE: Color/contrast is handled via CSS using the `.scrolled` class.
+    // Avoid forcing inline colors here (causes flicker and breaks dark mode).
 
     function onScroll() {
       if (!header) return;
@@ -193,56 +154,11 @@ const { lang = "es", t = (k) => k } = Astro.props;
       header.classList.toggle("max-w-[950px]", scrolled);
       header.classList.toggle("ml-auto", scrolled);
       header.classList.toggle("mr-auto", scrolled);
-      applyTextColor(scrolled);
     }
 
     // Update on load and on scroll
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
-    // Observe mutations on the header in case some other code toggles the class
-    if (header && window.MutationObserver) {
-      const mo = new MutationObserver((mutations) => {
-        for (const m of mutations) {
-          if (m.type === "attributes" && m.attributeName === "class") {
-            const has = header.classList.contains("scrolled");
-            debug("MutationObserver detected class change, has scrolled:", has);
-            applyTextColor(has);
-          }
-        }
-      });
-      mo.observe(header, { attributes: true, attributeFilter: ["class"] });
-    }
-
-    // Observe style changes on each text target to detect who/when overwrites color
-    if (textTargets.length && window.MutationObserver) {
-      textTargets.forEach((el) => {
-        try {
-          const smo = new MutationObserver((mutations) => {
-            for (const m of mutations) {
-              if (m.type === "attributes" && m.attributeName === "style") {
-                const now = new Date().toISOString();
-                const comp = window.getComputedStyle
-                  ? window.getComputedStyle(el).color
-                  : null;
-                debug("Style mutation on", el.tagName, "at", now, {
-                  inline: el.getAttribute("style"),
-                  computed: comp,
-                  classes: el.className,
-                });
-              }
-            }
-          });
-          smo.observe(el, { attributes: true, attributeFilter: ["style"] });
-        } catch (e) {
-          debug("failed to observe style for", el, e);
-        }
-      });
-    }
-
-    // If theme changes elsewhere, refresh the text colors (some layouts may dispatch this)
-    document.addEventListener("theme-changed", () =>
-      applyTextColor(window.scrollY > 20)
-    );
   });
 </script>

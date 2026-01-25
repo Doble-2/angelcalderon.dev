@@ -16,7 +16,7 @@ const ProjectCard = ({ project, isActive, onClick }) => {
             type="button"
             title={project.title || project.name}
             aria-pressed={isActive}
-            className={`group hover:shadow-xl  bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-shadow duration-200 focus:outline-none min-h-[44px]`}
+            className={`theme-light group bg-white/95 hover:bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-all duration-200 min-h-[44px] shadow-sm hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-black/60`}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.985 }}
             style={{ border: '1px solid rgba(0,0,0,0.06)', ...activeStyle }}
@@ -32,7 +32,7 @@ const ProjectCard = ({ project, isActive, onClick }) => {
             />
 
                     {/* ocultar textos en pantallas móviles para tarjetas más compactas */}
-                    <div className="hidden sm:flex flex-1 min-w-0">
+                    <div className="hidden sm:flex flex-col flex-1 min-w-0">
                         <h4 className="font-semibold text-sm sm:text-md truncate text-foreground">
                             {project.title || project.name}
                         </h4>

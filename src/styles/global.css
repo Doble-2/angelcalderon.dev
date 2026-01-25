@@ -13,6 +13,24 @@
       rgb(var(--accent-light)) 30%,
       white 60%
     );
+
+    /* Theme tokens (default: dark / cyberpunk serio) */
+    --background: 12 14 20;
+    --foreground: 245 247 255;
+    --muted: 22 25 35;
+    --muted-foreground: 190 198 214;
+    --border: 255 255 255;
+    --ring: 136 58 234;
+  }
+
+  /* Light theme scope for cards/panels that should stay light */
+  .theme-light {
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+    --muted: 241 245 249;
+    --muted-foreground: 71 85 105;
+    --border: 2 6 23;
+    --ring: 59 130 246;
   }
 
   html {
@@ -27,7 +45,195 @@
   }
 }
 
+@layer utilities {
+  /* Compatibility utilities (used across components) */
+  .text-foreground {
+    color: rgb(var(--foreground));
+  }
+  .text-muted-foreground {
+    color: rgb(var(--muted-foreground));
+  }
+  .bg-background {
+    background-color: rgb(var(--background));
+  }
+  .bg-muted {
+    background-color: rgb(var(--muted));
+  }
+  .border-border {
+    border-color: rgb(var(--border) / 0.12);
+  }
+  .ring-ring {
+    --tw-ring-color: rgb(var(--ring));
+  }
+
+  /* Hide scrollbars but keep scrolling */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
 @layer components {
+  /* Surface system (cyberpunk serio)
+     - shell: capa principal sobre el fondo
+     - panel: bloques/secciones sobre el shell
+  */
+  .surface-shell {
+    background: rgba(0, 0, 0, 0.28);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .surface-panel {
+    background: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Card primitive used in Projects (and anywhere else)
+     - token-based so it adapts under `.theme-light`
+     - includes consistent hover/focus micro-interactions
+  */
+  .neomorphic {
+    background: rgb(var(--background) / 0.86);
+    border: 1px solid rgb(var(--border) / 0.12);
+    border-radius: 16px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.3);
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  }
+
+  .neomorphic:is(:hover, :focus-within) {
+    transform: translateY(-2px);
+    border-color: rgb(var(--border) / 0.18);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
+  }
+
+  .neomorphic:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgb(var(--ring)), 0 22px 70px rgba(0, 0, 0, 0.38);
+  }
+
+  /* Layout containers */
+  .container-page {
+    @apply w-full mx-auto px-6 sm:px-8 lg:px-16;
+  }
+
+  .container-content {
+    @apply w-full mx-auto max-w-6xl;
+  }
+
+  /* Button system (base + variants + brand) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold transition-colors duration-150 select-none;
+    @apply h-11 px-5 rounded-xl text-sm;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    @apply ring-offset-black/60;
+  }
+
+  .theme-light .btn {
+    @apply ring-offset-white;
+  }
+
+  .btn-sm {
+    @apply h-10 px-4 rounded-lg text-sm;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-500;
+    @apply focus-visible:ring-blue-500;
+  }
+
+  .btn-secondary {
+    background-color: rgb(var(--muted) / 0.45);
+    color: rgb(var(--foreground));
+    border: 1px solid rgb(var(--border) / 0.14);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgb(var(--muted) / 0.6);
+  }
+
+  .btn-secondary:focus-visible {
+    --tw-ring-color: rgb(var(--ring));
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: rgb(var(--foreground));
+  }
+
+  .btn-ghost:hover {
+    background-color: rgb(var(--muted) / 0.35);
+  }
+
+  .btn-ghost:focus-visible {
+    --tw-ring-color: rgb(var(--ring));
+  }
+
+  .btn-brand-github {
+    @apply bg-[#24292f] text-white hover:bg-[#1f2428];
+    @apply focus-visible:ring-white/40;
+  }
+
+  .icon-btn {
+    @apply inline-flex items-center justify-center;
+    @apply w-10 h-10 rounded-xl;
+    @apply transition-colors duration-150;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    @apply ring-offset-black/60;
+  }
+
+  .theme-light .icon-btn {
+    @apply ring-offset-white;
+  }
+
+  .icon-btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-500;
+    @apply focus-visible:ring-blue-500;
+  }
+
+  .icon-btn-ghost {
+    @apply text-muted-foreground hover:bg-muted;
+    @apply focus-visible:ring-blue-500;
+  }
+
+  /* Typography system (cyberpunk serio) */
+  .type-display {
+    @apply text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.05];
+  }
+
+  .type-h1 {
+    @apply text-3xl md:text-4xl font-bold tracking-tight leading-tight;
+  }
+
+  .type-h2 {
+    @apply text-2xl md:text-3xl font-bold tracking-tight;
+  }
+
+  .type-h3 {
+    @apply text-xl md:text-2xl font-semibold;
+  }
+
+  .type-lead {
+    @apply text-lg md:text-xl leading-relaxed;
+  }
+
+  .type-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .type-meta {
+    @apply text-[11px] uppercase tracking-wider;
+  }
+
   /* Shared UI: glass button */
   .liquid-glass-btn {
     color: inherit;
@@ -62,32 +268,75 @@
     transition: filter 180ms ease-in-out;
   }
 
-  header#site-header.scrolled img.logo-img {
-    filter: invert(0);
-  }
-
   header#site-header.scrolled {
-    background: var(--gray-500, #ffffff45);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    background: rgba(0, 0, 0, 0.34);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
     border-radius: 0 0 12px 12px;
   }
 
   header#site-header.scrolled a,
   header#site-header.scrolled h2,
   header#site-header.scrolled .liquid-glass-btn {
-    color: #0b1220;
+    color: #fff;
   }
 
   header#site-header.scrolled .liquid-glass-btn {
-    border-color: rgba(0, 0, 0, 0.06);
+    border-color: rgba(255, 255, 255, 0.18);
   }
 
-  :root.dark header#site-header.scrolled a,
-  :root.dark header#site-header.scrolled h2,
-  :root.dark header#site-header.scrolled .liquid-glass-btn {
-    color: #fff;
+  /* Cuando el header se centra (max-w-*), reduce el padding interno
+     para que no se “coma” el ancho útil en pantallas grandes. */
+  header#site-header.scrolled .container-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Mobile performance: reduce heavy blur/shadows on small screens */
+  @media (max-width: 640px) {
+    .surface-shell {
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    .surface-panel {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.32);
+    }
+
+    header#site-header.scrolled {
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.32);
+    }
+
+    .liquid-glass-btn {
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+
+    .neomorphic {
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 38px rgba(0, 0, 0, 0.32);
+    }
+  }
+
+  @media (min-width: 640px) {
+    header#site-header.scrolled .container-page {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    header#site-header.scrolled .container-page {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
   }
 
   /* Shared UI: link card */

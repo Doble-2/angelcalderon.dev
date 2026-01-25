@@ -51,8 +51,8 @@ const TechnologyTag = ({ tech }) => {
   }, [tech]);
 
   return (
-    <div className=" inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-foreground text-xs font-medium gap-2">
-      {Icon && <Icon className="w-4 h-4 " />}
+    <div className="inline-flex items-center justify-center rounded-md border border-border bg-muted/50 px-2 py-0.5 text-foreground text-xs font-medium gap-2">
+      {Icon && <Icon className="w-4 h-4 text-muted-foreground" />}
       <span>{tech}</span>
     </div>
   );

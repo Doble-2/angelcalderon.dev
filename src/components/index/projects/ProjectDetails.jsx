@@ -130,7 +130,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
         boxShadow: `0 10px 30px ${glowColor}`,
         borderColor: borderAccent,
       }}
-      className="relative max-w-4xl mx-auto bg-white rounded-2xl overflow-hidden shadow-lg ring-1 ring-black/5 border"
+      className="theme-light relative max-w-4xl mx-auto bg-background text-foreground rounded-2xl overflow-hidden shadow-lg ring-1 ring-black/5 border border-border"
     >
       <div className="md:flex">
         {/* subtle radial highlight using project color */}
@@ -140,7 +140,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
           style={{ background: highlightBg }}
         />
         {/* Left: Image hero */}
-        <div className="md:w-1/3 w-full bg-white ">
+        <div className="md:w-1/3 w-full bg-background">
           <div className="relative h-56 md:h-full md:min-h-[260px] lg:min-h-[320px]">
             <img
               src={buildImage(project)}
@@ -152,7 +152,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute left-4 bottom-4">
               {project.category && (
-                <span className="hidden md:inline-block text-xs bg-white text-slate-900 px-3 py-1 rounded-full font-semibold shadow-sm">
+                <span className="hidden md:inline-block text-xs bg-background text-foreground px-3 py-1 rounded-full font-semibold shadow-sm border border-border">
                   {project.category}
                 </span>
               )}
@@ -164,17 +164,17 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
         <div className="md:flex-1 p-6 md:p-8">
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div className="min-w-0">
-              <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold tracking-tight text-slate-900 ">
+              <h2 className="text-lg md:text-2xl lg:text-3xl font-semibold tracking-tight text-foreground">
                 {project.name}
               </h2>
             </div>
             <div className="flex items-center gap-3">
               {project.role && (
                 <div className="text-xs text-muted-foreground text-right">
-                  <div className="uppercase font-semibold text-[10px] tracking-wider text-slate-500">
+                  <div className="uppercase font-semibold text-[10px] tracking-wider text-muted-foreground">
                     {t("role")}
                   </div>
-                  <div className="font-medium text-slate-900 ">
+                  <div className="font-medium text-foreground">
                     {project.role}
                   </div>
                 </div>
@@ -182,7 +182,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
             </div>
           </div>
 
-          <p className="mt-4 text-sm text-slate-700  leading-relaxed">
+          <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
             {project.description}
           </p>
 
@@ -202,7 +202,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               <div className="uppercase text-[11px] font-semibold tracking-wider mb-1">
                 {t("project_dates")}
               </div>
-              <div className="font-medium text-slate-900 ">
+              <div className="font-medium text-foreground">
                 {formattedStart} — {formattedEnd}
               </div>
             </div>
@@ -210,15 +210,15 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               <div className="uppercase text-[11px] font-semibold tracking-wider mb-1">
                 {t("duration")}
               </div>
-              <div className="font-medium text-slate-900 ">
+              <div className="font-medium text-foreground">
                 {displayDuration}
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100  flex flex-wrap items-center gap-3">
+          <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center gap-3">
             <a
-              className="inline-flex items-center gap-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:ring-blue-500 transition"
+              className="btn btn-primary btn-sm"
               href={`/projects/${encodeURIComponent(
                 project.name
               )}`}
@@ -227,7 +227,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               {t("view_details_page")}
             </a>
             <a
-              className="inline-flex items-center gap-2 border border-blue-500 text-blue-500 font-medium py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="btn btn-secondary btn-sm"
               href={demoUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -237,7 +237,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
             </a>
             <button
               onClick={onNext}
-              className="ml-auto inline-flex items-center gap-2 text-sm text-blue-500  s group"
+              className="btn btn-ghost btn-sm ml-auto group"
               title={t("next_project")}
             >
               {t("next")}

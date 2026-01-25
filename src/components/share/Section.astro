@@ -6,7 +6,7 @@ const { className } = Astro.props;
   role={Astro.props.role || 'region'}
   aria-label={Astro.props.ariaLabel || 'section'}
   class:list={[
-    " min-h-[65vh] bg-white/80 gap-2 grid items-center main-section md:flex  px-8 py-8 mx-auto lg:gap-8 xl:gap-0  lg:px-16 ",
+    "surface-panel text-foreground container-page py-12 md:py-14 lg:py-16 flex flex-col gap-8 md:gap-10 main-section",
     className,
   ]}
 >

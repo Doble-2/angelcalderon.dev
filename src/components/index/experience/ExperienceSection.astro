@@ -27,17 +27,17 @@ const skills = [
 ];
 ---
 
-<section class="max-w-6xl mx-auto px-4">
-  <div class="text-center mb-8">
-    <h2 class="text-4xl font-bold">{t('professional_experience')}</h2>
-    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto text-xl">{t('experience_description_1')}</p>
-    <p class="mt-2 text-muted-foreground max-w-2xl mx-auto text-xl">{t('experience_description_2')}</p>
+<section class="container-content">
+  <div class="text-center mb-10">
+    <h2 class="type-h2">{t('professional_experience')}</h2>
+    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_1')}</p>
+    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_2')}</p>
   </div>
 
   <!-- Skills grid -->
   <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
     {skills.map((skill) => (
-      <div class="bg-white text-foreground flex flex-col gap-4 rounded-2xl border border-transparent hover:border-gray-200/60 py-6 shadow-md hover:shadow-xl transition-all duration-300 text-center p-6 backdrop-blur-sm">
+      <div class="theme-light bg-background text-foreground flex flex-col gap-4 rounded-2xl border border-border py-6 shadow-sm hover:shadow-md transition-all duration-300 text-center p-6 backdrop-blur-sm">
         <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transform transition-transform duration-300 hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
           <div class={`w-12 h-12 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${skill.gradient}`}>
             <skill.icon className="h-6 w-6" />

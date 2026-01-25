@@ -49,7 +49,7 @@ export default function ClientLayout({ title, children }) {
     <>
       <Rainy />
       <main>
-        <div className="z-10 relative main-section text-white backdrop-blur-md bg-black/30">
+        <div className="z-10 relative main-section text-white backdrop-blur-sm sm:backdrop-blur-md bg-black/30">
           <NavBar lang={lang} t={t} />
           {children}
           <Contact />

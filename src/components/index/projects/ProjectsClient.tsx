@@ -98,14 +98,14 @@ export default function ProjectsClient({
 
   return (
     <div
-      className="space-y-8"
+      className="space-y-10"
       tabIndex={0}
       onKeyDown={handleKeyDown}
       role="region"
       aria-label={t("projects")}
     >
       {/* Selector de Proyectos */}
-      <div className="flex overflow-x-auto space-x-4 p-2 snap-x snap-mandatory items-center justify-center">
+      <div className="no-scrollbar flex overflow-x-auto gap-3 p-3 snap-x snap-mandatory items-center justify-start md:justify-center rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm">
         {effectiveProjects.map((p, idx) => (
           <ProjectCard
             key={p.id || p.name}

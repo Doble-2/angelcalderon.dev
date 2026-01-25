@@ -9,15 +9,15 @@ interface Props {
 const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
 ---
 
-<section id="contacto" class="max-w-xl md:min-w-[600px] mx-auto px-4 py-12">
-  <div class="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+<div id="contacto" class="container-content">
+  <div class="theme-light text-foreground bg-background rounded-2xl shadow-md border border-border p-6 md:p-8 max-w-2xl mx-auto">
     <div class="text-center">
-    <h3 class="text-2xl font-semibold">{t('title')}</h3>
+    <h3 class="type-h3">{t('title')}</h3>
     
     </div>
 
     <div class="mt-6">
-      <form id="contact-form" class="space-y-3">
+      <form id="contact-form" class="space-y-4">
         <div>
          
             <label
@@ -31,7 +31,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
               id="name"
               name="name"
               required
-              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
             />
         </div>
 
@@ -48,7 +48,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
               name="email"
               type="email"
               required
-              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
             />
         </div>
 
@@ -66,7 +66,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
               name="message"
               rows="4"
               required
-              class="mt-1 w-full bg-transparent border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30"
+              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
             ></textarea>
         </div>
 
@@ -75,7 +75,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
             type="submit"
             id="submit-btn"
             aria-live="polite"
-            class="inline-flex bg-blue-600 items-center gap-2 px-4 py-2 rounded-md font-medium text-white transform transition duration-150 active:scale-95 active:brightness-90 focus:outline-none focus:ring-2 focus:ring-accent/30"
+            class="icon-btn icon-btn-primary"
           >
             <!-- send icon -->
             <SendIcon id="send-icon" className="w-4 h-4" />
@@ -86,7 +86,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
           <button
             type="button"
             id="copy-email"
-            class="inline-flex items-center justify-center w-9 h-9 rounded-md text-muted-foreground hover:bg-gray-100 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-accent/30"
+            class="icon-btn icon-btn-ghost"
             aria-label={t('copyEmail')}
             title={t('copyEmail')}
           >
@@ -118,7 +118,7 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
       </form>
     </div>
   </div>
-</section>
+</div>
 
 
 <script is:inline define:vars={{ i18n, lang }}>
