@@ -70,13 +70,13 @@ const t = (key: string) => translations[lang]?.[key] || key;
     <meta name="generator" content={Astro.generator} />
     <title>{title} | Caracas, Venezuela</title>
   </head>
-  <body class="max-w-screen">
+  <body class="max-w-screen bg-background text-foreground">
     <a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a
     >
     <Rainy />
 
     <NavBar lang={lang} t={t} />
-    <main id="main-content" class="">
+    <main id="main-content" class="text-foreground">
       <div
         class="z-10 main-section backdrop-blur-sm sm:backdrop-blur-md bg-black/30"
       >

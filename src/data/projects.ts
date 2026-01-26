@@ -46,8 +46,10 @@ export const projects: Project[] = [
     description:
       "A comprehensive residential management platform bridging physical security hardware with modern cloud architecture. Designed to automate visitor access and streamline complex financial reporting for large-scale condominiums.",
     images: [
-      "/projects/eficense/dashboard-iot.png",
-      "/projects/eficense/mobile-access.png"
+      "/projects/eficense/dashboard.png",
+      "/projects/eficense/telegram.png",
+      "/projects/eficense/finances.png",
+      "/projects/eficense/docs.png"
     ],
     tech: {
       primary: ["Next.js", "Python", "IoT"],
@@ -71,12 +73,17 @@ export const projects: Project[] = [
     description:
       "An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.",
     images: [
-      "/projects/studia/studia-chat.png",
-      "/projects/studia/studia-dashboard.png"
+      "/projects/studia/dashboardadmin.png",
+      "/projects/studia/mobile-flow.png",
+      "/projects/studia/light-dark.png",
+      "/projects/studia/dashboardowner.png",
+      "/projects/studia/chatbot.png",
+      "/projects/studia/quizes.png",
+      "/projects/studia/themes.png"
     ],
     tech: {
       primary: ["React Native", "Python", "RAG"],
-      tools: ["FastAPI", "PostgreSQL", "Meta Cloud API"],
+      tools: ["WhatsApp Cloud API", "Vector DB", "FastAPI", "PostgreSQL"],
     },
     role: "Creator & Lead Engineer",
     dateStart: "2025",
@@ -138,6 +145,7 @@ export const projects: Project[] = [
     description:
       "A Flutter mobile app that integrates NASA’s APOD API to browse and download astronomy images, backed by a lightweight Python backend.",
     images: [
+      "/projects/appod/flow.png",
       "/projects/appod/home.webp",
       "/projects/appod/apod.webp",
       "/projects/appod/load.webp"
