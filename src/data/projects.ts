@@ -157,7 +157,7 @@ export const projects: Project[] = [
     metrics: [{ label: "Adoption", value: "500+ requests" }],
     links: {
       demo: "https://appod.angelcalderon.dev/",
-      repo: "https://github.com/Doble-2/apod-nasa",
+      repo: "https://github.com/Doble-2/Appod-AstronomyPictureOfDay",
     },
     role: "Mobile Developer",
     dateStart: "2024",

@@ -13,7 +13,7 @@ export default function ProjectGalleryMobile({ images = [], name = "" }) {
           {images.map((img, i) => (
             <button
               key={img}
-              className={`rounded-md border border-white/15 bg-black/10 flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-black/60 ${selected === i ? 'ring-2 ring-accent' : ''}`}
+              className={`rounded-md border border-border bg-muted flex-shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white ${selected === i ? 'ring-2 ring-accent' : ''}`}
               onClick={() => setSelected(i)}
               aria-label={`Ver imagen ${i + 1}`}
             >

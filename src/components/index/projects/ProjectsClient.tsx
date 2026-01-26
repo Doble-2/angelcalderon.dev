@@ -1,8 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import I18N from "../../../i18n";
-import { AnimatePresence, motion } from "framer-motion";
-import { ExternalLink, Eye, X } from "lucide-react";
-import TechnologyTag from "./TechnologyTag";
 
 type ProjectLike = {
   id?: string;
@@ -59,17 +56,6 @@ export default function ProjectsClient({
     });
   }, [projects]);
 
-  const [openProjectId, setOpenProjectId] = useState<string | null>(null);
-
-  // Si cambia la lista y el id abierto ya no existe, resetea.
-  useEffect(() => {
-    if (!openProjectId) return;
-    const stillExists = effectiveProjects.some(
-      (p) => String(p.id ?? p.name) === openProjectId,
-    );
-    if (!stillExists) setOpenProjectId(null);
-  }, [openProjectId, effectiveProjects]);
-
   const buildImage = (p: any) => {
     const first = p?.images?.[0];
     if (!first) return "/placeholder.svg";
@@ -86,15 +72,6 @@ export default function ProjectsClient({
     const normalized = asString.replace(/,+/g, " ").replace(/\s+/g, " ");
     return normalized || "59 130 246";
   };
-
-  const getDemoUrl = (p: any) =>
-    p?.links?.demo ||
-    p?.links?.live ||
-    p?.demo ||
-    p?.deployed ||
-    p?.link ||
-    p?.url ||
-    "#";
 
   const getSlug = (p: any) => {
     const explicit = String(p?.slug || "").trim();
@@ -127,23 +104,7 @@ export default function ProjectsClient({
       note?: string;
     }>;
 
-  const getTechnologies = (p: any) => {
-    const legacy = [...(p?.front || []), ...((p?.back ?? []) as string[])];
-    const t = p?.tech;
-    const modern = [
-      ...(t?.primary || []),
-      ...(t?.frontend || []),
-      ...(t?.backend || []),
-      ...(t?.mobile || []),
-      ...(t?.infra || []),
-      ...(t?.tools || []),
-      ...(t?.services || []),
-    ];
-    return Array.from(new Set([...modern, ...legacy].filter(Boolean)));
-  };
-
-  const getLayoutClass = (idx: number, isOpen: boolean) => {
-    if (isOpen) return "md:col-span-12";
+  const getLayoutClass = (idx: number) => {
     if (idx === 0) return "md:col-span-7";
     if (idx === 1) return "md:col-span-5";
     // alternating sizes for rhythm
@@ -161,20 +122,8 @@ export default function ProjectsClient({
     );
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Escape") {
-      setOpenProjectId(null);
-    }
-  };
-
   return (
-    <div
-      className="space-y-10"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      role="region"
-      aria-label={t("projects")}
-    >
+    <div className="space-y-10" role="region" aria-label={t("projects")}>
       <div className="relative">
         <div
           aria-hidden
@@ -188,23 +137,18 @@ export default function ProjectsClient({
         <div className="bento-grid">
           {effectiveProjects.map((p: any, idx: number) => {
             const projectId = String(p.id ?? p.name ?? idx);
-            const isOpen = openProjectId === projectId;
             const accentSpaces = toAccentSpaces(p.color);
-            const technologies = getTechnologies(p);
-            const demoUrl = getDemoUrl(p);
             const metrics = getMetrics(p);
             const topMetrics = metrics.slice(0, 2);
             const status = formatStatus(p.status);
             const detailsHref = `/projects/${encodeURIComponent(getSlug(p))}`;
-            const ariaControls = `bento-project-${projectId}`;
 
             return (
               <article
                 key={projectId}
                 className={[
                   "bento-card surface-panel neo-border",
-                  getLayoutClass(idx, isOpen),
-                  isOpen ? "is-open" : "",
+                  getLayoutClass(idx),
                 ].join(" ")}
                 style={
                   {
@@ -213,165 +157,64 @@ export default function ProjectsClient({
                   } as React.CSSProperties
                 }
               >
-                <button
-                  type="button"
-                  className="bento-hit"
-                  aria-expanded={isOpen}
-                  aria-controls={ariaControls}
-                  onClick={() =>
-                    setOpenProjectId((prev) =>
-                      prev === projectId ? null : projectId,
-                    )
-                  }
-                >
-                  <div className="bento-media">
-                    <img
-                      src={buildImage(p)}
-                      alt={p.title || p.name}
-                      className="bento-img"
-                      loading={idx < 2 ? "eager" : "lazy"}
-                      decoding="async"
-                    />
-                    <div className="bento-overlay" />
+                <div className="bento-media">
+                  <img
+                    src={buildImage(p)}
+                    alt={p.title || p.name}
+                    className="bento-img"
+                    loading={idx < 2 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                  <div className="bento-overlay" />
 
-                    {topMetrics.length ? (
-                      <div className="bento-kpis" aria-hidden>
-                        {topMetrics.map((m, mi) => (
-                          <div
-                            key={`${m.label}-${m.value}`}
-                            className={
-                              mi === 0 ? "bento-kpi is-hero" : "bento-kpi"
-                            }
-                            title={
-                              m.note
-                                ? `${m.label}: ${m.value} — ${m.note}`
-                                : `${m.label}: ${m.value}`
-                            }
-                          >
-                            <span className="bento-kpi-label">{m.label}</span>
-                            <span className="bento-kpi-value">{m.value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
+                  {topMetrics.length ? (
+                    <div
+                      className="bento-kpis pointer-events-none z-20"
+                      aria-hidden
+                    >
+                      {topMetrics.map((m, mi) => (
+                        <div
+                          key={`${m.label}-${m.value}`}
+                          className={
+                            mi === 0 ? "bento-kpi is-hero" : "bento-kpi"
+                          }
+                          title={
+                            m.note
+                              ? `${m.label}: ${m.value} — ${m.note}`
+                              : `${m.label}: ${m.value}`
+                          }
+                        >
+                          <span className="bento-kpi-label">{m.label}</span>
+                          <span className="bento-kpi-value">{m.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
 
-                    <div className="bento-title">
-                      <div className="bento-kicker">
-                        {p.category || (lang === "en" ? "Case study" : "Caso")}
-                        {p.role ? (
-                          <span className="hidden sm:inline text-[11px] opacity-80">
-                            • {p.role}
-                          </span>
-                        ) : null}
-                        {status ? (
-                          <span
-                            className="bento-badge"
-                            data-variant={String(p.status || "").toLowerCase()}
-                          >
-                            {status}
-                          </span>
-                        ) : null}
-                      </div>
-                      <div className="bento-name">{p.name}</div>
-                      {p.subtitle ? (
-                        <div className="bento-sub">{p.subtitle}</div>
+                  <div className="bento-title pointer-events-none z-20">
+                    <div className="bento-kicker">
+                      {p.category || (lang === "en" ? "Case study" : "Caso")}
+                      {status ? (
+                        <span
+                          className="bento-badge"
+                          data-variant={String(p.status || "").toLowerCase()}
+                        >
+                          {status}
+                        </span>
                       ) : null}
                     </div>
+                    <div className="bento-name">{p.name}</div>
+                    {p.subtitle ? (
+                      <div className="bento-sub">{p.subtitle}</div>
+                    ) : null}
                   </div>
-                </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen ? (
-                    <motion.div
-                      id={ariaControls}
-                      key="content"
-                      className="bento-body"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.26, ease: "easeInOut" }}
-                    >
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                          {p.description ? (
-                            <p className="type-body text-muted-foreground">
-                              {p.description}
-                            </p>
-                          ) : null}
-                        </div>
-                        <button
-                          type="button"
-                          className="icon-btn icon-btn-ghost shrink-0"
-                          onClick={() => setOpenProjectId(null)}
-                          aria-label={t("close")}
-                          title={t("close")}
-                        >
-                          <X size={18} />
-                        </button>
-                      </div>
-
-                      {technologies.length ? (
-                        <div className="mt-4">
-                          <div className="type-meta text-muted-foreground">
-                            {t("technologies_used")}
-                          </div>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {technologies.map((tech: string) => (
-                              <TechnologyTag key={tech} tech={tech} />
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {metrics.length ? (
-                        <div className="mt-4">
-                          <div className="type-meta text-muted-foreground">
-                            {t("highlights")}
-                          </div>
-                          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {metrics.slice(0, 4).map((m) => (
-                              <div
-                                key={`${m.label}-${m.value}`}
-                                className="rounded-xl border border-border bg-muted/40 px-3 py-2"
-                              >
-                                <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
-                                  {m.label}
-                                </div>
-                                <div className="text-sm font-semibold text-foreground">
-                                  {m.value}
-                                </div>
-                                {m.note ? (
-                                  <div className="text-xs text-muted-foreground mt-0.5">
-                                    {m.note}
-                                  </div>
-                                ) : null}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      ) : null}
-
-                      <div className="mt-5 flex flex-wrap items-center gap-3">
-                        <a
-                          className="btn btn-primary btn-sm"
-                          href={detailsHref}
-                        >
-                          <Eye size={16} />
-                          {t("view_details_page")}
-                        </a>
-                        <a
-                          className="btn btn-secondary btn-sm"
-                          href={demoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink size={16} />
-                          {t("view_demo")}
-                        </a>
-                      </div>
-                    </motion.div>
-                  ) : null}
-                </AnimatePresence>
+                  <a
+                    href={detailsHref}
+                    className="absolute inset-0 z-10 rounded-[20px] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 ring-offset-white"
+                    aria-label={`${t("view_details_page")}: ${p.title || p.name}`}
+                  />
+                </div>
               </article>
             );
           })}

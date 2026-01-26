@@ -13,8 +13,17 @@ interface Props {
 
 const { project } = Astro.props as Props;
 
-const demoUrl = project.links?.demo || null;
-const repoUrl = project.links?.repo || null;
+const safeUrl = (u: unknown) => {
+  if (!u) return null;
+  const s = String(u).trim();
+  if (!s || s === "#") return null;
+  return s;
+};
+
+const demoUrl = safeUrl(project.links?.demo || (project as any).url || null);
+const repoUrl = safeUrl(project.links?.repo || (project as any).repo || null);
+
+const isGitHubRepo = Boolean(repoUrl && repoUrl.includes("github.com"));
 
 const images = (project.images || []).filter(Boolean);
 const heroImage = images[0] || "/rect1-optimized.webp";
@@ -35,7 +44,20 @@ const pageUrl = (Astro.props as Props).url || Astro.request.url;
 
 const primary = project.tech?.primary ?? [];
 const tools = project.tech?.tools ?? [];
-const fullStack = [...primary, ...tools].filter(Boolean);
+const t = (project.tech ?? {}) as any;
+const fullStack = Array.from(
+  new Set(
+    [
+      ...primary,
+      ...(t?.frontend ?? []),
+      ...(t?.backend ?? []),
+      ...(t?.mobile ?? []),
+      ...(t?.infra ?? []),
+      ...(t?.services ?? []),
+      ...tools,
+    ].filter(Boolean)
+  )
+);
 
 ---
 
@@ -45,9 +67,56 @@ const fullStack = [...primary, ...tools].filter(Boolean);
       <h1 class="type-display bg-gradient-to-r from-blue-300 via-blue-600 to-purple-500 bg-clip-text text-transparent">
         {project.name}
       </h1>
-      <p class="mt-3 type-lead text-muted-foreground max-w-3xl">{project.subtitle}</p>
+      {project.subtitle ? (
+        <p class="mt-3 type-lead text-muted-foreground max-w-3xl">{project.subtitle}</p>
+      ) : null}
 
-      <div class="mt-5 flex flex-wrap gap-2">
+      <!-- Mobile quick facts (glance) -->
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
+        {project.role ? (
+          <div class="rounded-2xl neomorphic p-4">
+            <div class="text-xs text-muted-foreground">Role</div>
+            <div class="mt-1 text-sm font-semibold text-foreground">{project.role}</div>
+          </div>
+        ) : null}
+
+        {project.dateStart ? (
+          <div class="rounded-2xl neomorphic p-4">
+            <div class="text-xs text-muted-foreground">Date</div>
+            <div class="mt-1 text-sm font-semibold text-foreground">{project.dateStart}</div>
+          </div>
+        ) : null}
+
+        {Array.isArray(project.metrics) && project.metrics.length ? (
+          <div class="rounded-2xl neomorphic p-4 sm:col-span-2">
+            <div class="text-xs text-muted-foreground">Highlights</div>
+            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {project.metrics.slice(0, 4).map((m) => (
+                <div class="rounded-xl border border-border bg-muted p-3">
+                  <div class="text-xs text-muted-foreground">{m.label}</div>
+                  <div class="mt-1 text-sm font-semibold text-foreground">{m.value}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {fullStack.length ? (
+          <div class="rounded-2xl neomorphic p-4 sm:col-span-2">
+            <div class="text-xs text-muted-foreground">Stack</div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {fullStack.slice(0, 14).map((t) => (
+                <span class="chip inline-flex items-center gap-2">
+                  <TechIcon kind={t} />
+                  <span>{t}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+
+      <div class="mt-5 hidden lg:flex flex-wrap gap-2">
         {primary.map((t) => (
           <span class="chip inline-flex items-center gap-2">
             <TechIcon kind={t} />
@@ -70,7 +139,7 @@ const fullStack = [...primary, ...tools].filter(Boolean);
         {repoUrl ? (
           <a
             href={repoUrl}
-            class="btn btn-secondary w-full sm:w-auto justify-center"
+            class={isGitHubRepo ? "btn btn-brand-github w-full sm:w-auto justify-center" : "btn btn-secondary w-full sm:w-auto justify-center"}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -84,7 +153,7 @@ const fullStack = [...primary, ...tools].filter(Boolean);
       <!-- 65/35: 8/4 columns -->
       <div class="lg:col-span-8 order-2 lg:order-1">
         <div class="space-y-4">
-          <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-lg shadow-black/30">
+          <div class="overflow-hidden rounded-2xl neomorphic">
             <img
               src={heroImage}
               alt={`${project.name} hero`}
@@ -95,9 +164,9 @@ const fullStack = [...primary, ...tools].filter(Boolean);
           </div>
 
           {gallery.length ? (
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {gallery.map((src, idx) => (
-                <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-lg shadow-black/20">
+                <div class="overflow-hidden rounded-2xl neomorphic">
                   <img
                     src={src}
                     alt={`${project.name} gallery ${idx + 1}`}
@@ -112,9 +181,9 @@ const fullStack = [...primary, ...tools].filter(Boolean);
         </div>
       </div>
 
-      <aside class="lg:col-span-4 order-1 lg:order-2">
-        <div class="sticky top-24 space-y-4">
-          <div class="rounded-2xl border border-white/10 bg-black/25 backdrop-blur-sm p-5 md:p-6">
+      <aside class="hidden lg:block lg:col-span-4 order-1 lg:order-2">
+        <div class="lg:sticky lg:top-24 space-y-4">
+          <div class="rounded-2xl neomorphic p-5 md:p-6">
             <h2 class="type-h3">Project Info</h2>
 
             <dl class="mt-4 grid gap-4">
@@ -152,11 +221,11 @@ const fullStack = [...primary, ...tools].filter(Boolean);
           </div>
 
           {Array.isArray(project.metrics) && project.metrics.length ? (
-            <div class="rounded-2xl border border-white/10 bg-black/20 p-5 md:p-6">
+            <div class="rounded-2xl neomorphic p-5 md:p-6">
               <h3 class="text-sm font-semibold text-foreground">Metrics</h3>
               <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {project.metrics.slice(0, 4).map((m) => (
-                  <div class="rounded-xl border border-white/10 bg-black/25 p-3">
+                  <div class="rounded-xl border border-border bg-muted p-3">
                     <div class="text-xs text-muted-foreground">{m.label}</div>
                     <div class="mt-1 text-sm text-foreground opacity-90 font-semibold">{m.value}</div>
                   </div>

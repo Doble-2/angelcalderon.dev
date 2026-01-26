@@ -30,10 +30,10 @@ const techBadges = [
 >
 	<main class="container-content py-10 md:py-14">
 		<!-- Hero: Omnichannel + Personalization -->
-		<section class="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950">
+		<section class="relative overflow-hidden rounded-3xl border border-border bg-background">
 			<div class="absolute inset-0 opacity-80" style="background: radial-gradient(900px 520px at 15% 15%, rgba(99,102,241,0.28), transparent 60%);" />
 			<div class="absolute inset-0 opacity-80" style="background: radial-gradient(900px 520px at 85% 25%, rgba(168,85,247,0.22), transparent 60%);" />
-			<div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(2,6,23,0.35), rgba(2,6,23,0.75));" />
+			<div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.92));" />
 
 			<div class="relative grid lg:grid-cols-12 gap-8 p-6 md:p-10 items-center">
 				<div class="lg:col-span-6">
@@ -43,7 +43,7 @@ const techBadges = [
 						<span class="chip">RAG</span>
 					</div>
 
-					<h1 class="mt-5 type-display bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300 bg-clip-text text-transparent">
+					<h1 class="mt-5 type-display bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
 						Studia: AI-Powered Tutor
 					</h1>
 					<p class="mt-3 type-lead text-muted-foreground max-w-xl">
@@ -65,9 +65,7 @@ const techBadges = [
 
 					<div class="mt-6 flex flex-wrap gap-2">
 						{techBadges.map((t) => (
-							<span class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80">
-								{t}
-							</span>
+							<span class="chip">{t}</span>
 						))}
 					</div>
 				</div>
@@ -104,7 +102,7 @@ const techBadges = [
 								/>
 							</div>
 							<div class="device-phone__badge">
-								<span class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-xs text-white/80">
+								<span class="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground">
 									<span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true" />
 									WhatsApp + Mobile
 								</span>
@@ -122,7 +120,7 @@ const techBadges = [
 				Studia connects a school’s institutional knowledge with each student’s questions to produce grounded, hyper-personalized answers.
 			</p>
 
-			<div class="mt-6 rounded-3xl border border-white/10 bg-black/20 backdrop-blur-sm p-5 md:p-7">
+			<div class="mt-6 rounded-3xl neomorphic backdrop-blur-sm p-5 md:p-7">
 				<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 					<div class="rag-card">
 						<div class="rag-icon" aria-hidden="true">
@@ -134,8 +132,8 @@ const techBadges = [
 							</svg>
 						</div>
 						<div>
-							<div class="text-sm font-semibold text-white">School Data (PDFs)</div>
-							<div class="mt-1 text-xs text-white/70">Policies · Guides · Curriculum</div>
+							<div class="text-sm font-semibold text-foreground">School Data (PDFs)</div>
+							<div class="mt-1 text-xs text-muted-foreground">Policies · Guides · Curriculum</div>
 						</div>
 					</div>
 
@@ -150,8 +148,8 @@ const techBadges = [
 							</svg>
 						</div>
 						<div>
-							<div class="text-sm font-semibold text-white">Student Question</div>
-							<div class="mt-1 text-xs text-white/70">WhatsApp · Mobile · Web</div>
+							<div class="text-sm font-semibold text-foreground">Student Question</div>
+							<div class="mt-1 text-xs text-muted-foreground">WhatsApp · Mobile · Web</div>
 						</div>
 					</div>
 
@@ -166,8 +164,8 @@ const techBadges = [
 							</svg>
 						</div>
 						<div>
-							<div class="text-sm font-semibold text-white">Hyper-Personalized Answer</div>
-							<div class="mt-1 text-xs text-white/70">Grounded · Context-aware · Safe</div>
+							<div class="text-sm font-semibold text-foreground">Hyper-Personalized Answer</div>
+							<div class="mt-1 text-xs text-muted-foreground">Grounded · Context-aware · Safe</div>
 						</div>
 					</div>
 				</div>
@@ -182,30 +180,30 @@ const techBadges = [
 			</p>
 
 			<div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-				<article class="rounded-3xl border border-white/10 bg-black/20 p-5">
+				<article class="rounded-3xl border border-border bg-muted p-5">
 					<div class="flex items-center gap-3">
 						<span class="mono-pill">Web</span>
-						<h3 class="text-white font-semibold">Admin Dashboard</h3>
+						<h3 class="text-foreground font-semibold">Admin Dashboard</h3>
 					</div>
 					<p class="mt-2 text-sm text-muted-foreground">
 						Manage institutions, upload knowledge, track cohorts, and measure engagement.
 					</p>
 				</article>
 
-				<article class="rounded-3xl border border-white/10 bg-black/20 p-5">
+				<article class="rounded-3xl border border-border bg-muted p-5">
 					<div class="flex items-center gap-3">
 						<span class="mono-pill">Mobile</span>
-						<h3 class="text-white font-semibold">Student App</h3>
+						<h3 class="text-foreground font-semibold">Student App</h3>
 					</div>
 					<p class="mt-2 text-sm text-muted-foreground">
 						Native tutoring experience designed for focus: chat, quizzes, and progress.
 					</p>
 				</article>
 
-				<article class="rounded-3xl border border-white/10 bg-black/20 p-5">
+				<article class="rounded-3xl border border-border bg-muted p-5">
 					<div class="flex items-center gap-3">
 						<span class="mono-pill">WhatsApp</span>
-						<h3 class="text-white font-semibold">Instant Access</h3>
+						<h3 class="text-foreground font-semibold">Instant Access</h3>
 					</div>
 					<p class="mt-2 text-sm text-muted-foreground">
 						Lower friction by meeting students on WhatsApp using Cloud API workflows.
@@ -271,32 +269,36 @@ const techBadges = [
 		.device-stage{position:relative;min-height:420px}
 
 		.device-laptop{position:relative;max-width:560px;margin-left:auto;margin-right:auto;filter:drop-shadow(0 30px 40px rgba(0,0,0,.55))}
-		.device-laptop__top{height:22px;border-radius:18px 18px 10px 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}
-		.device-laptop__camera{width:6px;height:6px;border-radius:999px;background:rgba(255,255,255,.30)}
-		.device-laptop__screen{aspect-ratio:16/10;overflow:hidden;border-radius:0 0 18px 18px;border:1px solid rgba(255,255,255,.12);border-top:none;background:rgba(0,0,0,.35)}
-		.device-laptop__base{height:16px;border-radius:0 0 22px 22px;background:linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.10);border-top:none}
+			.device-laptop__top{height:22px;border-radius:18px 18px 10px 10px;background:rgb(var(--background) / 0.92);border:1px solid rgb(var(--border) / 0.14);display:flex;align-items:center;justify-content:center}
+			.device-laptop__camera{width:6px;height:6px;border-radius:999px;background:rgb(var(--foreground) / 0.22)}
+			.device-laptop__screen{aspect-ratio:16/10;overflow:hidden;border-radius:0 0 18px 18px;border:1px solid rgb(var(--border) / 0.14);border-top:none;background:rgb(var(--muted) / 0.8)}
+			.device-laptop__base{height:16px;border-radius:0 0 22px 22px;background:linear-gradient(90deg, rgb(var(--muted) / 0.95), rgb(var(--muted) / 0.65));border:1px solid rgb(var(--border) / 0.12);border-top:none}
 
-		.device-phone{position:absolute;right:6%;bottom:-6%;width:min(220px,46%);border-radius:28px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.35);backdrop-filter:blur(10px);box-shadow:0 24px 40px rgba(0,0,0,.55)}
-		.device-phone__notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:44%;height:18px;border-radius:0 0 14px 14px;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.08)}
+			.device-phone{position:absolute;right:6%;bottom:-6%;width:min(220px,46%);border-radius:28px;border:1px solid rgb(var(--border) / 0.14);background:rgb(var(--background) / 0.88);backdrop-filter:blur(10px);box-shadow:0 24px 40px rgba(0,0,0,.18)}
+			.device-phone__notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:44%;height:18px;border-radius:0 0 14px 14px;background:rgb(var(--foreground) / 0.10);border:1px solid rgb(var(--border) / 0.10)}
 		.device-phone__screen{aspect-ratio:9/19;overflow:hidden;border-radius:26px}
 		.device-phone__badge{position:absolute;left:12px;bottom:12px}
 
-		.rag-card{display:flex;align-items:center;gap:12px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.25);padding:14px 14px;flex:1}
-		.rag-card--result{background:linear-gradient(135deg, rgba(99,102,241,.18), rgba(168,85,247,.14));border-color:rgba(255,255,255,.16)}
-		.rag-icon{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
-		.rag-operator{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.70);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);font-weight:700}
+			.rag-card{display:flex;align-items:center;gap:12px;border-radius:18px;border:1px solid rgb(var(--border) / 0.14);background:rgb(var(--background) / 0.8);padding:14px 14px;flex:1}
+			.rag-card--result{background:linear-gradient(135deg, rgba(99,102,241,.14), rgba(168,85,247,.12));border-color:rgb(var(--border) / 0.16)}
+			.rag-icon{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;color:rgb(var(--foreground) / 0.9);background:rgb(var(--muted) / 0.8);border:1px solid rgb(var(--border) / 0.12)}
+			.rag-operator{width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:rgb(var(--muted-foreground));background:rgb(var(--muted) / 0.8);border:1px solid rgb(var(--border) / 0.12);font-weight:700}
 
-		.mono-pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);padding:2px 10px;font-size:12px;color:rgba(255,255,255,.80)}
+			.mono-pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgb(var(--border) / 0.14);background:rgb(var(--muted) / 0.8);padding:2px 10px;font-size:12px;color:rgb(var(--muted-foreground))}
 
-		.phone-shot{position:relative;border-radius:26px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);overflow:hidden;box-shadow:0 18px 32px rgba(0,0,0,.45)}
-		.phone-shot__label{position:absolute;top:10px;left:10px;z-index:2;font-size:12px;color:rgba(255,255,255,.85);background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.10);padding:4px 10px;border-radius:999px;backdrop-filter:blur(8px)}
+			.phone-shot{position:relative;border-radius:26px;border:1px solid rgb(var(--border) / 0.14);background:rgb(var(--background) / 0.92);overflow:hidden;box-shadow:0 18px 32px rgba(0,0,0,.14)}
+			.phone-shot__label{position:absolute;top:10px;left:10px;z-index:2;font-size:12px;color:rgb(var(--muted-foreground));background:rgb(var(--background) / 0.75);border:1px solid rgb(var(--border) / 0.12);padding:4px 10px;border-radius:999px;backdrop-filter:blur(8px)}
 		.phone-shot__img{width:100%;height:auto;display:block;object-fit:cover;aspect-ratio:9/19}
 		.phone-shot--placeholder{aspect-ratio:9/19}
-		.phone-shot__placeholder{width:100%;height:100%;padding:18px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg, rgba(99,102,241,.18), rgba(168,85,247,.12), rgba(236,72,153,.10))}
+			.phone-shot__placeholder{width:100%;height:100%;padding:18px;display:flex;flex-direction:column;justify-content:center;background:linear-gradient(160deg, rgba(99,102,241,.14), rgba(168,85,247,.10), rgba(236,72,153,.08))}
 
-		@media (max-width: 420px){
-			.device-stage{min-height:380px}
-			.device-phone{right:2%;bottom:-10%}
-		}
+			@media (max-width: 640px){
+				.device-stage{min-height:420px}
+				.device-phone{right:auto;left:62%;transform:translateX(-50%);bottom:-12%;width:min(210px,54%)}
+			}
+			@media (max-width: 420px){
+				.device-stage{min-height:400px}
+				.device-phone{left:56%;bottom:-14%;width:min(196px,58%)}
+			}
 	</style>
 </Layout>

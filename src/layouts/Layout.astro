@@ -29,7 +29,7 @@ const t = (key: string) => translations[lang]?.[key] || key;
 ---
 
 <!doctype html>
-<html lang={lang} data-current-lang={lang}>
+<html lang={lang} data-current-lang={lang} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
@@ -78,7 +78,7 @@ const t = (key: string) => translations[lang]?.[key] || key;
     <NavBar lang={lang} t={t} />
     <main id="main-content" class="text-foreground">
       <div
-        class="z-10 main-section backdrop-blur-sm sm:backdrop-blur-md bg-black/30"
+        class="z-10 main-section surface-shell backdrop-blur-sm sm:backdrop-blur-md"
       >
         <slot />
         <Footer />
@@ -113,33 +113,6 @@ const t = (key: string) => translations[lang]?.[key] || key;
   </body>
 </html>
 <script is:inline>
-  // Tema
-  function setTheme(theme) {
-    if (theme === "system") {
-      window.localStorage.removeItem("theme");
-      document.documentElement.removeAttribute("data-theme");
-    } else {
-      window.localStorage.setItem("theme", theme);
-      document.documentElement.setAttribute("data-theme", theme);
-    }
-    if (
-      theme === "dark" ||
-      (theme === "system" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-
-    // Notify client components the theme changed
-    try {
-      window.dispatchEvent(new Event("theme-changed"));
-    } catch (e) {}
-  }
-  function getTheme() {
-    return window.localStorage.getItem("theme") || "system";
-  }
   // Idioma
   function setLanguage(lang) {
     document.cookie = `lang=${lang}; path=/;`;
@@ -150,7 +123,9 @@ const t = (key: string) => translations[lang]?.[key] || key;
     return window.localStorage.getItem("lang") || "es";
   }
   document.addEventListener("DOMContentLoaded", () => {
-    setTheme(getTheme());
+    // Force light theme (site-wide)
+    document.documentElement.classList.remove("dark");
+    document.documentElement.setAttribute("data-theme", "light");
     // Si el idioma de cookie y localStorage no coinciden, sincroniza y recarga
     const cookieLang = document.cookie.match(/lang=([^;]+)/);
     const localLang = getLanguage();

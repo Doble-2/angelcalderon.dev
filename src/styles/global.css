@@ -14,7 +14,7 @@
       white 60%
     );
 
-    /* Theme tokens (default: dark / cyberpunk serio) */
+  
     --background: 12 14 20;
     --foreground: 245 247 255;
     --muted: 22 25 35;
@@ -23,7 +23,7 @@
     --ring: 136 58 234;
   }
 
-  /* Light theme scope for cards/panels that should stay light */
+  /* Light theme scope for cards/panels (now matches default) */
   .theme-light {
     --background: 255 255 255;
     --foreground: 15 23 42;
@@ -36,7 +36,8 @@
   html {
     font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
       'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
-    background: #13151a;
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
   }
 
   code {
@@ -82,14 +83,14 @@
      - panel: bloques/secciones sobre el shell
   */
   .surface-shell {
-    background: rgba(0, 0, 0, 0.28);
+    background: rgb(var(--background) / 0.72);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
 
   .surface-panel {
-    background: rgba(0, 0, 0, 0.34);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgb(var(--background) / 0.86);
+    border: 1px solid rgb(var(--border) / 0.12);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
@@ -287,7 +288,8 @@
     left: 1rem;
     right: 1rem;
     bottom: 1rem;
-    color: rgb(var(--foreground));
+    color: #fff;
+    text-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
   }
 
   .bento-kpis {
@@ -312,7 +314,7 @@
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-    color: rgb(var(--foreground));
+    color: #fff;
   }
 
   .bento-kpi.is-hero {
@@ -488,11 +490,11 @@
     @apply inline-flex items-center justify-center gap-2 font-semibold transition-colors duration-150 select-none;
     @apply h-11 px-5 rounded-xl text-sm;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    @apply ring-offset-black/60;
+    @apply ring-offset-white;
   }
 
-  .theme-light .btn {
-    @apply ring-offset-white;
+  html.dark .btn {
+    @apply ring-offset-black/60;
   }
 
   .btn-sm {
@@ -536,16 +538,26 @@
     @apply focus-visible:ring-white/40;
   }
 
+  .btn-brand-linkedin {
+    @apply bg-[#0A66C2] text-white hover:bg-[#0958a8];
+    @apply focus-visible:ring-[#0A66C2]/50;
+  }
+
+  .btn-brand-whatsapp {
+    @apply bg-[#25D366] text-[#052e16] hover:bg-[#1fbd5a];
+    @apply focus-visible:ring-[#25D366]/50;
+  }
+
   .icon-btn {
     @apply inline-flex items-center justify-center;
     @apply w-10 h-10 rounded-xl;
     @apply transition-colors duration-150;
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
-    @apply ring-offset-black/60;
+    @apply ring-offset-white;
   }
 
-  .theme-light .icon-btn {
-    @apply ring-offset-white;
+  html.dark .icon-btn {
+    @apply ring-offset-black/60;
   }
 
   .icon-btn-primary {
@@ -556,6 +568,21 @@
   .icon-btn-ghost {
     @apply text-muted-foreground hover:bg-muted;
     @apply focus-visible:ring-blue-500;
+  }
+
+  .icon-btn-brand-github {
+    @apply bg-[#24292f] text-white hover:bg-[#1f2428];
+    @apply focus-visible:ring-white/40;
+  }
+
+  .icon-btn-brand-linkedin {
+    @apply bg-[#0A66C2] text-white hover:bg-[#0958a8];
+    @apply focus-visible:ring-[#0A66C2]/50;
+  }
+
+  .icon-btn-brand-whatsapp {
+    @apply bg-[#25D366] text-[#052e16] hover:bg-[#1fbd5a];
+    @apply focus-visible:ring-[#25D366]/50;
   }
 
   /* Typography system (cyberpunk serio) */

@@ -16,12 +16,24 @@ const heroSrc = rawFirst
     ? rawFirst
     : `/projects/${encodeURIComponent(slug)}/${encodeURIComponent(rawFirst)}`
   : "";
+
+const safeUrl = (u: unknown) => {
+  if (!u) return null;
+  const s = String(u).trim();
+  if (!s || s === "#") return null;
+  return s;
+};
+
+const linkUrl = safeUrl(project?.link);
+const repoUrl = safeUrl(project?.repo);
+const caseUrl = safeUrl(project?.case);
+const demoUrl = safeUrl(project?.demo);
 ---
 
 <section class="relative group">
   <div class={`absolute inset-0 rounded-3xl blur-lg sm:blur-xl opacity-40 sm:opacity-50 transition-all duration-700`} style={`background: linear-gradient(135deg, ${project?.color || '#0000'} 0%, transparent 60%);`} />
 
-  <article class="relative neomorphic overflow-hidden bg-background/80 backdrop-blur-none sm:backdrop-blur-sm rounded-2xl">
+  <article class="relative neomorphic overflow-hidden backdrop-blur-none sm:backdrop-blur-sm rounded-2xl">
     <div class="aspect-video relative overflow-hidden">
       {heroSrc
         ? <Image src={heroSrc} alt={project.name} width={1200} height={675} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -30,12 +42,16 @@ const heroSrc = rawFirst
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
       <div class="absolute top-6 right-6 flex gap-3">
-        <a href={project?.link || '#'} class="inline-flex items-center justify-center bg-white/20 backdrop-blur-sm sm:backdrop-blur-md border border-white/20 text-white rounded-full p-2 transition-transform duration-200 hover:-translate-y-0.5">
-          🔗
-        </a>
-        <a href={project?.repo || '#'} class="inline-flex items-center justify-center bg-white/10 backdrop-blur-sm sm:backdrop-blur-md border border-white/30 text-white rounded-full p-2 transition-transform duration-200 hover:-translate-y-0.5">
-          💻
-        </a>
+        {linkUrl ? (
+          <a href={linkUrl} class="icon-btn icon-btn-primary" aria-label="Open link" target="_blank" rel="noopener noreferrer">
+            🔗
+          </a>
+        ) : null}
+        {repoUrl ? (
+          <a href={repoUrl} class="icon-btn icon-btn-brand-github" aria-label="Open GitHub repo" target="_blank" rel="noopener noreferrer">
+            💻
+          </a>
+        ) : null}
       </div>
 
       <div class="absolute bottom-6 left-6 right-6 text-white">
@@ -66,8 +82,14 @@ const heroSrc = rawFirst
       </div>
 
       <div class="flex gap-4">
-        <a class="btn btn-primary flex-1" href={project?.case || '#'}>{t('viewCase')}</a>
-        <a class="btn btn-secondary flex-1" href={project?.demo || '#'}>{t('liveDemo')}</a>
+        {caseUrl ? (
+          <a class={demoUrl ? "btn btn-primary flex-1" : "btn btn-primary w-full"} href={caseUrl}>{t('viewCase')}</a>
+        ) : (
+          <a class={demoUrl ? "btn btn-primary flex-1" : "btn btn-primary w-full"} href={`/projects/${encodeURIComponent(slug)}`}>{t('viewCase')}</a>
+        )}
+        {demoUrl ? (
+          <a class="btn btn-secondary flex-1" href={demoUrl} target="_blank" rel="noopener noreferrer">{t('liveDemo')}</a>
+        ) : null}
       </div>
     </div>
   </article>

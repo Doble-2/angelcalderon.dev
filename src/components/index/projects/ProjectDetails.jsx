@@ -32,14 +32,21 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
     return `/projects/${folder}/${encodeURIComponent(s)}`;
   };
 
-  const demoUrl =
+  const demoUrlRaw =
     project?.links?.demo ||
     project?.links?.live ||
     project.demo ||
     project.deployed ||
     project.link ||
     project.url ||
-    "#";
+    null;
+
+  const demoUrl = (() => {
+    if (!demoUrlRaw) return null;
+    const s = String(demoUrlRaw).trim();
+    if (!s || s === "#") return null;
+    return s;
+  })();
 
   // --- Date helpers -------------------------------------------------
   const safeDate = (d) => {
@@ -254,15 +261,17 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
               <Eye size={16} />
               {t("view_details_page")}
             </a>
-            <a
-              className="btn btn-secondary btn-sm"
-              href={demoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink size={16} />
-              {t("view_demo")}
-            </a>
+            {demoUrl ? (
+              <a
+                className="btn btn-secondary btn-sm"
+                href={demoUrl}
+                target={demoUrl.startsWith("/") ? undefined : "_blank"}
+                rel={demoUrl.startsWith("/") ? undefined : "noopener noreferrer"}
+              >
+                <ExternalLink size={16} />
+                {t("view_demo")}
+              </a>
+            ) : null}
             <button
               onClick={onNext}
               className="btn btn-ghost btn-sm ml-auto group"

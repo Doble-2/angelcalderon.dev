@@ -10,38 +10,20 @@ export default function ClientLayout({ title, children }) {
   const [lang, setLang] = useState(() =>
     typeof window !== "undefined" ? window.localStorage.getItem("lang") || "es" : "es"
   );
-  const [theme, setTheme] = useState(() =>
-    typeof window !== "undefined" ? window.localStorage.getItem("theme") || "system" : "system"
-  );
 
   useEffect(() => {
     const onLang = () => setLang(window.localStorage.getItem("lang") || "es");
-    const onTheme = () => setTheme(window.localStorage.getItem("theme") || "system");
     window.addEventListener("lang-changed", onLang);
-    window.addEventListener("theme-changed", onTheme);
     return () => {
       window.removeEventListener("lang-changed", onLang);
-      window.removeEventListener("theme-changed", onTheme);
     };
   }, []);
 
   useEffect(() => {
-    if (theme === "system") {
-      document.documentElement.removeAttribute("data-theme");
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    } else {
-      document.documentElement.setAttribute("data-theme", theme);
-      if (theme === "dark") {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-  }, [theme]);
+    // Force light theme (site-wide)
+    document.documentElement.classList.remove("dark");
+    document.documentElement.setAttribute("data-theme", "light");
+  }, []);
 
   const t = (key) => translations[lang]?.[key] || key;
 
@@ -49,7 +31,7 @@ export default function ClientLayout({ title, children }) {
     <>
       <Rainy />
       <main>
-        <div className="z-10 relative main-section text-white backdrop-blur-sm sm:backdrop-blur-md bg-black/30">
+        <div className="z-10 relative main-section text-foreground surface-shell backdrop-blur-sm sm:backdrop-blur-md">
           <NavBar lang={lang} t={t} />
           {children}
           <Contact />
