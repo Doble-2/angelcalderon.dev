@@ -1,0 +1,38 @@
+---
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { projects } from "../../data/projects";
+
+const TIER_1 = new Set(["osint-d2", "eficense", "studia"]);
+
+const raw = String(Astro.params.slug || "");
+let decoded = raw;
+try {
+  decoded = decodeURIComponent(raw);
+} catch {
+  decoded = raw;
+}
+
+// En teoría, estos slugs se resuelven por páginas Tier 1 estáticas.
+// Esto es solo un guardrail por si el router cae aquí.
+if (TIER_1.has(raw)) {
+  return Astro.redirect(`/projects/${raw}`, 301);
+}
+
+let project = projects.find((p) => p.slug === raw) || null;
+
+// Back-compat: si alguien entra por /projects/<Project Name>
+// redirige al slug canónico.
+if (!project) {
+  const byName = projects.find(
+    (p) => String(p.name).toLowerCase() === String(decoded).toLowerCase(),
+  );
+
+  if (byName) {
+    return Astro.redirect(`/projects/${byName.slug}`, 301);
+  }
+
+  return Astro.redirect("/404");
+}
+---
+
+<ProjectLayout project={project} />

@@ -7,21 +7,39 @@ import TechnologyTag from "./TechnologyTag";
 const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
   if (!project) return null;
 
+  const getSlug = (p) => {
+    const explicit = String(p?.slug || "").trim();
+    if (explicit) return explicit;
+    const n = String(p?.name || "").trim();
+    return n
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  };
+
   const t = (k) => {
     if (labels && labels[k]) return labels[k];
     if (I18N && I18N[lang] && I18N[lang][k]) return I18N[lang][k];
     return k;
   };
 
-  const buildImage = (p) =>
-    p?.images?.[0]
-      ? `/projects/${encodeURIComponent(p.name)}/${encodeURIComponent(
-          p.images[0]
-        )}`
-      : "/placeholder.svg";
+  const buildImage = (p) => {
+    const first = p?.images?.[0];
+    if (!first) return "/placeholder.svg";
+    const s = String(first);
+    if (s.startsWith("http") || s.startsWith("/")) return s;
+    const folder = encodeURIComponent(getSlug(p) || p?.name || "");
+    return `/projects/${folder}/${encodeURIComponent(s)}`;
+  };
 
   const demoUrl =
-    project.demo || project.deployed || project.link || project.url || "#";
+    project?.links?.demo ||
+    project?.links?.live ||
+    project.demo ||
+    project.deployed ||
+    project.link ||
+    project.url ||
+    "#";
 
   // --- Date helpers -------------------------------------------------
   const safeDate = (d) => {
@@ -116,7 +134,19 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
   const highlightBg = `radial-gradient(circle at 20% 10%, rgba(${accentVals}, 0.12), rgba(${accentVals}, 0.04) 30%, transparent 50%)`;
 
   const technologies = Array.from(
-    new Set([...(project.front || []), ...(project.back || [])].filter(Boolean))
+    new Set(
+      [
+        ...(project?.tech?.primary || []),
+        ...(project?.tech?.frontend || []),
+        ...(project?.tech?.backend || []),
+        ...(project?.tech?.mobile || []),
+        ...(project?.tech?.infra || []),
+        ...(project?.tech?.tools || []),
+        ...(project?.tech?.services || []),
+        ...(project.front || []),
+        ...((project.back ?? []) || []),
+      ].filter(Boolean)
+    )
   );
 
   return (
@@ -219,9 +249,7 @@ const ProjectDetails = ({ project, onNext, lang = "es", labels = {} }) => {
           <div className="mt-6 pt-4 border-t border-border flex flex-wrap items-center gap-3">
             <a
               className="btn btn-primary btn-sm"
-              href={`/projects/${encodeURIComponent(
-                project.name
-              )}`}
+              href={`/projects/${encodeURIComponent(getSlug(project))}`}
             >
               <Eye size={16} />
               {t("view_details_page")}

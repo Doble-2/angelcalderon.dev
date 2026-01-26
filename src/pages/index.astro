@@ -15,23 +15,26 @@ const t = (key: string) => translations[lang]?.[key] || key;
 
 <Layout title="Ángel Calderón | Desarrollador Frontend">
   <Section
-    className={"pt-8 md:justify-between md:items-center bg-[transparent!important] min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] flex-col md:flex-row"}
+    ariaLabel="Hero"
+    variant="transparent"
+    size="hero"
+    className="md:justify-between md:items-center flex-col md:flex-row"
   >
     <ProfileSection lang={lang} t={t} />
   </Section>
-  <Section className={" "}>
+  <Section id="proyectos" ariaLabel="Proyectos">
     <ProjectSection lang={lang} t={t} />
   </Section>
 
-  <Section className={""}>
+  <Section ariaLabel="Experiencia">
     <ExperienceSection lang={lang} t={t} />
   </Section>
 
-  <Section className={" flex-col flex md:flex-row"}>
+  <Section id="certificados" ariaLabel="Certificados" className="flex-col flex md:flex-row">
     <CertifiedSection lang={lang} t={t} />
   </Section>
 
-  <Section className={" "}>
+  <Section id="contacto" ariaLabel="Contacto" size="tight">
     <Contact lang={lang} t={t} />
   </Section>
 </Layout>

@@ -50,10 +50,29 @@ window.addEventListener("DOMContentLoaded", () => {
     submitBtn.disabled = true;
     status.textContent = tJS('sending');
     status.classList.remove("text-red-500", "text-green-600");
+    const projectType = form.projectType?.value?.trim?.() || "";
+    const timeline = form.timeline?.value?.trim?.() || "";
+    const budget = form.budget?.value?.trim?.() || "";
+    const goal = form.goal?.value?.trim?.() || "";
+    const subject = form.subject?.value?.trim?.() || "";
+
+    const briefLines = [];
+    if (projectType) briefLines.push(`${tJS('briefProjectType')}: ${projectType}`);
+    if (timeline) briefLines.push(`${tJS('briefTimeline')}: ${timeline}`);
+    if (budget) briefLines.push(`${tJS('briefBudget')}: ${budget}`);
+    if (goal) briefLines.push(`${tJS('briefGoal')}: ${goal}`);
+
+    const baseMessage = (form.message?.value || "").trim();
+    const fullMessage =
+      briefLines.length > 0
+        ? `${baseMessage}\n\n---\n${briefLines.join('\n')}`
+        : baseMessage;
+
     const data = {
       name: form.name.value,
       email: form.email.value,
-      message: form.message.value,
+      subject,
+      message: fullMessage,
     };
     try {
       submitBtn.classList.add("scale-95");

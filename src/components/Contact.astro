@@ -9,88 +9,70 @@ interface Props {
 const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
 ---
 
-<div id="contacto" class="container-content">
-  <div class="theme-light text-foreground bg-background rounded-2xl shadow-md border border-border p-6 md:p-8 max-w-2xl mx-auto">
-    <div class="text-center">
-    <h3 class="type-h3">{t('title')}</h3>
-    
-    </div>
+<div class="container-content relative">
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -inset-x-10 -top-14 h-48 blur-3xl opacity-60"
+    style="background: radial-gradient(700px 240px at 50% 0%, rgba(var(--ring),0.22), transparent 60%);"
+  />
 
-    <div class="mt-6">
-      <form id="contact-form" class="space-y-4">
-        <div>
-         
-            <label
-              for="name"
-              class="block text-sm font-medium text-muted-foreground"
-              >{t('name')}</label
-            >
-       
-            <input
-              placeholder={t('namePlaceholder')}
-              id="name"
-              name="name"
-              required
-              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
-            />
+  <div class="grid lg:grid-cols-12 gap-6 md:gap-8 items-start">
+    <!-- Left: pitch + trust + channels -->
+    <aside class="lg:col-span-4 neomorphic neo-border rounded-2xl p-5 md:p-6 flex flex-col gap-5">
+      <div>
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3 class="type-h2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text ">
+              {t('title')}
+            </h3>
+            <p class="mt-3 type-lead text-muted-foreground">{t('subtitle')}</p>
+          </div>
+          <span class="chip">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500" />
+            {t('open')}
+          </span>
         </div>
 
-        <div>
-   
-            <label
-              for="email"
-              class="block text-sm font-medium text-muted-foreground">{t('email')}</label
-            >
-        
-            <input
-              placeholder={t('emailPlaceholder')}
-              id="email"
-              name="email"
-              type="email"
-              required
-              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
-            />
+        <div class="mt-5 flex flex-wrap items-center gap-2">
+          <span class="chip">
+            <span class="inline-block w-2 h-2 rounded-full bg-blue-500" />
+            {t('contactFastReply')}
+          </span>
+          <span class="chip">{t('contactResponseSla')}</span>
+          <span class="chip">{t('contactBrief')}</span>
         </div>
 
-        <div>
-       
-            <label
-              for="message"
-              class="block text-sm font-medium text-muted-foreground"
-              >{t('message')}</label
-            >
-    
-            <textarea
-              placeholder={t('messagePlaceholder')}
-              id="message"
-              name="message"
-              rows="4"
-              required
-              class="mt-1 w-full bg-muted/40 text-foreground placeholder:text-muted-foreground border border-border px-3 py-2 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-white"
-            ></textarea>
-        </div>
+        <p class="mt-4 text-sm text-muted-foreground">{t('contactWhatToSend')}</p>
 
-        <div class="flex items-center justify-end gap-3">
-          <button
-            type="submit"
-            id="submit-btn"
-            aria-live="polite"
-            class="icon-btn icon-btn-primary"
+        <p class="mt-3 text-sm text-foreground opacity-90">
+          <span class="text-muted-foreground">{t('contactBestFor')}:</span>
+          <span> {t('contactBestFor1')} · {t('contactBestFor2')} · {t('contactBestFor3')}</span>
+        </p>
+      </div>
+
+      <div class="grid gap-3">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <a class="btn btn-primary w-full justify-center" href="mailto:hola@angelcalderon.dev">
+            {t('contactEmailCta')}
+          </a>
+          <a
+            class="btn btn-secondary w-full justify-center"
+            href="https://wa.me/584241922882?text=Hola%20acabo%20de%20ver%20tu%20portfolio%20y%20me%20encantar%C3%ADa%20ponerme%20en%20contacto%20contigo"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            <!-- send icon -->
-            <SendIcon id="send-icon" className="w-4 h-4" />
-         
-              <span class="sr-only">{t('send')}</span>
-          </button>
+            {t('contactWhatsAppCta')}
+          </a>
+        </div>
 
+        <div class="grid sm:grid-cols-2 gap-3">
           <button
             type="button"
             id="copy-email"
-            class="icon-btn icon-btn-ghost"
+            class="btn btn-ghost w-full justify-center"
             aria-label={t('copyEmail')}
             title={t('copyEmail')}
           >
-            <!-- clipboard icon -->
             <svg
               id="copy-icon"
               class="w-4 h-4"
@@ -101,20 +83,109 @@ const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
               stroke-linecap="round"
               stroke-linejoin="round"
               aria-hidden="true"
-              ><rect x="9" y="9" width="13" height="13" rx="2" ry="2"
-              ></rect><path
-                d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-              ></path></svg
             >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>{t('copyEmail')}</span>
+          </button>
+
+          <a
+            class="btn btn-ghost w-full justify-center"
+            href="https://www.linkedin.com/in/angeld2/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('contactLinkedInCta')}
+          </a>
+        </div>
+
+        <p class="text-xs text-muted-foreground">{t('contactNoSpam')}</p>
+      </div>
+    </aside>
+
+    <!-- Right: form -->
+    <div class="lg:col-span-8 neomorphic neo-border rounded-2xl p-5 md:p-6 text-foreground">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h4 class="type-h3">{t('contactFormTitle')}</h4>
+          <p class="mt-2 text-sm text-muted-foreground">{t('contactFormSubtitle')}</p>
+        </div>
+      </div>
+
+      <form id="contact-form" class="mt-5 space-y-4">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label for="name" class="block text-sm font-medium text-muted-foreground">
+              {t('name')}
+            </label>
+            <input
+              placeholder={t('namePlaceholder')}
+              id="name"
+              name="name"
+              required
+              autocomplete="name"
+              class="mt-1 form-field"
+            />
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium text-muted-foreground">
+              {t('email')}
+            </label>
+            <input
+              placeholder={t('emailPlaceholder')}
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              class="mt-1 form-field"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="subject" class="block text-sm font-medium text-muted-foreground">
+            {t('subject')}
+          </label>
+          <input
+            placeholder={t('subjectPlaceholder')}
+            id="subject"
+            name="subject"
+            autocomplete="off"
+            class="mt-1 form-field"
+          />
+        </div>
+
+        <div>
+          <label for="message" class="block text-sm font-medium text-muted-foreground">
+            {t('message')}
+          </label>
+          <textarea
+            placeholder={t('messagePlaceholder')}
+            id="message"
+            name="message"
+            rows="4"
+            required
+            autocomplete="off"
+            class="mt-1 form-field resize-none"
+          ></textarea>
+          <p class="mt-2 text-xs text-muted-foreground">{t('contactMessageHint')}</p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-1">
+          <button type="submit" id="submit-btn" aria-live="polite" class="btn btn-primary sm:ml-auto">
+            <SendIcon id="send-icon" className="w-4 h-4" />
+            <span>{t('send')}</span>
           </button>
         </div>
 
         <div
           aria-live="polite"
           id="form-status"
-          class="text-sm mt-2 text-muted-foreground text-center min-h-[20px] leading-5 transition-colors"
-        >
-        </div>
+          class="text-sm mt-1 text-muted-foreground text-center min-h-[20px] leading-5 transition-colors"
+        ></div>
       </form>
     </div>
   </div>

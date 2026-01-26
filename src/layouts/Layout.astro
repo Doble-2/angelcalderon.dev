@@ -8,19 +8,19 @@ import SpeedInsights from "@vercel/speed-insights/astro";
 import Footer from "../components/share/footer.astro";
 
 interface Props {
-	title?: string;
-	description?: string;
-	image?: string;
-	url?: string;
-	lang?: 'es' | 'en';
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  lang?: "es" | "en";
 }
 
 const {
-  title = 'Angel Calderon - Desarrollador Web/Mobile',
-  description = 'Angel Calderon - Desarrollador Web/Mobile freelance en Caracas, Venezuela. Experto en Flutter, React, Next.js y Python. Portfolio profesional para reclutadores y clientes.',
-  image = '/profile.png',
-	url = Astro.request.url || '/',
-	lang: forcedLang,
+  title = "Angel Calderon - Desarrollador Web/Mobile",
+  description = "Angel Calderon - Desarrollador Web/Mobile freelance en Caracas, Venezuela. Experto en Flutter, React, Next.js y Python. Portfolio profesional para reclutadores y clientes.",
+  image = "/profile.png",
+  url = Astro.request.url || "/",
+  lang: forcedLang,
 } = Astro.props;
 
 // Idioma determinado en el servidor mediante cookie o Accept-Language
@@ -30,54 +30,61 @@ const t = (key: string) => translations[lang]?.[key] || key;
 
 <!doctype html>
 <html lang={lang} data-current-lang={lang}>
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="keywords" content="Angel Calderon, desarrollador web, desarrollador mobile, freelance, Caracas, Venezuela, Flutter, React, Next.js, Python, Astro, TypeScript, devops, diseño, Figma, portafolio, proyectos, programador, frontend, backend, español, inglés, recruiter, contratación, tecnología" />
-		<link rel="alternate" hreflang="es" href="/" />
-		<link rel="alternate" hreflang="en" href="/en" />
-		<meta name="author" content="Angel Calderon" />
-		<meta name="geo.placename" content="Caracas, Venezuela" />
-		<meta name="geo.region" content="VE" />
-		<meta name="geo.position" content="10.4806;-66.9036" />
-		<meta property="twitter:image" content={image}>
-		<meta property="twitter:title" content={title}>
-		<meta property="twitter:description" content={description}>
-		<meta property="og:image" content={image}>
-		<meta property="og:title" content={title}>
-		<meta property="og:description" content={description}>
-		<meta property="og:type" content="website">
-		<meta property="og:url" content={url}>
-		<meta property="og:site_name" content="Angel Calderon">
-		<meta name="twitter:card" content="summary_large_image">
-		<meta name="twitter:site" content="@angelcaldev">
-		<meta name="twitter:creator" content="@angelcaldev">
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" href="/rect1-optimized.webp" />
-		<link rel="canonical" href={url} />
-		<meta name="robots" content="index, follow" />
-		
-		<!-- Inter font -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-		<meta name="generator" content={Astro.generator} />
-		<title>{title} | Caracas, Venezuela</title>
-	</head>
-	<body class="max-w-screen">
-		<a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a>
-		<Rainy />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta
+      name="keywords"
+      content="Angel Calderon, desarrollador web, desarrollador mobile, freelance, Caracas, Venezuela, Flutter, React, Next.js, Python, Astro, TypeScript, devops, diseño, Figma, portafolio, proyectos, programador, frontend, backend, español, inglés, recruiter, contratación, tecnología"
+    />
+    <link rel="alternate" hreflang="es" href="/" />
+    <link rel="alternate" hreflang="en" href="/en" />
+    <meta name="author" content="Angel Calderon" />
+    <meta name="geo.placename" content="Caracas, Venezuela" />
+    <meta name="geo.region" content="VE" />
+    <meta name="geo.position" content="10.4806;-66.9036" />
+    <meta property="twitter:image" content={image} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="og:image" content={image} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={url} />
+    <meta property="og:site_name" content="Angel Calderon" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@angelcaldev" />
+    <meta name="twitter:creator" content="@angelcaldev" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/rect1-optimized.webp" />
+    <link rel="canonical" href={url} />
+    <meta name="robots" content="index, follow" />
 
-		<NavBar lang={lang} t={t} />
-		<main id="main-content" class="">
-			<div
-				class="z-10 main-section backdrop-blur-sm sm:backdrop-blur-md bg-black/30"
-			>
-				<slot  />
-				<Footer />
-			</div>
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Caracas, Venezuela</title>
+  </head>
+  <body class="max-w-screen">
+    <a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a
+    >
+    <Rainy />
 
-			<!-- <div class="fixed bottom-4 right-4 z-30">
+    <NavBar lang={lang} t={t} />
+    <main id="main-content" class="">
+      <div
+        class="z-10 main-section backdrop-blur-sm sm:backdrop-blur-md bg-black/30"
+      >
+        <slot />
+        <Footer />
+      </div>
+
+      <!-- <div class="fixed bottom-4 right-4 z-30">
 				<button
 					id="rain-btn"
 					class="bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none h-10 w-10"
@@ -101,49 +108,54 @@ const t = (key: string) => translations[lang]?.[key] || key;
 					<path d="M12 5v14"></path>
 				</button>
 			</div> -->
-		</main>
-		<SpeedInsights />
-	</body>
+    </main>
+    <SpeedInsights />
+  </body>
 </html>
 <script is:inline>
-// Tema
-function setTheme(theme) {
-	if (theme === 'system') {
-		window.localStorage.removeItem('theme');
-		document.documentElement.removeAttribute('data-theme');
-	} else {
-		window.localStorage.setItem('theme', theme);
-		document.documentElement.setAttribute('data-theme', theme);
-	}
-	if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-		document.documentElement.classList.add('dark');
-	} else {
-		document.documentElement.classList.remove('dark');
-	}
+  // Tema
+  function setTheme(theme) {
+    if (theme === "system") {
+      window.localStorage.removeItem("theme");
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      window.localStorage.setItem("theme", theme);
+      document.documentElement.setAttribute("data-theme", theme);
+    }
+    if (
+      theme === "dark" ||
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
 
     // Notify client components the theme changed
-    try { window.dispatchEvent(new Event('theme-changed')); } catch (e) {}
-}
-function getTheme() {
-	return window.localStorage.getItem('theme') || 'system';
-}
-// Idioma
-function setLanguage(lang) {
-	document.cookie = `lang=${lang}; path=/;`;
-	window.localStorage.setItem('lang', lang);
-	location.reload();
-}
-function getLanguage() {
-	return window.localStorage.getItem('lang') || 'es';
-}
-document.addEventListener('DOMContentLoaded', () => {
-	setTheme(getTheme());
-	// Si el idioma de cookie y localStorage no coinciden, sincroniza y recarga
-	const cookieLang = document.cookie.match(/lang=([^;]+)/);
-	const localLang = getLanguage();
-	if (cookieLang && cookieLang[1] !== localLang) {
-		setLanguage(localLang);
-	}
-});
+    try {
+      window.dispatchEvent(new Event("theme-changed"));
+    } catch (e) {}
+  }
+  function getTheme() {
+    return window.localStorage.getItem("theme") || "system";
+  }
+  // Idioma
+  function setLanguage(lang) {
+    document.cookie = `lang=${lang}; path=/;`;
+    window.localStorage.setItem("lang", lang);
+    location.reload();
+  }
+  function getLanguage() {
+    return window.localStorage.getItem("lang") || "es";
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    setTheme(getTheme());
+    // Si el idioma de cookie y localStorage no coinciden, sincroniza y recarga
+    const cookieLang = document.cookie.match(/lang=([^;]+)/);
+    const localLang = getLanguage();
+    if (cookieLang && cookieLang[1] !== localLang) {
+      setLanguage(localLang);
+    }
+  });
 </script>
-

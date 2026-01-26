@@ -1,12 +1,46 @@
 ---
-const { className } = Astro.props;
+type Variant = 'panel' | 'transparent' | 'shell';
+type Size = 'default' | 'hero' | 'tight';
+
+const {
+  className,
+  id,
+  role = 'region',
+  ariaLabel = 'section',
+  variant = 'panel',
+  size = 'default',
+} = Astro.props as {
+  className?: string;
+  id?: string;
+  // Astro's TS in .astro doesn't expose `JSX` namespace reliably.
+  // Keep this permissive; the rendered `role` attribute is still validated by browsers/AT.
+  role?: any;
+  ariaLabel?: string;
+  variant?: Variant;
+  size?: Size;
+};
+
+const sizeClasses: Record<Size, string> = {
+  default: 'py-12 md:py-14 lg:py-16',
+  tight: 'py-10 md:py-12 lg:py-14',
+  hero: 'pt-24 pb-14 md:pt-28 md:pb-16 lg:pt-32 lg:pb-20',
+};
+
+const variantClasses: Record<Variant, string> = {
+  panel: 'surface-panel section-panel',
+  shell: 'surface-shell rounded-3xl',
+  transparent: 'bg-transparent border-0 shadow-none backdrop-blur-0',
+};
 ---
 
 <section
-  role={Astro.props.role || 'region'}
-  aria-label={Astro.props.ariaLabel || 'section'}
+  id={id}
+  role={role}
+  aria-label={ariaLabel}
   class:list={[
-    "surface-panel text-foreground container-page py-12 md:py-14 lg:py-16 flex flex-col gap-8 md:gap-10 main-section",
+    'text-foreground container-page flex flex-col gap-8 md:gap-10',
+    sizeClasses[size],
+    variantClasses[variant],
     className,
   ]}
 >

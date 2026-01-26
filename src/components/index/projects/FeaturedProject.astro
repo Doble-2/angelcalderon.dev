@@ -1,6 +1,21 @@
 ---
 import { Image } from "astro:assets";
 const { project, t } = Astro.props;
+
+const slugify = (v: string) =>
+  String(v || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+const slug = project?.slug || slugify(project?.name);
+const rawFirst = project?.images?.[0] ? String(project.images[0]) : "";
+const heroSrc = rawFirst
+  ? rawFirst.startsWith("http") || rawFirst.startsWith("/")
+    ? rawFirst
+    : `/projects/${encodeURIComponent(slug)}/${encodeURIComponent(rawFirst)}`
+  : "";
 ---
 
 <section class="relative group">
@@ -8,8 +23,8 @@ const { project, t } = Astro.props;
 
   <article class="relative neomorphic overflow-hidden bg-background/80 backdrop-blur-none sm:backdrop-blur-sm rounded-2xl">
     <div class="aspect-video relative overflow-hidden">
-      {project?.images && project.images[0]
-        ? <Image src={`/projects/${encodeURIComponent(project.name)}/${encodeURIComponent(project.images[0])}`} alt={project.name} width={1200} height={675} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+      {heroSrc
+        ? <Image src={heroSrc} alt={project.name} width={1200} height={675} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         : <div class="w-full h-full bg-muted/40" />}
 
       <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />

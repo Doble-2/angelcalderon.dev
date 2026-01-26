@@ -13,9 +13,11 @@ const certifieds = entries
   .map((e) => ({ id: e.id, ...e.data }))
   .sort((a, b) => Number(b.order) - Number(a.order));
 ---
-<div class="flex flex-col w-full gap-10">
+<div class="relative flex flex-col w-full gap-10">
+  <div aria-hidden="true" class="pointer-events-none absolute -inset-x-10 -top-12 h-40 blur-3xl opacity-50" style="background: radial-gradient(700px 240px at 50% 0%, rgba(var(--ring),0.18), transparent 60%);" />
+
   <div class="container-content text-center">
-    <h2 class="type-h2 mb-3">{t("certificates")}</h2>
+    <h2 class="type-h2 mb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{t("certificates")}</h2>
     <p class="type-lead text-muted-foreground max-w-2xl mx-auto">
       {t("certifieds_description_1")}
     </p>
@@ -27,18 +29,77 @@ const certifieds = entries
 <div class="container-content">
   {
     certifieds.length > 0 && (
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <span class="chip">
+          <span class="inline-block w-2 h-2 rounded-full bg-blue-500" />
+          {certifieds.length} {t("certificates")}
+        </span>
+      </div>
+      <div class="projects-rail no-scrollbar flex gap-4 overflow-x-auto p-4 snap-x snap-mandatory">
         {certifieds.map((certified) => (
-          <CertifiedContainer
-            className="w-full"
-            variant="row"
-            href={"/certifieds/" + certified.asset + ".pdf"}
-            title={certified.name}
-            image={"/certifieds/" + certified.asset + ".jpg"}
-          />
+          <div class="snap-start shrink-0 w-[320px] sm:w-[360px]">
+            <CertifiedContainer
+              className="w-full"
+              variant="row"
+              href={"/certifieds/" + certified.asset + ".pdf"}
+              title={certified.name}
+              image={"/certifieds/" + certified.asset + ".jpg"}
+              meta={`${certified.platform || ''}${certified.date ? ` • ${certified.date}` : ''}`}
+            />
+          </div>
         ))}
       </div>
     )
   }
 </div>
 </div>
+
+<dialog id="cert-preview" class="cert-dialog">
+  <div class="cert-dialog__inner">
+    <button type="button" class="cert-dialog__close" data-cert-close aria-label={t('close')} title={t('close')}>
+      ×
+    </button>
+    <img id="cert-preview-img" class="cert-dialog__img" alt={t('certPreviewAlt')} />
+    <div class="cert-dialog__actions">
+      <a id="cert-preview-pdf" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
+        {t('open')}
+      </a>
+      <button type="button" class="btn btn-secondary btn-sm" data-cert-close>
+        {t('close')}
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const dialog = document.getElementById('cert-preview');
+    const img = document.getElementById('cert-preview-img');
+    const pdf = document.getElementById('cert-preview-pdf');
+
+    function close() {
+      if (!dialog) return;
+      try { dialog.close(); } catch (e) {}
+    }
+
+    document.querySelectorAll('[data-cert-preview]')?.forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const image = el.getAttribute('data-cert-img');
+        const href = el.getAttribute('data-cert-pdf');
+        if (img && image) img.setAttribute('src', image);
+        if (pdf && href) pdf.setAttribute('href', href);
+        try { dialog.showModal(); } catch (err) {}
+      });
+    });
+
+    document.querySelectorAll('[data-cert-close]')?.forEach((el) => {
+      el.addEventListener('click', close);
+    });
+
+    dialog?.addEventListener('click', (e) => {
+      // click outside closes
+      if (e.target === dialog) close();
+    });
+  });
+</script>

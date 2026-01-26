@@ -1,0 +1,171 @@
+---
+import Layout from "./Layout.astro";
+import type { Project } from "../data/projects";
+import TechIcon from "../components/projects/TechIcon.astro";
+
+interface Props {
+  project: Project;
+  title?: string;
+  description?: string;
+  image?: string;
+  url?: string;
+}
+
+const { project } = Astro.props as Props;
+
+const demoUrl = project.links?.demo || null;
+const repoUrl = project.links?.repo || null;
+
+const images = (project.images || []).filter(Boolean);
+const heroImage = images[0] || "/rect1-optimized.webp";
+const gallery = images.slice(1);
+
+const truncate = (str: string, n: number = 170) =>
+  str && str.length > n ? `${str.slice(0, n).trim()}...` : str;
+
+const pageTitle =
+  (Astro.props as Props).title ||
+  `${project.name} | Angel Calderon — Software Architect & AI Engineer`;
+
+const pageDescription =
+  (Astro.props as Props).description || truncate(project.description || "", 180);
+
+const pageImage = (Astro.props as Props).image || heroImage;
+const pageUrl = (Astro.props as Props).url || Astro.request.url;
+
+const primary = project.tech?.primary ?? [];
+const tools = project.tech?.tools ?? [];
+const fullStack = [...primary, ...tools].filter(Boolean);
+
+---
+
+<Layout title={pageTitle} description={pageDescription} image={pageImage} url={pageUrl}>
+  <main class="container-content py-10 md:py-14">
+    <header class="max-w-4xl">
+      <h1 class="type-display bg-gradient-to-r from-blue-300 via-blue-600 to-purple-500 bg-clip-text text-transparent">
+        {project.name}
+      </h1>
+      <p class="mt-3 type-lead text-muted-foreground max-w-3xl">{project.subtitle}</p>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        {primary.map((t) => (
+          <span class="chip inline-flex items-center gap-2">
+            <TechIcon kind={t} />
+            <span>{t}</span>
+          </span>
+        ))}
+      </div>
+
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        {demoUrl ? (
+          <a
+            href={demoUrl}
+            class="btn btn-primary w-full sm:w-auto justify-center"
+            target={demoUrl.startsWith("/") ? undefined : "_blank"}
+            rel={demoUrl.startsWith("/") ? undefined : "noopener noreferrer"}
+          >
+            Demo
+          </a>
+        ) : null}
+        {repoUrl ? (
+          <a
+            href={repoUrl}
+            class="btn btn-secondary w-full sm:w-auto justify-center"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Repo
+          </a>
+        ) : null}
+      </div>
+    </header>
+
+    <section class="mt-10 grid lg:grid-cols-12 gap-6 md:gap-8 items-start">
+      <!-- 65/35: 8/4 columns -->
+      <div class="lg:col-span-8 order-2 lg:order-1">
+        <div class="space-y-4">
+          <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-lg shadow-black/30">
+            <img
+              src={heroImage}
+              alt={`${project.name} hero`}
+              class="w-full h-auto object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+
+          {gallery.length ? (
+            <div class="grid grid-cols-2 gap-3">
+              {gallery.map((src, idx) => (
+                <div class="overflow-hidden rounded-2xl border border-white/10 bg-black/20 shadow-lg shadow-black/20">
+                  <img
+                    src={src}
+                    alt={`${project.name} gallery ${idx + 1}`}
+                    class="w-full h-full object-cover aspect-[4/3]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </div>
+
+      <aside class="lg:col-span-4 order-1 lg:order-2">
+        <div class="sticky top-24 space-y-4">
+          <div class="rounded-2xl border border-white/10 bg-black/25 backdrop-blur-sm p-5 md:p-6">
+            <h2 class="type-h3">Project Info</h2>
+
+            <dl class="mt-4 grid gap-4">
+              <div>
+                <dt class="text-sm text-muted-foreground">Role</dt>
+                <dd class="mt-1 text-sm text-foreground opacity-90">{project.role}</dd>
+              </div>
+
+              <div>
+                <dt class="text-sm text-muted-foreground">Date</dt>
+                <dd class="mt-1 text-sm text-foreground opacity-90">{project.dateStart}</dd>
+              </div>
+
+              {fullStack.length ? (
+                <div>
+                  <dt class="text-sm text-muted-foreground">Stack</dt>
+                  <dd class="mt-2 flex flex-wrap gap-2">
+                    {fullStack.map((t) => (
+                      <span class="chip inline-flex items-center gap-2">
+                        <TechIcon kind={t} />
+                        <span>{t}</span>
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              ) : null}
+
+              <div>
+                <dt class="text-sm text-muted-foreground">Description</dt>
+                <dd class="mt-2 text-sm text-foreground opacity-90 leading-relaxed">
+                  {project.description}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          {Array.isArray(project.metrics) && project.metrics.length ? (
+            <div class="rounded-2xl border border-white/10 bg-black/20 p-5 md:p-6">
+              <h3 class="text-sm font-semibold text-foreground">Metrics</h3>
+              <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {project.metrics.slice(0, 4).map((m) => (
+                  <div class="rounded-xl border border-white/10 bg-black/25 p-3">
+                    <div class="text-xs text-muted-foreground">{m.label}</div>
+                    <div class="mt-1 text-sm text-foreground opacity-90 font-semibold">{m.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </div>
+      </aside>
+    </section>
+  </main>
+</Layout>

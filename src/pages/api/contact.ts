@@ -25,6 +25,7 @@ export async function POST({ request }: { request: Request }) {
     const data = await request.json();
     const name = (data.name || '').trim();
     const email = (data.email || '').trim();
+    const incomingSubject = (data.subject || '').trim();
     const message = (data.message || '').trim();
 
     if (!name || !email || !message) {
@@ -33,12 +34,15 @@ export async function POST({ request }: { request: Request }) {
 
     const toEmail = process.env.TO_EMAIL || process.env.CONTACT_EMAIL || 'hola@angelcalderon.dev';
     const fromEmail = process.env.FROM_EMAIL || `no-reply@${toEmail.split('@')[1] || 'example.com'}`;
-    const subject = `Nuevo mensaje desde portfolio: ${name}`;
+    const subject = incomingSubject
+      ? `Portfolio: ${incomingSubject} — ${name}`
+      : `Nuevo mensaje desde portfolio: ${name}`;
 
     const html = `
       <div>
         <p><strong>Nombre:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        ${incomingSubject ? `<p><strong>Asunto:</strong> ${escapeHtml(incomingSubject)}</p>` : ''}
         <hr />
         <p>${escapeHtml(message).replace(/\n/g, '<br/>')}</p>
       </div>

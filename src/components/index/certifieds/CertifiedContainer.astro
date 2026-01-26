@@ -4,6 +4,7 @@ interface Props {
     href?: string;
     title?: string;
     image?: string;
+    meta?: string;
     variant?: "normal" | "row" | "compact";
     t?: (key: string) => string;
 }
@@ -13,29 +14,40 @@ const {
     href = "#",
     title = "",
     image = "",
+    meta = "",
     t = (k: string) => k,
     variant = "normal",
 } = Astro.props as Props;
 ---
 
-<div class={`theme-light text-foreground relative rounded-lg bg-background border border-border overflow-hidden transition-transform duration-200 ease-in-out hover:shadow-lg ${className}`}>
-    <a href={href} target="_blank" title={t(title)} class="flex items-center gap-3 p-2" rel="noopener noreferrer">
-        <div class={`flex-shrink-0 overflow-hidden rounded-md bg-muted ${variant === 'row' ? 'w-20 h-14 sm:w-24 sm:h-16' : variant === 'compact' ? 'w-16 h-12' : 'w-24 h-16'}`}>
+<div class={`theme-light neomorphic neo-border group text-foreground relative overflow-hidden ${className}`}> 
+    <div class="flex items-center gap-3 p-3">
+        <button
+            type="button"
+            class={`flex-shrink-0 overflow-hidden rounded-md bg-muted border border-border ${variant === 'row' ? 'w-20 h-14 sm:w-24 sm:h-16' : variant === 'compact' ? 'w-16 h-12' : 'w-24 h-16'}`}
+            data-cert-preview
+            data-cert-img={image}
+            data-cert-pdf={href}
+            aria-label={t(title)}
+            title={t(title)}
+        >
             <img
                 src={image}
                 alt={t(title)}
                 class="object-center object-cover w-full h-full"
                 loading="lazy"
             />
-        </div>
+        </button>
 
         <div class="flex-1 min-w-0">
-            <h3 class="text-sm font-medium text-foreground truncate">{t(title)}</h3>
-            <p class="text-xs text-muted-foreground truncate mt-1">{/* opcional: issuer o fecha si disponible */}</p>
+            <h3 class="text-sm font-semibold text-foreground truncate">{t(title)}</h3>
+            {meta && <p class="text-xs text-muted-foreground truncate mt-1">{meta}</p>}
         </div>
 
         <div class="flex-shrink-0">
-            <span class="inline-flex items-center rounded-full bg-primary-600 text-white text-xs px-3 py-1">{t('open')}</span>
+            <a href={href} target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-full bg-blue-600 text-white text-xs px-3 py-1 transition-transform duration-200 group-hover:-translate-y-0.5">
+                {t('open')}
+            </a>
         </div>
-    </a>
+    </div>
 </div>

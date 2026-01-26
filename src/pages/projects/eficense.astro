@@ -1,0 +1,146 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { projects } from "../../data/projects";
+
+const project = projects.find((p) => p.slug === "eficense");
+if (!project) return Astro.redirect("/404");
+
+const dashboard = project.images?.[0] || "/rect1-optimized.webp";
+const mobile = project.images?.[1] || dashboard;
+---
+
+<Layout
+  title={`${project.name} | Angel Calderon — Enterprise IoT SaaS`}
+  description={project.description}
+  image={dashboard}
+  url={Astro.request.url}
+>
+  <main class="container-content py-10 md:py-14">
+    <!-- Hero -->
+    <section class="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950">
+      <div class="absolute inset-0 opacity-70" style="background: radial-gradient(900px 360px at 20% 0%, rgba(16,185,129,0.22), transparent 60%);" />
+      <div class="absolute inset-0 opacity-70" style="background: radial-gradient(900px 360px at 80% 20%, rgba(59,130,246,0.18), transparent 60%);" />
+
+      <div class="relative grid lg:grid-cols-12 gap-8 p-6 md:p-10 items-center">
+        <div class="lg:col-span-6">
+          <div class="flex flex-wrap gap-2">
+            <span class="chip">Enterprise</span>
+            <span class="chip">IoT</span>
+            <span class="chip">AI Concierge</span>
+          </div>
+
+          <h1 class="mt-4 type-display bg-gradient-to-r from-emerald-300 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+            {project.name}
+          </h1>
+          <p class="mt-3 type-lead text-muted-foreground max-w-xl">
+            {project.subtitle}
+          </p>
+
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            {project.links?.demo ? (
+              <a class="btn btn-primary w-full sm:w-auto justify-center" href={project.links.demo} target="_blank" rel="noopener noreferrer">
+                Demo
+              </a>
+            ) : null}
+            {project.links?.repo ? (
+              <a class="btn btn-secondary w-full sm:w-auto justify-center" href={project.links.repo} target="_blank" rel="noopener noreferrer">
+                Repo
+              </a>
+            ) : null}
+          </div>
+
+          <p class="mt-6 text-sm text-muted-foreground max-w-xl">
+            {project.description}
+          </p>
+        </div>
+
+        <div class="lg:col-span-6">
+          <div class="relative">
+            <div class="absolute -inset-6 rounded-3xl bg-emerald-500/10 blur-2xl" aria-hidden="true" />
+            <div
+              class="overflow-hidden rounded-3xl border border-white/10 bg-black/20 shadow-lg shadow-black/40"
+              style="transform: perspective(1200px) rotateX(10deg) rotateY(-14deg);"
+            >
+              <img src={dashboard} alt="Eficense dashboard" class="w-full h-auto object-cover" loading="eager" decoding="async" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics bar -->
+      <div class="border-t border-white/10 bg-black/20">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-0">
+          <div class="p-5">
+            <div class="text-xs text-muted-foreground">Units</div>
+            <div class="mt-1 text-2xl font-bold text-white">150+</div>
+          </div>
+          <div class="p-5 border-l border-white/10">
+            <div class="text-xs text-muted-foreground">Sync</div>
+            <div class="mt-1 text-2xl font-bold text-white">Real-time</div>
+          </div>
+          <div class="p-5 border-t md:border-t-0 md:border-l border-white/10">
+            <div class="text-xs text-muted-foreground">AI</div>
+            <div class="mt-1 text-2xl font-bold text-white">DeepSeek</div>
+          </div>
+          <div class="p-5 border-t md:border-t-0 md:border-l border-white/10">
+            <div class="text-xs text-muted-foreground">Role</div>
+            <div class="mt-1 text-2xl font-bold text-white">Architect</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento features -->
+    <section class="mt-10">
+      <h2 class="type-h2">Bento Grid Features</h2>
+      <p class="mt-2 text-sm text-muted-foreground max-w-3xl">
+        A product-grade platform connecting hardware, operations, and an AI concierge.
+      </p>
+
+      <div class="mt-6 grid lg:grid-cols-12 gap-4">
+        <!-- Big: Admin dashboard -->
+        <article class="lg:col-span-7 rounded-3xl border border-white/10 bg-slate-950/60 p-5 overflow-hidden">
+          <div class="flex items-center justify-between">
+            <h3 class="text-white font-semibold">Admin Dashboard</h3>
+            <span class="chip">Next.js</span>
+          </div>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Role-based operations, visitor access, and reporting at scale.
+          </p>
+          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+            <img src={dashboard} alt="Admin dashboard" class="w-full h-auto object-cover" loading="lazy" decoding="async" />
+          </div>
+        </article>
+
+        <!-- Tall: Mobile chatbot -->
+        <article class="lg:col-span-5 rounded-3xl border border-white/10 bg-slate-950/60 p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="text-white font-semibold">Mobile Concierge</h3>
+            <span class="chip">DeepSeek</span>
+          </div>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Cost-efficient AI concierge for resident inquiries and operations.
+          </p>
+          <div class="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/20">
+            <img src={mobile} alt="Mobile access" class="w-full h-auto object-cover" loading="lazy" decoding="async" />
+          </div>
+        </article>
+
+        <!-- Wide: Hardware integration -->
+        <article class="lg:col-span-12 rounded-3xl border border-white/10 bg-slate-950/60 p-5">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <h3 class="text-white font-semibold">Hardware Integration</h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="chip">Hikvision</span>
+              <span class="chip">Python</span>
+              <span class="chip">Polling/WebSockets</span>
+            </div>
+          </div>
+          <p class="mt-2 text-sm text-muted-foreground">
+            Cameras + barriers integration via custom wrappers and resilient polling strategies.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+</Layout>

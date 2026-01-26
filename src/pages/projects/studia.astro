@@ -1,0 +1,11 @@
+---
+// Tier 1 placeholder page (excluded from Tier 2 routes).
+// You can replace this with a fully custom design later.
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { projects } from "../../data/projects";
+
+const project = projects.find((p) => p.slug === "studia");
+if (!project) return Astro.redirect("/404");
+---
+
+<ProjectLayout project={project} />

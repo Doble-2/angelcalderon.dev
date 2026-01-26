@@ -6,53 +6,61 @@ interface Props {
 }
 const { t = (k: string) => k } = Astro.props as Props;
 ---
-<div class="container-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 md:gap-16 items-center">
-
-<div class="lg:mr-20 place-self-center lg:col-span-7 pt-0 text-white">
-  
-  <header class="mb-4">
-    <h1 class="max-w-2xl type-h1">
-      {t("frontend_developer")}
-    </h1>
-    <p class="py-3 type-display bg-gradient-to-r from-blue-400 via-blue-700 to-purple-700 bg-clip-text text-transparent">Angel Calderon</p>
-  </header>
-
-  <p class="max-w-2xl lg:mb-8 type-lead text-muted-foreground">
-    {t('profile_description_1')}
-    <span class="hidden md:block">{t('profile_description_2')}</span>
-    {t('profile_description_3')}
-  </p>
-  <div class="flex flex-col sm:flex-row sm:items-center justify-start mt-10 md:mt-6 mb-4 gap-3 sm:gap-4">
-    <a href="/Angel Calderon Semi-Senior.pdf" download class="btn btn-primary md:text-base lg:text-lg w-full sm:w-auto">
-      {t('download_cv')}
-    </a>
-    <!-- GitHub button next to CV -->
-    <!-- Assumption: GitHub profile URL is https://github.com/angelcalderon; change if different -->
-    <a href="https://github.com/angelcalderon" target="_blank" rel="noopener noreferrer" class="btn btn-brand-github md:text-base lg:text-lg w-full sm:w-auto" aria-label="GitHub profile">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-        </svg>
-        <span class="hidden sm:inline">GitHub</span>
-    </a>
-    <!-- <a href="/profile.png" download class="text-sm font-semibold">
-
-    <button
-      class="hidden sm:flex text-blue-600 hover:text-white hover:bg-blue-600 hover:text-white border-blue-600 border-2 text-blue-600 py-3 px-4 rounded-full flex justify-center items-center ml-4 w-44 min-h-14"
-    >
-        Contactame
-    </button>
-  </a> -->
+<div class="container-content relative grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 md:gap-16 items-center">
+  <!-- subtle hero glow -->
+  <div aria-hidden="true" class="pointer-events-none absolute -inset-x-6 -top-16 -bottom-12 opacity-70">
+    <div class="absolute left-0 top-8 h-64 w-64 rounded-full bg-blue-600/25 blur-3xl" />
+    <div class="absolute right-0 top-24 h-64 w-64 rounded-full bg-purple-600/20 blur-3xl" />
   </div>
-</div>
 
-<div class="sm:mt-0 lg:col-span-5 flex justify-center mt-6 md:mt-0 motion-safe:animate-minbounce">
-  <Image
-    class="rounded-t-lg ProfileImage z-4 drop-shadow-xl"
-    width={400}
-    height={400}
-    loading="eager"
-    src={"/profile.webp"}
-    alt="Foto de Angel Calderon - Desarrollador Web y Mobile en Caracas, Venezuela"
-  />
-</div>
+  <div class="lg:mr-16 place-self-center lg:col-span-7 pt-0 text-white relative">
+    <header class="mb-5">
+      <p class="type-meta text-white/70">{t('frontend_developer')}</p>
+      <h1 class="mt-3 max-w-2xl type-display bg-gradient-to-r from-blue-300 via-blue-600 to-purple-500 bg-clip-text text-transparent">
+        Angel Calderon
+      </h1>
+      <p class="mt-4 max-w-2xl type-lead text-muted-foreground">
+        {t('profile_description_1')}
+        <span class="hidden md:block">{t('profile_description_2')}</span>
+        {t('profile_description_3')}
+      </p>
+    </header>
+
+    <div class="flex flex-wrap items-center gap-2 text-sm">
+      <span class="chip">Remote (UTC−4)</span>
+      <span class="chip">{t('open')}</span>
+    </div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-start mt-8 md:mt-7 gap-3 sm:gap-4">
+      <a href="/Angel Calderon Semi-Senior.pdf" download class="btn btn-primary md:text-base lg:text-lg w-full sm:w-auto">
+        {t('download_cv')}
+      </a>
+
+      <a href="#contacto" class="btn btn-secondary md:text-base lg:text-lg w-full sm:w-auto">
+        {t('contact')}
+      </a>
+
+      <a href="https://github.com/Doble-2" target="_blank" rel="noopener noreferrer" class="btn btn-brand-github md:text-base lg:text-lg w-full sm:w-auto" aria-label="GitHub profile">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+          <span class="hidden sm:inline">GitHub</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="sm:mt-0 lg:col-span-5 flex justify-center mt-8 md:mt-0 motion-safe:animate-minbounce relative">
+    <div aria-hidden="true" class="absolute -inset-6 rounded-full bg-white/5 blur-2xl" />
+    <Image
+      class="w-[280px] h-[280px] object-cover rounded-full border-[3px]shadow-[0_0_25px_rgba(59,130,246,0.3)]"
+      width={480}
+      height={480}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 280px"
+      src={"/profile.webp"}
+      alt="Foto de Angel Calderon - Software Architect & AI Engineer (Remote, UTC-4)"
+    />
+  </div>
 </div>

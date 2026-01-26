@@ -3,12 +3,18 @@ import { motion } from "framer-motion";
 
 const ProjectCard = ({ project, isActive, onClick }) => {
     const buildIco = (p) =>
-        p?.name
-            ? `/projects/${encodeURIComponent(p.name)}/ico.png`
+        (p?.slug || p?.name)
+            ? `/projects/${encodeURIComponent(String(p.slug || p.name))}/ico.png`
             : "/placeholder.svg";
 
     const accentVals = project?.color ? String(project.color).replace(/\s+/g, ",") : null;
-    const activeStyle = isActive && accentVals ? { boxShadow: `0 8px 24px rgba(${accentVals},0.12)`, borderColor: `rgba(${accentVals},0.18)` } : {};
+    const activeStyle =
+        isActive && accentVals
+            ? {
+                  boxShadow: `0 14px 44px rgba(${accentVals},0.18)`,
+                  borderColor: `rgba(${accentVals},0.28)`,
+              }
+            : {};
 
     return (
         <motion.button
@@ -16,15 +22,15 @@ const ProjectCard = ({ project, isActive, onClick }) => {
             type="button"
             title={project.title || project.name}
             aria-pressed={isActive}
-            className={`theme-light group bg-white/95 hover:bg-white text-left w-auto sm:w-fit rounded-xl p-2 sm:p-3 flex items-center gap-3 sm:gap-4 transition-all duration-200 min-h-[44px] shadow-sm hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-black/60`}
+            className={`projects-tab group text-left w-auto sm:w-fit p-2 sm:p-3 flex items-center gap-3 sm:gap-4 min-h-[44px]`}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.985 }}
-            style={{ border: '1px solid rgba(0,0,0,0.06)', ...activeStyle }}
+            style={{ ...activeStyle }}
         >
             <img
                 src={buildIco(project)}
                 alt={project.title || project.name}
-                className="w-10 h-10 sm:w-14 sm:h-14 object-contain flex-shrink-0 bg-background/50 rounded-md"
+                className="w-10 h-10 sm:w-14 sm:h-14 object-contain flex-shrink-0 bg-white/5 border border-white/10 rounded-md p-1"
                 width="56"
                 height="56"
                 loading="lazy"
