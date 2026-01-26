@@ -21,8 +21,8 @@ export const projects: Project[] = [
     description:
       "An automated Open Source Intelligence (OSINT) engine that triangulates digital footprints across 113+ platforms and leverages DeepSeek LLM to generate psychological profiles (OCEAN) and vulnerability assessments.",
     images: [
-      "/projects/osint-d2/osint-terminal.png",
-      "/projects/osint-d2/osint-report-pdf.png"
+      "/projects/osint-d2/osint-terminal.webp",
+      "/projects/osint-d2/osint-report-pdf.webp"
     ],
     tech: {
       primary: ["Python", "Cybersecurity", "AI Agents"],
@@ -46,10 +46,10 @@ export const projects: Project[] = [
     description:
       "A comprehensive residential management platform bridging physical security hardware with modern cloud architecture. Designed to automate visitor access and streamline complex financial reporting for large-scale condominiums.",
     images: [
-      "/projects/eficense/dashboard.png",
-      "/projects/eficense/telegram.png",
-      "/projects/eficense/finances.png",
-      "/projects/eficense/docs.png"
+      "/projects/eficense/dashboard.webp",
+      "/projects/eficense/telegram.webp",
+      "/projects/eficense/finances.webp",
+      "/projects/eficense/docs.webp"
     ],
     tech: {
       primary: ["Next.js", "Python", "IoT"],
@@ -73,13 +73,13 @@ export const projects: Project[] = [
     description:
       "An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.",
     images: [
-        "/projects/studia/mobile-flow.png",
-      "/projects/studia/dashboardadmin.png",
-      "/projects/studia/light-dark.png",
-      "/projects/studia/dashboardowner.png",
-      "/projects/studia/chatbot.png",
-      "/projects/studia/quizes.png",
-      "/projects/studia/themes.png"
+        "/projects/studia/mobile-flow.webp",
+      "/projects/studia/dashboardadmin.webp",
+      "/projects/studia/light-dark.webp",
+      "/projects/studia/dashboardowner.webp",
+      "/projects/studia/chatbot.webp",
+      "/projects/studia/quizes.webp",
+      "/projects/studia/themes.webp"
     ],
     tech: {
       primary: ["React Native", "Python", "RAG"],
@@ -96,8 +96,8 @@ export const projects: Project[] = [
     description:
       "A high-performance CLI tool for Linux power users to manage, tag, and organize large wallpaper collections. Built to integrate seamlessly with tiling window managers like Hyprland.",
     images: [
-      "/projects/scenery/scenery-terminal.png",
-      "/projects/scenery/scenery-search.png"
+      "/projects/scenery/scenery-terminal.webp",
+      "/projects/scenery/scenery-search.webp"
     ],
     tech: {
       primary: ["Python", "Linux"],
@@ -145,7 +145,7 @@ export const projects: Project[] = [
     description:
       "A Flutter mobile app that integrates NASA’s APOD API to browse and download astronomy images, backed by a lightweight Python backend.",
     images: [
-      "/projects/appod/flow.png",
+      "/projects/appod/flow.webp",
       "/projects/appod/home.webp",
       "/projects/appod/apod.webp",
       "/projects/appod/load.webp"
@@ -170,8 +170,8 @@ export const projects: Project[] = [
     description:
       "Built during a 2-day hackathon. Shipped a pet adoption web app featuring two adoption flows using React + Vite.",
     images: [
-      "/projects/onbox/home.jpg",
-      "/projects/onbox/adopt.jpg"
+      "/projects/onbox/home.webp",
+      "/projects/onbox/adopt.webp"
     ],
     tech: {
       primary: ["React", "Vite"],

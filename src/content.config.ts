@@ -11,7 +11,7 @@ const certifieds = defineCollection({
     order: z.number().int(),
     code: z.string().optional().nullable(),
 
-    // assets en /public/certifieds/<asset>.pdf/.jpg
+    // assets en /public/certifieds/<asset>.pdf/.webp
     asset: z.string(),
   }),
 });

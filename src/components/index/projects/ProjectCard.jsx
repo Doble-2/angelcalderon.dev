@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 const ProjectCard = ({ project, isActive, onClick }) => {
     const buildIco = (p) =>
         (p?.slug || p?.name)
-            ? `/projects/${encodeURIComponent(String(p.slug || p.name))}/ico.png`
+            ? `/projects/${encodeURIComponent(String(p.slug || p.name))}/ico.webp`
             : "/placeholder.svg";
 
     const accentVals = project?.color ? String(project.color).replace(/\s+/g, ",") : null;
@@ -35,6 +35,10 @@ const ProjectCard = ({ project, isActive, onClick }) => {
                 height="56"
                 loading="lazy"
                 decoding="async"
+                onError={(e) => {
+                    // fallback si el proyecto no tiene ico.webp
+                    e.currentTarget.src = "/placeholder.svg";
+                }}
             />
 
                     {/* ocultar textos en pantallas móviles para tarjetas más compactas */}
