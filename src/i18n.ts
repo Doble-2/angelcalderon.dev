@@ -17,10 +17,10 @@ export default {
     english: "Inglés",
     frontend_developer: "Software Architect & AI Engineer",
     profile_description_1:
-      "Diseño y desarrollo soluciones digitales que funcionan y convierten: apps móviles y web con enfoque en rendimiento, accesibilidad y experiencia de usuario.",
+      "Diseño y construyo productos digitales listos para producción: web y mobile con foco en performance, seguridad, UX y entrega.",
     profile_description_2:
-      "Trabajo desde prototipos hasta producción, integrando buenas prácticas de DevOps y diseño con Figma.",
-    profile_description_3: "Specialized in High-Performance IoT Ecosystems and RAG AI Agents.",
+      "Voy de la estrategia al shipping: arquitectura, integración de APIs, automatización CI/CD y UI/UX con Figma.",
+    profile_description_3: "Especializado en ecosistemas IoT de alto rendimiento y agentes de IA con RAG.",
   download_cv: "Descargar CV",
   frontend: "Frontend",
   backend: "Backend",
@@ -160,10 +160,10 @@ export default {
     english: "English",
     frontend_developer: "Software Architect & AI Engineer",
     profile_description_1:
-      "I design and build reliable digital products: mobile apps and web interfaces with a focus on performance, accessibility and great UX.",
+      "I design and ship production-grade digital products: web and mobile with a focus on performance, security, UX and delivery.",
     profile_description_2:
-      "I work from prototypes to production, applying DevOps practices and Figma-based design.",
-    profile_description_3: "Specialized in High-Performance IoT Ecosystems and RAG AI Agents.",
+      "From strategy to shipping: architecture, API integrations, CI/CD automation and Figma-driven UI/UX.",
+    profile_description_3: "Specialized in high-performance IoT ecosystems and RAG-based AI agents.",
   download_cv: "Download CV",
   frontend: "Frontend",
   backend: "Backend",

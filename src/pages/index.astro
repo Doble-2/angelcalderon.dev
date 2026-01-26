@@ -13,7 +13,10 @@ const lang = resolveLangFromRequest(Astro.request);
 const t = (key: string) => translations[lang]?.[key] || key;
 ---
 
-<Layout title="Ángel Calderón | Desarrollador Frontend">
+<Layout
+  title="Ángel Calderón — Software Architect & AI Engineer"
+  description="Arquitecto de software e ingeniero de IA. Creo productos web y mobile con foco en performance, UX, seguridad y despliegue: Python, Next.js, React Native, Flutter, RAG, IoT y agentes de IA."
+>
   <Section
     ariaLabel="Hero"
     variant="transparent"

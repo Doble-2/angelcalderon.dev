@@ -16,16 +16,85 @@ interface Props {
 }
 
 const {
-  title = "Angel Calderon - Desarrollador Web/Mobile",
-  description = "Angel Calderon - Desarrollador Web/Mobile freelance en Caracas, Venezuela. Experto en Flutter, React, Next.js y Python. Portfolio profesional para reclutadores y clientes.",
-  image = "/profile.webp",
-  url = Astro.request.url || "/",
+  title = "Ángel Calderón — Software Architect & AI Engineer",
+  description = "Arquitecto de software e ingeniero de IA. Desarrollo productos web y mobile con foco en performance, UX, seguridad y despliegue. Python, Next.js, React Native, Flutter, RAG y sistemas IoT.",
+  image = "/cyberpunk.webp",
+  url = Astro.url?.toString() || "/",
   lang: forcedLang,
 } = Astro.props;
 
 // Idioma determinado en el servidor mediante cookie o Accept-Language
 const lang = resolveLangFromRequest(Astro.request, forcedLang);
 const t = (key: string) => translations[lang]?.[key] || key;
+
+const SITE = (Astro.site?.toString() || "https://angelcalderon.dev").replace(/\/$/, "");
+const locale = lang === "en" ? "en_US" : "es_ES";
+
+const canonicalUrl = (() => {
+  try {
+    const u = new URL(String(url), SITE);
+    return new URL(u.pathname, SITE).toString();
+  } catch {
+    return new URL("/", SITE).toString();
+  }
+})();
+
+const imageUrl = (() => {
+  try {
+    return new URL(String(image), SITE).toString();
+  } catch {
+    return new URL("/cyberpunk.webp", SITE).toString();
+  }
+})();
+
+const alternateEs = new URL("/", SITE).toString();
+const alternateEn = new URL("/en", SITE).toString();
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Ángel Calderón",
+  url: SITE,
+  sameAs: [
+    "https://github.com/Doble-2",
+    "https://www.linkedin.com/in/angeld2/",
+    "https://x.com/angelcaldev",
+  ],
+  jobTitle: "Software Architect & AI Engineer",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Caracas",
+    addressCountry: "VE",
+  },
+  knowsAbout: [
+    "Python",
+    "AI Agents",
+    "RAG",
+    "Cybersecurity",
+    "OSINT",
+    "IoT",
+    "FastAPI",
+    "Next.js",
+    "React",
+    "React Native",
+    "Flutter",
+    "TypeScript",
+    "PostgreSQL",
+    "Redis",
+    "Docker",
+    "Vercel",
+    "AWS",
+    "Figma",
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "angelcalderon.dev",
+  url: SITE,
+  inLanguage: lang,
+};
 ---
 
 <!doctype html>
@@ -35,30 +104,34 @@ const t = (key: string) => translations[lang]?.[key] || key;
     <meta name="description" content={description} />
     <meta
       name="keywords"
-      content="Angel Calderon, desarrollador web, desarrollador mobile, freelance, Caracas, Venezuela, Flutter, React, Next.js, Python, Astro, TypeScript, devops, diseño, Figma, portafolio, proyectos, programador, frontend, backend, español, inglés, recruiter, contratación, tecnología"
+      content="Ángel Calderón, software architect, AI engineer, agentes de IA, RAG, OSINT, ciberseguridad, IoT, Python, FastAPI, Next.js, React, React Native, Flutter, TypeScript, PostgreSQL, Redis, Docker, Vercel, AWS, Figma, performance, UX"
     />
-    <link rel="alternate" hreflang="es" href="/" />
-    <link rel="alternate" hreflang="en" href="/en" />
+    <link rel="alternate" hreflang="x-default" href={alternateEs} />
+    <link rel="alternate" hreflang="es" href={alternateEs} />
+    <link rel="alternate" hreflang="en" href={alternateEn} />
     <meta name="author" content="Angel Calderon" />
     <meta name="geo.placename" content="Caracas, Venezuela" />
     <meta name="geo.region" content="VE" />
     <meta name="geo.position" content="10.4806;-66.9036" />
-    <meta property="twitter:image" content={image} />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content="Cyberpunk background thumbnail" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={url} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="Angel Calderon" />
+    <meta property="og:locale" content={locale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@angelcaldev" />
     <meta name="twitter:creator" content="@angelcaldev" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="/rect1-optimized.webp" />
-    <link rel="canonical" href={url} />
+    <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0b1220" />
 
     <!-- Inter font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -68,7 +141,11 @@ const t = (key: string) => translations[lang]?.[key] || key;
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | Caracas, Venezuela</title>
+    <title>{title}</title>
+
+    <!-- JSON-LD structured data -->
+    <script is:inline type="application/ld+json">{JSON.stringify(personJsonLd)}</script>
+    <script is:inline type="application/ld+json">{JSON.stringify(websiteJsonLd)}</script>
   </head>
   <body class="max-w-screen bg-background text-foreground">
     <a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a

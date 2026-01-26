@@ -7,6 +7,7 @@ import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://angelcalderon.dev',
   integrations: [tailwind(), icon(), react()],
   output: 'server',
   adapter: vercel({
