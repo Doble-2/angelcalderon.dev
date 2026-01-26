@@ -5,10 +5,12 @@ import Section from "../../share/Section.astro";
 import ProjectGalleryDesktop from "./ProjectGalleryDesktop.jsx";
 import translations from "../../../i18n";
 import { resolveLangFromRequest } from "../../../lib/lang";
+import ProjectPager from "../ProjectPager.astro";
 
 const { projectProp } = Astro.props as { projectProp: any };
 const lang = resolveLangFromRequest(Astro.request);
 const tI18n = (key: string) => translations[lang]?.[key] || key;
+const pagerSlug = String(projectProp?.slug || projectProp?.id || projectProp?.name || "");
 const localSrc = (s: string) =>
   s ? (s.startsWith("http") ? s : s.startsWith("/") ? s : "/" + s) : "";
 
@@ -124,5 +126,7 @@ const techAll = Array.from(
         </div>
       </aside>
     </div>
+
+    <ProjectPager currentSlug={pagerSlug} />
   </div>
 </Section>

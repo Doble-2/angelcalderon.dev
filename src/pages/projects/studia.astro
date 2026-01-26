@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects";
+import ProjectPager from "../../components/projects/ProjectPager.astro";
 
 const project = projects.find((p) => p.slug === "studia");
 if (!project) return Astro.redirect("/404");
@@ -263,6 +264,7 @@ const techBadges = [
 				))}
 			</div>
 		</section>
+		<ProjectPager currentSlug={project.slug} />
 	</main>
 
 	<style>

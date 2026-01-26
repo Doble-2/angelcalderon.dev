@@ -9,6 +9,7 @@ import TechnologyTag from "../../index/projects/TechnologyTag";
 import { ExternalLinkIcon } from "lucide-react";
 import translations from "../../../i18n";
 import { resolveLangFromRequest } from "../../../lib/lang";
+import ProjectPager from "../ProjectPager.astro";
 
 const localSrc = (s: string) =>
   s
@@ -41,6 +42,8 @@ const techAll = Array.from(
 
 const lang = resolveLangFromRequest(Astro.request);
 const tI18n = (key: string) => translations[lang]?.[key] || key;
+
+const pagerSlug = String(projectProp?.slug || projectProp?.id || projectProp?.name || "");
 
 // Configurar e inicializar Photoswipe
 ---
@@ -122,6 +125,8 @@ const tI18n = (key: string) => translations[lang]?.[key] || key;
           }
             </div>
         </div>
+
+        <ProjectPager currentSlug={pagerSlug} />
     </div>
 </Section>
 <script>

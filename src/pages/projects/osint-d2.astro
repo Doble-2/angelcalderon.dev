@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects";
+import ProjectPager from "../../components/projects/ProjectPager.astro";
 
 const project = projects.find((p) => p.slug === "osint-d2");
 if (!project) return Astro.redirect("/404");
@@ -111,5 +112,6 @@ const evidence = project.images?.[1] || hero;
         </div>
       </div>
     </section>
+    <ProjectPager currentSlug={project.slug} />
   </main>
 </Layout>

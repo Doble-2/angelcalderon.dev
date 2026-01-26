@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects";
+import ProjectPager from "../../components/projects/ProjectPager.astro";
 
 const project = projects.find((p) => p.slug === "eficense");
 if (!project) return Astro.redirect("/404");
@@ -142,5 +143,6 @@ const mobile = project.images?.[1] || dashboard;
         </article>
       </div>
     </section>
+    <ProjectPager currentSlug={project.slug} />
   </main>
 </Layout>

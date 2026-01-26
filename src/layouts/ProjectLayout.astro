@@ -2,6 +2,7 @@
 import Layout from "./Layout.astro";
 import type { Project } from "../data/projects";
 import TechIcon from "../components/projects/TechIcon.astro";
+import ProjectPager from "../components/projects/ProjectPager.astro";
 
 interface Props {
   project: Project;
@@ -236,5 +237,7 @@ const fullStack = Array.from(
         </div>
       </aside>
     </section>
+
+    <ProjectPager currentSlug={project.slug} />
   </main>
 </Layout>
