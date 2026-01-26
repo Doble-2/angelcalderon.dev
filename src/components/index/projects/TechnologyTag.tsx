@@ -35,7 +35,9 @@ import {
 
 const ICONS_MAP = {
   nextjs: SiNextdotjs,
+  "next.js": SiNextdotjs,
   react: SiReact,
+  "react native": SiReact,
   tailwindcss: SiTailwindcss,
   tailwind: SiTailwindcss,
   firebase: SiFirebase,
@@ -43,6 +45,7 @@ const ICONS_MAP = {
   vercel: SiVercel,
   nodejs: SiNodedotjs,
   node: SiNodedotjs,
+  "node.js": SiNodedotjs,
   flutter: SiFlutter,
   dart: SiDart,
   python: SiPython,
@@ -53,8 +56,12 @@ const ICONS_MAP = {
   php: SiPhp,
   laravel: SiLaravel,
   mysql: SiMysql,
+  "my sql": SiMysql,
   postgresql: SiPostgresql,
+  postgres: SiPostgresql,
+  "postgre sql": SiPostgresql,
   mongodb: SiMongodb,
+  "mongo db": SiMongodb,
   graphql: SiGraphql,
   docker: SiDocker,
   kubernetes: SiKubernetes,
@@ -66,6 +73,7 @@ const ICONS_MAP = {
   javascript: SiJavascript,
   typescript: SiTypescript,
   vitejs: SiVite,
+  vite: SiVite,
   aws: SiAmazon,
 };
 

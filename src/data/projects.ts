@@ -73,8 +73,8 @@ export const projects: Project[] = [
     description:
       "An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.",
     images: [
+        "/projects/studia/mobile-flow.png",
       "/projects/studia/dashboardadmin.png",
-      "/projects/studia/mobile-flow.png",
       "/projects/studia/light-dark.png",
       "/projects/studia/dashboardowner.png",
       "/projects/studia/chatbot.png",
@@ -116,7 +116,7 @@ export const projects: Project[] = [
   {
     name: "Born AI",
     slug: "born-ai",
-    order: 60,
+    order: 55,
     subtitle: "Predictive genetics with LLMs (Next.js + OpenAI)",
     description:
       "A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs. Earned 2nd Place Winner in a coding competition.",
@@ -140,7 +140,7 @@ export const projects: Project[] = [
   {
     name: "Appod",
     slug: "appod",
-    order: 55,
+    order: 60,
     subtitle: "APOD explorer: NASA in your pocket",
     description:
       "A Flutter mobile app that integrates NASA’s APOD API to browse and download astronomy images, backed by a lightweight Python backend.",

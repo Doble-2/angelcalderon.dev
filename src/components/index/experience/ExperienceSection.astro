@@ -1,9 +1,10 @@
 ---
 import {
-  Code,
-  Palette,
-  Database,
+  Smartphone,
   Globe,
+  Database,
+  Plug,
+  Server,
 } from "lucide-react";
 import TechnologyTag from "../projects/TechnologyTag";
 interface Props {
@@ -20,10 +21,76 @@ const gradients = [
 ];
 
 const skills = [
-  { name: "Frontend", icon: Code, technologies: ["React", "Nextjs", "TypeScript", "TailwindCSS", "Flutter", "Astro"], gradient: gradients[0] },
-  { name: "Backend", icon: Database, technologies: ["Nodejs", "Python", "Firebase", "PHP"], gradient: gradients[1] },
-  { name: "Design", icon: Palette, technologies: ["Figma",  "UI/UX", "Prototyping"], gradient: gradients[2] },
-  { name: "DevOps", icon: Globe, technologies: ["Vercel"], gradient: gradients[3] },
+  {
+    name: "Mobile Development",
+    icon: Smartphone,
+    technologies: ["Flutter", "Dart", "React Native", "FlutterFlow"],
+    gradient: gradients[0],
+  },
+  {
+    name: "Web Technologies",
+    icon: Globe,
+    technologies: [
+      "React",
+      "Nextjs",
+      "Astro",
+      "TailwindCSS",
+      "Shadcn",
+      "Typescript",
+      "Vite",
+      "Wordpress",
+      "Laravel",
+    ],
+    gradient: gradients[1],
+  },
+  {
+    name: "Backend & AI",
+    icon: Database,
+    technologies: [
+      "Python",
+      "Nodejs",
+      "PHP",
+      "Firebase",
+      "MongoDB",
+      "MySQL",
+      "PostgreSQL",
+      "FastAPI",
+      "Redis",
+      "RAG",
+      "Vector DB",
+      "AI Agents",
+      "LLM",
+      "OpenAI",
+      "DeepSeek API",
+    ],
+    gradient: gradients[2],
+  },
+  {
+    name: "Integrations",
+    icon: Plug,
+    technologies: [
+      "WhatsApp Cloud API",
+      "REST APIs",
+      "Webhooks",
+      "Telegram Bots",
+      "PDF Generation",
+      "OAuth",
+    ],
+    gradient: gradients[3],
+  },
+  {
+    name: "Dev Ops",
+    icon: Server,
+    technologies: [
+      "Linux (Arch)",
+      "Docker",
+      "Vercel",
+      "Render",
+      "Git",
+      "GitHub Actions",
+    ],
+    gradient: gradients[0],
+  },
 ];
 ---
 
@@ -35,7 +102,7 @@ const skills = [
   </div>
 
   <!-- Skills grid -->
-  <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
     {skills.map((skill) => (
       <div class="theme-light neomorphic group text-foreground flex flex-col gap-4 text-center p-6">
         <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transition-transform duration-300 group-hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
@@ -43,7 +110,7 @@ const skills = [
             <skill.icon className="h-6 w-6" />
           </div>
         </div>
-  <h3 class="font-semibold text-lg mb-1">{t(skill.name.toLowerCase())}</h3>
+        <h3 class="font-semibold text-lg mb-1">{skill.name}</h3>
         <div class="flex flex-wrap justify-center gap-2">
           {((skill.technologies || []) as string[]).map((tech: string) => (
             <TechnologyTag tech={tech} />

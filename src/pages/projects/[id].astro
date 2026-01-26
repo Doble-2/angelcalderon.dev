@@ -2,9 +2,10 @@
 import ProjectLayout from "../../layouts/ProjectLayout.astro";
 import { projects } from "../../data/projects";
 
+// Tier 1 tiene páginas dedicadas (ruta estática), pero dejamos un guardrail.
 const TIER_1 = new Set(["osint-d2", "eficense", "studia"]);
 
-const raw = String(Astro.params.slug || "");
+const raw = String(Astro.params.id || "");
 let decoded = raw;
 try {
   decoded = decodeURIComponent(raw);
@@ -12,8 +13,7 @@ try {
   decoded = raw;
 }
 
-// En teoría, estos slugs se resuelven por páginas Tier 1 estáticas.
-// Esto es solo un guardrail por si el router cae aquí.
+// Si por alguna razón cae aquí un slug Tier 1, redirige a su ruta canónica.
 if (TIER_1.has(raw)) {
   return Astro.redirect(`/projects/${raw}`, 301);
 }
