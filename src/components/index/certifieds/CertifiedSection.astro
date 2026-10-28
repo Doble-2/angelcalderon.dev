@@ -1,105 +1,171 @@
 ---
-import CertifiedContainer from "./CertifiedContainer.astro";
 import { getCollection } from "astro:content";
 
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { t = (k: string) => k } = Astro.props as Props;
+const { lang = "es", t = (k: string) => k } = Astro.props as Props;
 
-const entries = await getCollection("certifieds");
-const certifieds = entries
-  .map((e) => ({ id: e.id, ...e.data }))
-  .sort((a, b) => Number(b.order) - Number(a.order));
+const MONTHS = {
+  es: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
+  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+}[lang === "en" ? "en" : "es"];
+
+const certs = (await getCollection("certifieds"))
+  .map(({ data }) => {
+    const [d, m, y] = data.date.split("/").map(Number); // dd/mm/yyyy
+    return {
+      ...data,
+      title: lang === "en" && data.name_en ? data.name_en : data.name,
+      year: y,
+      time: new Date(y, m - 1, d).getTime(),
+      month: MONTHS[m - 1],
+      note: lang === "en" && data.note_en ? data.note_en : data.note,
+      image: data.asset ? `/certifieds/hd/${data.asset}.webp` : null,
+      pdf: data.asset && data.pdf ? `/certifieds/${data.asset}.pdf` : null,
+    };
+  })
+  .sort((a, b) => b.time - a.time);
+
+// Destacado: el mejor puesto que tenga diploma para mostrar
+const award = certs.filter((c) => c.place && c.image).sort((a, b) => a.place! - b.place!)[0];
+const rest = certs.filter((c) => c !== award);
+const years = [...new Set(rest.map((c) => c.year))].sort((a, b) => b - a);
+
+const hackathons = certs.filter((c) => c.kind !== "course").length;
+const hours = certs.reduce((sum, c) => sum + (c.hours ?? 0), 0);
+
+const kindLabel = (k: string) => t(`cert_kind_${k}`);
 ---
-<div class="relative flex flex-col w-full gap-10">
-  <div aria-hidden="true" class="pointer-events-none absolute -inset-x-10 -top-12 h-40 blur-3xl opacity-50" style="background: radial-gradient(700px 240px at 50% 0%, rgba(var(--ring),0.18), transparent 60%);" />
 
-  <div class="container-content text-center">
-    <h2 class="type-h2 mb-3 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{t("certificates")}</h2>
-    <p class="type-lead text-muted-foreground max-w-2xl mx-auto">
-      {t("certifieds_description_1")}
-    </p>
-    <p class="type-lead text-muted-foreground max-w-2xl mx-auto mt-2">
-      {t("certifieds_description_2")}
-    </p>
+<div class="container-content overflow-x-clip">
+  <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+    <h2 class="type-h2">{t("certificates")}</h2>
+    <dl class="flex gap-10">
+      <div class="flex flex-col">
+        <dt class="text-sm text-muted-foreground">{t("cert_stat_hackathons")}</dt>
+        <dd class="order-first font-display text-5xl leading-none">{hackathons}</dd>
+      </div>
+      <div class="flex flex-col">
+        <dt class="text-sm text-muted-foreground">{t("cert_stat_hours")}</dt>
+        <dd class="order-first font-display text-5xl leading-none">{hours}<span class="text-white/40">h</span></dd>
+      </div>
+    </dl>
   </div>
 
-<div class="container-content">
-  {
-    certifieds.length > 0 && (
-      <div class="flex items-center justify-center gap-3 mb-6">
-        <span class="chip">
-          <span class="inline-block w-2 h-2 rounded-full bg-blue-500" />
-          {certifieds.length} {t("certificates")}
-        </span>
-      </div>
-      <div class="projects-rail no-scrollbar flex gap-4 overflow-x-auto p-4 snap-x snap-mandatory">
-        {certifieds.map((certified) => (
-          <div class="snap-start shrink-0 w-[320px] sm:w-[360px]">
-            <CertifiedContainer
-              className="w-full"
-              variant="row"
-              href={"/certifieds/" + certified.asset + ".pdf"}
-              title={certified.name}
-              image={"/certifieds/" + certified.asset + ".webp"}
-              meta={`${certified.platform || ''}${certified.date ? ` • ${certified.date}` : ''}`}
-            />
-          </div>
-        ))}
-      </div>
-    )
-  }
-</div>
+  <div class="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
+    <!-- Premio destacado: el diploma como objeto físico -->
+    {award && (
+      <figure class="min-w-0 lg:col-span-7">
+        <button
+          type="button"
+          class="cert-paper group relative block w-full"
+          data-cert-preview
+          data-cert-img={award.image}
+          data-cert-pdf={award.pdf || award.url}
+          data-cert-link={award.pdf ? t("cert_open_pdf") : t("cert_open_event")}
+          aria-label={`${t("cert_view")}: ${award.title}`}
+        >
+          <img src={award.image} alt={award.title} class="w-full h-auto rounded-md" loading="lazy" decoding="async" />
+          <span class="absolute -right-1 -top-5 md:-right-6 md:-top-7 grid h-20 w-20 md:h-28 md:w-28 rotate-12 place-items-center rounded-full bg-[#800020] font-display text-4xl md:text-6xl text-white shadow-2xl shadow-black/60 ring-4 ring-background transition-transform duration-500 group-hover:rotate-0" aria-hidden="true">
+            #{award.place}
+          </span>
+        </button>
+        <figcaption class="mt-8">
+          <p class="type-meta text-[#f48fb1]">{kindLabel(award.kind)} · {award.platform} · {award.month} {award.year}</p>
+          <p class="mt-2 font-display uppercase text-4xl md:text-5xl leading-[0.95] break-words">{award.title}</p>
+          {award.note && <p class="mt-3 text-white/70">{award.note}</p>}
+        </figcaption>
+      </figure>
+    )}
+
+    <!-- El resto, por año -->
+    <div class="min-w-0 lg:col-span-5 space-y-10">
+      {years.map((year) => (
+        <section aria-label={String(year)}>
+          <h3 class="font-display text-4xl leading-none text-white/20">{year}</h3>
+          <ul class="mt-4 divide-y divide-white/[0.07] border-y border-white/[0.07]">
+            {rest.filter((c) => c.year === year).map((c) => (
+              <li>
+                {/* Con PDF abre el visor; sin PDF enlaza a la web del evento */}
+                {(() => {
+                  const inner = (
+                    <>
+                      <span class="relative h-14 w-20 shrink-0 overflow-hidden rounded-md bg-white/5 ring-1 ring-white/10">
+                        {c.image ? (
+                          <img src={c.image} alt="" class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110" loading="lazy" decoding="async" />
+                        ) : (
+                          <span class="grid h-full w-full place-items-center bg-gradient-to-br from-[#800020] to-[#c2185b] font-display text-3xl text-white" aria-hidden="true">#{c.place}</span>
+                        )}
+                      </span>
+                      <span class="min-w-0 flex-1">
+                        <span class="block line-clamp-2 font-medium leading-snug text-white group-hover:text-[#f48fb1] transition-colors">{c.title}</span>
+                        <span class="block line-clamp-2 text-sm text-muted-foreground">
+                          {kindLabel(c.kind)} · {c.platform}{c.issuer_detail ? ` + ${c.issuer_detail}` : ""}
+                        </span>
+                        {c.note && <span class="mt-1 block text-sm leading-snug text-[#f48fb1]">{c.note}</span>}
+                      </span>
+                      {c.hours ? (
+                        <span class="shrink-0 font-display text-2xl text-white/50 tabular-nums">{c.hours}h</span>
+                      ) : c.url && !c.image ? (
+                        <span class="shrink-0 text-xl text-white/40" aria-hidden="true">↗</span>
+                      ) : null}
+                    </>
+                  );
+                  return c.image ? (
+                    <button type="button" class="group flex w-full items-center gap-4 py-3 text-left" data-cert-preview data-cert-img={c.image} data-cert-pdf={c.pdf || c.url} data-cert-link={c.pdf ? t("cert_open_pdf") : t("cert_open_event")} aria-label={`${t("cert_view")}: ${c.title}`}>
+                      {inner}
+                    </button>
+                  ) : (
+                    <a href={c.url} target="_blank" rel="noopener noreferrer" class="group flex w-full items-center gap-4 py-3 text-left">
+                      {inner}
+                    </a>
+                  );
+                })()}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </div>
 </div>
 
-<dialog id="cert-preview" class="cert-dialog">
-  <div class="cert-dialog__inner">
-    <button type="button" class="cert-dialog__close" data-cert-close aria-label={t('close')} title={t('close')}>
-      ×
+<dialog id="cert-preview" class="media-dialog">
+  <div class="media-dialog__inner">
+    <button type="button" class="media-dialog__close" data-cert-close aria-label={t("close")} title={t("close")}>
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
     </button>
-    <img id="cert-preview-img" class="cert-dialog__img" alt={t('certPreviewAlt')} />
-    <div class="cert-dialog__actions">
-      <a id="cert-preview-pdf" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">
-        {t('open')}
-      </a>
-      <button type="button" class="btn btn-secondary btn-sm" data-cert-close>
-        {t('close')}
-      </button>
+    <img id="cert-preview-img" class="media-dialog__img" alt="" />
+    <div class="media-dialog__actions">
+      <a id="cert-preview-pdf" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">{t("cert_open_pdf")}</a>
+      <button type="button" class="btn btn-secondary btn-sm" data-cert-close>{t("close")}</button>
     </div>
   </div>
 </dialog>
 
 <script is:inline>
-  document.addEventListener('DOMContentLoaded', () => {
-    const dialog = document.getElementById('cert-preview');
-    const img = document.getElementById('cert-preview-img');
-    const pdf = document.getElementById('cert-preview-pdf');
+  document.addEventListener("DOMContentLoaded", () => {
+    const dialog = document.getElementById("cert-preview");
+    const img = document.getElementById("cert-preview-img");
+    const pdf = document.getElementById("cert-preview-pdf");
+    if (!dialog || !img || !pdf) return;
 
-    function close() {
-      if (!dialog) return;
-      try { dialog.close(); } catch (e) {}
-    }
-
-    document.querySelectorAll('[data-cert-preview]')?.forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        const image = el.getAttribute('data-cert-img');
-        const href = el.getAttribute('data-cert-pdf');
-        if (img && image) img.setAttribute('src', image);
-        if (pdf && href) pdf.setAttribute('href', href);
-        try { dialog.showModal(); } catch (err) {}
+    document.querySelectorAll("[data-cert-preview]").forEach((el) => {
+      el.addEventListener("click", () => {
+        img.src = el.getAttribute("data-cert-img") || "";
+        img.alt = el.getAttribute("aria-label") || "";
+        const href = el.getAttribute("data-cert-pdf");
+        pdf.hidden = !href;
+        pdf.href = href || "#";
+        pdf.textContent = el.getAttribute("data-cert-link") || pdf.textContent;
+        dialog.showModal();
       });
     });
 
-    document.querySelectorAll('[data-cert-close]')?.forEach((el) => {
-      el.addEventListener('click', close);
-    });
-
-    dialog?.addEventListener('click', (e) => {
-      // click outside closes
-      if (e.target === dialog) close();
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog || e.target.closest("[data-cert-close]")) dialog.close();
     });
   });
 </script>

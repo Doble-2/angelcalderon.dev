@@ -1,127 +1,209 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+// OSINT-D2 — contenido basado en el repo (README, docs/guides/agent-mode.md,
+// docs/architecture, CHANGELOG). Cifras verificadas en el código:
+// 20 escáneres de plataformas + 4 fuentes de email, 9 herramientas del agente,
+// 287 tests, 5 idiomas.
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
 import { projects } from "../../data/projects";
-import ProjectPager from "../../components/projects/ProjectPager.astro";
+import { resolveLangFromRequest } from "../../lib/lang";
 
 const project = projects.find((p) => p.slug === "osint-d2");
 if (!project) return Astro.redirect("/404");
 
-const hero = project.images?.[0] || "/rect1-optimized.webp";
-const evidence = project.images?.[1] || hero;
+const lang = resolveLangFromRequest(Astro.request);
+
+const copy = {
+  es: {
+    traceTitle: "Así piensa",
+    traceLead: "No sigue una lista fija: encuentra pistas y decide a dónde ir. Esta es una investigación real sobre «torvalds».",
+    traceNote: "Si se queda sin pasos, el motor fuerza el informe final: toda investigación termina en algo concreto.",
+    toolsTitle: "9 herramientas",
+    profileTitle: "Perfil en 6 dimensiones",
+    profileLead: "Cada conclusión se apoya en evidencia recogida durante la investigación.",
+    anchorsTitle: "Filtra falsos positivos",
+    anchorsLead: "Declaras una fuente que sabes que es real («--trust github:usuario») y cada perfil encontrado se puntúa contra ella.",
+    anchorsCaption: "Peso de cada señal",
+    dossierTitle: "El entregable",
+    dossierLead: "Un dossier PDF de estilo clasificado, listo para compartir.",
+    deployTitle: "Un comando",
+    deployLead: "Dashboard en vivo en localhost:8000. Con Ollama, la IA corre en tu máquina, sin API keys.",
+    ethics: "Diseñado solo para investigación de seguridad autorizada, periodismo y OSINT legítimo.",
+    summary: "Le das un usuario o un email: un agente de IA lo busca en más de 20 plataformas, encuentra pistas nuevas, las sigue por su cuenta y entrega un perfil de 6 dimensiones basado en evidencia, en un dossier PDF. Open source, listo para Docker y con la IA corriendo en local vía Ollama.",
+  },
+  en: {
+    traceTitle: "How it thinks",
+    traceLead: "No fixed checklist: it finds leads and decides where to go next. This is a real investigation of “torvalds”.",
+    traceNote: "If it runs out of steps, the engine forces the final report: every investigation ends with something concrete.",
+    toolsTitle: "9 tools",
+    profileTitle: "6-dimension profile",
+    profileLead: "Every conclusion is grounded in evidence gathered during the investigation.",
+    anchorsTitle: "Filters false positives",
+    anchorsLead: "Declare a source you know is real (“--trust github:user”) and every profile found is scored against it.",
+    anchorsCaption: "Weight of each signal",
+    dossierTitle: "The deliverable",
+    dossierLead: "A classified-style PDF dossier, ready to share.",
+    deployTitle: "One command",
+    deployLead: "Live dashboard at localhost:8000. With Ollama, the AI runs on your machine with no API keys.",
+    ethics: "Built for authorized security research, journalism and legitimate OSINT only.",
+    summary: project.description,
+  },
+}[lang];
+
+// Traza real del README: el agente pivota de usuario → web → emails → informe
+const trace = [
+  { tool: "scan_username", input: "torvalds", out: lang === "es" ? "11 perfiles confirmados de 19" : "11 confirmed of 19 scanned" },
+  { tool: "fetch_url", input: "github.com/torvalds", out: lang === "es" ? "encuentra emails y redes" : "finds emails and social links" },
+  { tool: "scan_email", input: "torvalds@linux-foundation.org", out: lang === "es" ? "13 confirmados de 23" : "13 confirmed of 23" },
+  { tool: "scan_email", input: "torvalds@kernel.org", out: lang === "es" ? "12 confirmados" : "12 confirmed" },
+  { tool: "fetch_url", input: "x.com/torvalds · keybase.io/torvalds", out: lang === "es" ? "cruza X y Keybase" : "cross-checks X and Keybase" },
+  { tool: "generate_report", input: lang === "es" ? "perfil 6D" : "6D profile", out: lang === "es" ? "separa al Torvalds real de los suplantadores" : "tells the real Torvalds from impersonators" },
+];
+
+const tools = [
+  ["scan_username", lang === "es" ? "20 plataformas" : "20 platforms"],
+  ["scan_email", "Gravatar · PGP"],
+  ["breach_check", "HIBP k-anonymity"],
+  ["fetch_url", lang === "es" ? "con protección SSRF" : "SSRF-protected"],
+  ["compare_avatars", lang === "es" ? "hash perceptual" : "perceptual hash"],
+  ["scan_phone", lang === "es" ? "operador · WhatsApp" : "carrier · WhatsApp"],
+  ["search_vector_memory", lang === "es" ? "BM25 sobre la evidencia" : "BM25 over evidence"],
+  ["correlate_stylometry", lang === "es" ? "estilo de escritura" : "writing style"],
+  ["generate_report", lang === "es" ? "cierra la investigación" : "closes the case"],
+];
+
+const dimensions = lang === "es"
+  ? ["Identidad", "Geo-temporal", "Psicología OCEAN", "Stack técnico", "Ideología", "OpSec y superficie de ataque"]
+  : ["Identity", "Geo-temporal", "OCEAN psychology", "Tech stack", "Ideology", "OpSec & attack surface"];
+
+const weights = [
+  { label: lang === "es" ? "Nombre" : "Name", value: 40 },
+  { label: "Bio", value: 30 },
+  { label: "Avatar", value: 20 },
+  { label: lang === "es" ? "Ubicación" : "Location", value: 10 },
+];
+
+const dossier = lang === "es"
+  ? ["Ficha de identidad", "Matriz de riesgo", "Grafo de entidades, exportable a JSON, Obsidian Canvas, HTML y PNG"]
+  : ["Identity card", "Risk matrix", "Entity graph, exportable to JSON, Obsidian Canvas, HTML and PNG"];
+
+const deployFacts = lang === "es"
+  ? ["DeepSeek · OpenAI · Ollama", "5 idiomas: ES EN PT AR RU", "CLI + dashboard web", "Python 3.11 – 3.13", "Licencia MIT"]
+  : ["DeepSeek · OpenAI · Ollama", "5 languages: EN ES PT AR RU", "CLI + web dashboard", "Python 3.11 – 3.13", "MIT license"];
 ---
 
-<Layout
-  title={`${project.name} | Angel Calderon — Dark Ops OSINT`}
-  description={project.description}
-  image={evidence}
-  url={Astro.request.url}
->
-  <main class="container-content py-10 md:py-14 pt-20 md:pt-14 px-3">
-    <!-- Hero -->
-    <section class="relative overflow-hidden rounded-3xl border border-border bg-background">
-      <div class="absolute inset-0 opacity-60" style="background: radial-gradient(900px 360px at 20% 0%, rgba(220,38,38,0.25), transparent 60%);" />
-      <div class="absolute inset-0 opacity-60" style="background: radial-gradient(900px 360px at 80% 20%, rgba(59,130,246,0.18), transparent 60%);" />
+<ProjectLayout project={project} gallery={[]} summary={copy.summary} title={`${project.name} — Agentic OSINT | Ángel Calderón`}>
+  <!-- 1. Cómo razona el agente -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.traceTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.traceLead}</p>
 
-      <div class="relative p-6 md:p-10">
-        <div class="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-xs text-muted-foreground font-mono">
-          <span class="w-2 h-2 rounded-full bg-red-500" />
-          <span>dark-ops://project</span>
-        </div>
-
-        <h1 class="mt-5 font-mono text-3xl md:text-5xl font-bold text-foreground tracking-tight">
-          <span class="text-muted-foreground">$</span> {project.name}
-        </h1>
-        <p class="mt-3 font-mono text-muted-foreground max-w-3xl">
-          AI-Powered Identity Intelligence
-        </p>
-
-        <div class="mt-6 flex flex-col sm:flex-row gap-3">
-          {project.links?.repo ? (
-            <a class="btn btn-brand-github w-full sm:w-auto justify-center" href={project.links.repo} target="_blank" rel="noopener noreferrer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-              </svg>
-              <span>Repo</span>
-            </a>
-          ) : null}
-        </div>
-
-        <p class="mt-6 text-sm text-muted-foreground max-w-3xl">
-          {project.description}
-        </p>
-      </div>
-    </section>
-
-    <!-- Pipeline -->
-    <section class="mt-10">
-      <h2 class="type-h2 font-mono">The Pipeline</h2>
-      <p class="mt-2 text-sm text-muted-foreground max-w-3xl">
-        A deterministic OSINT workflow: collect → normalize → analyze → report.
-      </p>
-
-      <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-3">
-        <div class="rounded-2xl border border-border bg-muted p-4">
-          <div class="font-mono text-xs text-muted-foreground">Input</div>
-          <div class="mt-2 font-mono text-foreground">Identifiers</div>
-          <div class="mt-1 text-xs text-muted-foreground">email · username · phone</div>
-        </div>
-        <div class="rounded-2xl border border-border bg-muted p-4">
-          <div class="font-mono text-xs text-muted-foreground">113+ Sources</div>
-          <div class="mt-2 font-mono text-foreground">Triangulation</div>
-          <div class="mt-1 text-xs text-muted-foreground">social · code · breaches</div>
-        </div>
-        <div class="rounded-2xl border border-border bg-muted p-4">
-          <div class="font-mono text-xs text-muted-foreground">DeepSeek AI</div>
-          <div class="mt-2 font-mono text-foreground">OCEAN + OpSec</div>
-          <div class="mt-1 text-xs text-muted-foreground">risk surface analysis</div>
-        </div>
-        <div class="rounded-2xl border border-border bg-muted p-4">
-          <div class="font-mono text-xs text-muted-foreground">Output</div>
-          <div class="mt-2 font-mono text-foreground">PDF Report</div>
-          <div class="mt-1 text-xs text-muted-foreground">audit-ready dossier</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Evidence -->
-    <section class="mt-10">
-      <h2 class="type-h2 font-mono">Evidence</h2>
-
-      <div class="mt-6 grid lg:grid-cols-12 gap-6 items-start">
-        <div class="lg:col-span-7">
-          <div class="overflow-hidden rounded-2xl border border-border bg-background shadow-lg shadow-black/10">
-            <img src={evidence} alt="OSINT PDF report preview" class="w-full h-auto object-cover" loading="lazy" decoding="async" />
-          </div>
-        </div>
-
-        <div class="lg:col-span-5">
-          <div class="rounded-2xl border border-border bg-muted p-5">
-            <h3 class="font-mono text-foreground">Technical capabilities</h3>
-            <ul class="mt-4 space-y-2 text-sm text-muted-foreground">
-              <li>• Cross-platform triangulation to reduce false positives.</li>
-              <li>• Cognitive profiling (OCEAN) + OpSec vulnerability analysis.</li>
-              <li>• Automated PDF dossier generation (WeasyPrint).</li>
-              <li>• Async pipeline designed for scale and rate limits.</li>
-            </ul>
-
-            <div class="mt-5 flex flex-wrap gap-2">
-              {project.tech.primary.map((t) => (
-                <span class="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground font-mono">
-                  {t}
-                </span>
-              ))}
+      <ol class="mt-12 relative border-l border-white/10 pl-8 md:pl-12 space-y-8">
+        {trace.map((step, i) => (
+          <li class="reveal relative">
+            <span class={`absolute -left-[2.6rem] md:-left-[3.6rem] top-1 grid h-5 w-5 place-items-center rounded-full ring-4 ring-background ${i === trace.length - 1 ? "bg-[#c2185b]" : "bg-[#800020]"}`} aria-hidden="true"></span>
+            <div class="flex flex-col gap-2 md:flex-row md:items-baseline md:gap-6">
+              <code class="shrink-0 font-mono text-base md:text-lg text-[#f48fb1] md:w-56">{step.tool}</code>
+              <span class="font-mono text-sm md:text-base text-white break-all">{step.input}</span>
+              <span class="text-sm text-muted-foreground md:ml-auto md:text-right">→ {step.out}</span>
             </div>
-          </div>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-10 max-w-2xl text-sm text-muted-foreground">{copy.traceNote}</p>
+    </div>
+  </section>
+
+  <!-- 2. Herramientas del agente -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.toolsTitle}</h2>
+      <ul class="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 grid-cols-2 lg:grid-cols-3">
+        {tools.map(([name, desc], i) => (
+          <li class="bg-background p-4 sm:p-6 transition-colors hover:bg-white/[0.03]">
+            <span class="font-display text-3xl text-white/15">{String(i + 1).padStart(2, "0")}</span>
+            <code class="mt-3 block break-all font-mono text-sm sm:text-base text-white">{name}</code>
+            <span class="mt-1 block text-sm text-muted-foreground">{desc}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. Perfil 6D -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.profileTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.profileLead}</p>
+      <ol class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+        {dimensions.map((d, i) => (
+          <li class="card reveal flex min-h-[9rem] flex-col justify-between p-5 md:p-7">
+            <span class="font-display text-4xl text-[#c2185b]">{i + 1}</span>
+            <span class="text-lg md:text-2xl font-semibold leading-tight text-white">{d}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 4. Trust anchors -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <h2 class="type-h2">{copy.anchorsTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.anchorsLead}</p>
+
+        <p class="mt-10 type-meta text-muted-foreground">{copy.anchorsCaption}</p>
+        <div class="mt-3 flex h-14 overflow-hidden rounded-lg text-sm font-semibold" role="img" aria-label={weights.map((w) => `${w.label} ${w.value}%`).join(", ")}>
+          {weights.map((w, i) => (
+            <div class="flex items-center justify-center text-white" style={`width:${w.value}%;background:${["#800020", "#a3154a", "#c2185b", "#e0679a"][i]}`}>
+              {w.value}%
+            </div>
+          ))}
+        </div>
+        <div class="mt-2 flex text-xs text-muted-foreground" aria-hidden="true">
+          {weights.map((w) => <span style={`width:${w.value}%`}>{w.label}</span>)}
         </div>
       </div>
-    </section>
-    <ProjectPager currentSlug={project.slug} />
-  </main>
-</Layout>
+      <button type="button" class="reveal block overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/osint-d2/trust-anchors.webp" aria-label="Trust anchors">
+        <img src="/projects/osint-d2/trust-anchors.webp" alt="OSINT-D2 — trust anchors" class="w-full h-auto" loading="lazy" decoding="async" />
+      </button>
+    </div>
+  </section>
+
+  <!-- 5. Dossier PDF -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid items-center gap-12 lg:grid-cols-12">
+      <button type="button" class="reveal lg:col-span-5 mx-auto block w-full max-w-sm overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/60 -rotate-2 transition-transform hover:rotate-0" data-zoom="/projects/osint-d2/dossier.webp" aria-label="Dossier PDF">
+        <img src="/projects/osint-d2/dossier.webp" alt="OSINT-D2 — PDF dossier" class="w-full h-auto" loading="lazy" decoding="async" />
+      </button>
+      <div class="lg:col-span-7">
+        <h2 class="type-h2">{copy.dossierTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.dossierLead}</p>
+        <ul class="mt-8 space-y-4">
+          {dossier.map((d) => (
+            <li class="flex gap-4 text-lg text-white/85">
+              <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#c2185b]" aria-hidden="true"></span>
+              {d}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Despliegue -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.deployTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.deployLead}</p>
+      <pre class="card mt-10 overflow-x-auto p-6 font-mono text-sm md:text-lg leading-relaxed text-white"><code><span class="text-white/40">$</span> git clone https://github.com/Doble-2/osint-d2 && cd osint-d2
+<span class="text-white/40">$</span> cp .env.example .env
+<span class="text-white/40">$</span> <span class="text-[#f48fb1]">docker compose up -d</span></code></pre>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {deployFacts.map((f) => <li class="tag px-3 py-1.5 text-sm">{f}</li>)}
+      </ul>
+      <p class="mt-12 border-t border-white/10 pt-6 text-sm text-muted-foreground">⚠ {copy.ethics}</p>
+    </div>
+  </section>
+</ProjectLayout>

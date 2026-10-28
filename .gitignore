@@ -24,3 +24,6 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 .vercel
+
+# Base de datos local de un servidor MCP
+sqlite_mcp_server.db

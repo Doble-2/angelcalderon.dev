@@ -1,8 +1,11 @@
 {
-  "name": "Basic english:A1",
+  "name": "Inglés básico A1",
   "platform": "Platzi",
   "date": "11/12/2022",
   "order": 2,
   "code": "19be1d9c-1fb6-4057-bd83-5e4407027103",
-  "asset": "basic-english-a1"
+  "asset": "basic-english-a1",
+  "name_en": "Basic English A1",
+  "kind": "course",
+  "hours": 17
 }

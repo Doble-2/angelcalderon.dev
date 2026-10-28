@@ -1,5 +1,4 @@
 ---
-import { SendIcon } from "lucide-react";
 import translations from "../i18n";
 
 interface Props {
@@ -9,203 +8,143 @@ interface Props {
 const { lang = 'es', t = (k: string) => k } = Astro.props as Props;
 
 // Solo las cadenas que usa contact.client.js, no el diccionario completo.
-const CLIENT_KEYS = ['copied', 'copyError', 'sending', 'success', 'sendError', 'networkError', 'tooManyRequests', 'invalidEmail'];
+const CLIENT_KEYS = ['copied', 'copyError', 'sending', 'success', 'sendError', 'networkError', 'tooManyRequests', 'invalidEmail', 'contact_required'];
 const dict = (translations as Record<string, Record<string, string>>)[lang] ?? {};
 const clientI18n = Object.fromEntries(CLIENT_KEYS.map((k) => [k, dict[k] ?? k]));
+
+const WHATSAPP = "https://wa.me/584241922882?text=Hola%20acabo%20de%20ver%20tu%20portfolio%20y%20me%20encantar%C3%ADa%20ponerme%20en%20contacto%20contigo";
+
+const intents = ["project", "job", "collab", "other"].map((k) => ({ value: k, label: t(`contact_intent_${k}`) }));
+
+const channels = [
+  { label: "WhatsApp", value: t("contact_whatsapp_value"), href: WHATSAPP },
+  { label: "LinkedIn", value: "in/angeld2", href: "https://www.linkedin.com/in/angeld2/" },
+  { label: "GitHub", value: "Doble-2", href: "https://github.com/Doble-2" },
+];
 ---
 
-<div class="container-content relative">
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute -inset-x-10 -top-14 h-48 blur-3xl opacity-60"
-    style="background: radial-gradient(700px 240px at 50% 0%, rgba(var(--ring),0.22), transparent 60%);"
+<!-- Cierre de la página: vuelve la escena del Ávila, como en el hero -->
+<section id="contacto" aria-label={t("contact")} class="contact-scene relative overflow-hidden">
+  <img
+    src="/hero/avila-1280.webp"
+    srcset="/hero/avila-1280.webp 1280w, /hero/avila-2560.webp 2560w"
+    sizes="100vw"
+    alt=""
+    loading="lazy"
+    decoding="async"
+    class="contact-scene__bg"
   />
 
-  <div class="grid lg:grid-cols-12 gap-6 md:gap-8 items-start">
-    <!-- Left: pitch + trust + channels -->
-    <aside class="lg:col-span-4 neomorphic neo-border rounded-2xl p-5 md:p-6 flex flex-col gap-5">
-      <div>
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <h2 class="type-h2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text ">
-              {t('title')}
-            </h2>
-            <p class="mt-3 type-lead text-muted-foreground">{t('subtitle')}</p>
+  <div class="container-page relative py-24 md:py-36">
+    <div class="container-content">
+      <h2 class="contact-title">{t("contact_title")}</h2>
+      <p class="mt-6 flex items-center gap-2 text-white/75">
+        <span class="inline-block h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px] shadow-emerald-400/70"></span>
+        {t("contact_reply")}
+      </p>
+
+      <div class="mt-14 grid items-start gap-12 lg:grid-cols-12 lg:gap-16">
+        <!-- Formulario conversacional: una pregunta a la vez (sin JS se ve completo) -->
+        <form id="contact-form" class="contact-card lg:col-span-7" novalidate>
+          <div class="hidden" aria-hidden="true">
+            <label for="website">Website</label>
+            <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
           </div>
-          <span class="chip">
-            <span class="inline-block w-2 h-2 rounded-full bg-emerald-500" />
-            {t('open')}
-          </span>
-        </div>
+          <input type="hidden" name="subject" id="subject" />
 
-        <div class="mt-5 flex flex-wrap items-center gap-2">
-          <span class="chip">
-            <span class="inline-block w-2 h-2 rounded-full bg-blue-500" />
-            {t('contactFastReply')}
-          </span>
-          <span class="chip">{t('contactResponseSla')}</span>
-          <span class="chip">{t('contactBrief')}</span>
-        </div>
+          <div class="contact-progress" aria-hidden="true"><span></span></div>
 
-        <p class="mt-4 text-sm text-muted-foreground">{t('contactWhatToSend')}</p>
+          <!-- Paso 1: intención -->
+          <fieldset class="contact-step" data-step="1">
+            <legend class="contact-q"><span class="contact-n">01</span>{t("contact_step1")}</legend>
+            <div class="mt-6 flex flex-wrap gap-3">
+              {intents.map((i) => (
+                <label class="contact-chip">
+                  <input type="radio" name="intent" value={i.label} class="sr-only" />
+                  <span>{i.label}</span>
+                </label>
+              ))}
+            </div>
+            <div class="contact-nav">
+              <span></span>
+              <button type="button" class="btn btn-secondary" data-next>{t("contact_next")} →</button>
+            </div>
+          </fieldset>
 
-        <p class="mt-3 text-sm text-foreground opacity-90">
-          <span class="text-muted-foreground">{t('contactBestFor')}:</span>
-          <span> {t('contactBestFor1')} · {t('contactBestFor2')} · {t('contactBestFor3')}</span>
-        </p>
-      </div>
+          <!-- Paso 2: el mensaje -->
+          <fieldset class="contact-step" data-step="2">
+            <legend class="contact-q"><span class="contact-n">02</span><label for="message">{t("contact_step2")}</label></legend>
+            <textarea id="message" name="message" rows="4" maxlength="5000" required placeholder={t("contact_step2_ph")} class="contact-input mt-4 resize-none"></textarea>
+            <div class="contact-nav">
+              <button type="button" class="btn-link text-white/60" data-prev>← {t("contact_back")}</button>
+              <button type="button" class="btn btn-secondary" data-next>{t("contact_next")} →</button>
+            </div>
+          </fieldset>
 
-      <div class="grid gap-3">
-        <div class="grid sm:grid-cols-2 gap-3">
-          <a class="btn btn-primary w-full justify-center" href="mailto:hola@angelcalderon.dev">
-            {t('contactEmailCta')}
-          </a>
-          <a
-            class="btn btn-brand-whatsapp w-full justify-center"
-            href="https://wa.me/584241922882?text=Hola%20acabo%20de%20ver%20tu%20portfolio%20y%20me%20encantar%C3%ADa%20ponerme%20en%20contacto%20contigo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('contactWhatsAppCta')}
-          </a>
-        </div>
+          <!-- Paso 3: cómo responder -->
+          <fieldset class="contact-step" data-step="3">
+            <legend class="contact-q"><span class="contact-n">03</span>{t("contact_step3")}</legend>
+            <div class="mt-4 grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="name" class="text-sm text-muted-foreground">{t("name")}</label>
+                <input id="name" name="name" maxlength="100" required autocomplete="name" placeholder={t("namePlaceholder")} class="contact-input" />
+              </div>
+              <div>
+                <label for="email" class="text-sm text-muted-foreground">{t("email")}</label>
+                <input id="email" name="email" type="email" maxlength="254" required autocomplete="email" placeholder={t("emailPlaceholder")} class="contact-input" />
+              </div>
+            </div>
+            <div class="contact-nav">
+              <button type="button" class="btn-link text-white/60" data-prev>← {t("contact_back")}</button>
+              <button type="submit" id="submit-btn" class="btn btn-primary h-12 px-7 text-base">
+                {t("send")}
+                <svg id="send-icon" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg>
+              </button>
+            </div>
+          </fieldset>
 
-        <div class="grid sm:grid-cols-2 gap-3">
-          <button
-            type="button"
-            id="copy-email"
-            class="btn btn-ghost w-full justify-center"
-            aria-label={t('copyEmail')}
-            title={t('copyEmail')}
-          >
-            <svg
-              id="copy-icon"
-              class="w-4 h-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <span>{t('copyEmail')}</span>
-          </button>
-
-          <a
-            class="btn btn-brand-linkedin w-full justify-center"
-            href="https://www.linkedin.com/in/angeld2/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('contactLinkedInCta')}
-          </a>
-        </div>
-
-        <p class="text-xs text-muted-foreground">{t('contactNoSpam')}</p>
-      </div>
-    </aside>
-
-    <!-- Right: form -->
-    <div class="lg:col-span-8 neomorphic neo-border rounded-2xl p-5 md:p-6 text-foreground">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h3 class="type-h3">{t('contactFormTitle')}</h3>
-          <p class="mt-2 text-sm text-muted-foreground">{t('contactFormSubtitle')}</p>
-        </div>
-      </div>
-
-      <form id="contact-form" class="mt-5 space-y-4">
-        <!-- Honeypot anti-spam: oculto para personas, los bots suelen rellenarlo -->
-        <div class="hidden" aria-hidden="true">
-          <label for="website">Website</label>
-          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
-        </div>
-
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div>
-            <label for="name" class="block text-sm font-medium text-muted-foreground">
-              {t('name')}
-            </label>
-            <input
-              placeholder={t('namePlaceholder')}
-              id="name"
-              maxlength="100"
-              name="name"
-              required
-              autocomplete="name"
-              class="mt-1 form-field"
-            />
+          <!-- Enviado -->
+          <div class="contact-done" data-done hidden>
+            <p class="font-display uppercase text-5xl md:text-7xl leading-[0.9]">{t("contact_done_title")}</p>
+            <p class="mt-4 text-lg text-white/75">{t("contact_done_text")}</p>
+            <button type="button" class="btn-link mt-8 text-white/70" data-restart>{t("contact_again")}</button>
           </div>
 
-          <div>
-            <label for="email" class="block text-sm font-medium text-muted-foreground">
-              {t('email')}
-            </label>
-            <input
-              placeholder={t('emailPlaceholder')}
-              id="email"
-              maxlength="254"
-              name="email"
-              type="email"
-              required
-              autocomplete="email"
-              class="mt-1 form-field"
-            />
-          </div>
-        </div>
+          <p id="form-status" aria-live="polite" class="mt-4 min-h-[1.25rem] text-sm text-muted-foreground"></p>
+        </form>
 
-        <div>
-          <label for="subject" class="block text-sm font-medium text-muted-foreground">
-            {t('subject')}
-          </label>
-          <input
-            placeholder={t('subjectPlaceholder')}
-            id="subject"
-            maxlength="150"
-            name="subject"
-            autocomplete="off"
-            class="mt-1 form-field"
-          />
+        <!-- Canales directos -->
+        <div class="lg:col-span-5">
+          <p class="type-meta text-muted-foreground">{t("contact_channels")}</p>
+          <ul class="mt-4 divide-y divide-white/10 border-y border-white/10">
+            <li>
+              <div class="contact-row">
+                <a href="mailto:angel@angelcalderon.dev" class="min-w-0 flex-1">
+                  <span class="block text-sm text-muted-foreground">Email</span>
+                  <span class="block truncate text-xl md:text-2xl font-semibold text-white">angel@angelcalderon.dev</span>
+                </a>
+                <button type="button" id="copy-email" class="icon-btn icon-btn-ghost shrink-0" title={t("copyEmail")} aria-label={t("copyEmail")}>
+                  <svg id="copy-icon" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+            </li>
+            {channels.map((c) => (
+              <li>
+                <a href={c.href} target="_blank" rel="noopener noreferrer" class="contact-row group">
+                  <span class="min-w-0 flex-1">
+                    <span class="block text-sm text-muted-foreground">{c.label}</span>
+                    <span class="block truncate text-xl md:text-2xl font-semibold text-white">{c.value}</span>
+                  </span>
+                  <span class="text-2xl text-white/40 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-[#f48fb1]" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
-
-        <div>
-          <label for="message" class="block text-sm font-medium text-muted-foreground">
-            {t('message')}
-          </label>
-          <textarea
-            placeholder={t('messagePlaceholder')}
-            id="message"
-            maxlength="5000"
-            name="message"
-            rows="4"
-            required
-            autocomplete="off"
-            class="mt-1 form-field resize-none"
-          ></textarea>
-          <p class="mt-2 text-xs text-muted-foreground">{t('contactMessageHint')}</p>
-        </div>
-
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-1">
-          <button type="submit" id="submit-btn" aria-live="polite" class="btn btn-primary sm:ml-auto">
-            <SendIcon id="send-icon" className="w-4 h-4" />
-            <span>{t('send')}</span>
-          </button>
-        </div>
-
-        <div
-          aria-live="polite"
-          id="form-status"
-          class="text-sm mt-1 text-muted-foreground text-center min-h-[20px] leading-5 transition-colors"
-        ></div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
-
+</section>
 
 <script is:inline define:vars={{ clientI18n }}>
   window.__CONTACT_I18N__ = clientI18n;

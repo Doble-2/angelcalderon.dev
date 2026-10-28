@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets";
-
 interface Props {
   lang: string;
   t: (key: string) => string;
@@ -8,160 +6,155 @@ interface Props {
 
 const { lang = "es", t = (k) => k } = Astro.props;
 const homeHref = lang === "en" ? "/en" : "/";
+const isHome = ["/", "/en"].includes(Astro.url.pathname.replace(/\/+$/, "") || "/");
+// En la home el idioma es una URL distinta; en el resto de páginas se recarga la misma.
+const langHref = (l: "es" | "en") => (isHome ? (l === "en" ? "/en" : "/") : Astro.url.pathname);
+
+const navLinks = [
+  { id: "proyectos", label: t("nav_projects") },
+  { id: "experiencia", label: t("nav_experience") },
+  { id: "certificados", label: t("certificates") },
+  { id: "contacto", label: t("contact") },
+];
 ---
 
-<!-- bg-neutral-800/[.3] -->
-<header
-  id="site-header"
-  class="z-50 fixed top-0 left-0 right-0 py-2 transition-colors duration-300"
-  role="banner"
->
-  <div class="container-page flex justify-between items-center">
-    <a class="text-xl flex items-center gap-2" href={homeHref} aria-label={`${t("home")} - Ángel Calderón`}>
-      <Image
-        loading="eager"
-        class="w-6 h-6 logo-img"
-        width={12}
-        height={12}
-        src={"/rect1.webp"}
-        alt=""
-      />
-      <span class="text-xl font-medium">angelcalderon.dev</span>
-    </a>
-    <div class="flex items-center gap-2">
-      <!-- Language Toggle -->
-      <div class="relative">
-        <button
-          id="lang-toggle"
-          class="liquid-glass-btn"
-          aria-label={t("language")}
-          type="button"
-          tabindex="0"
-        >
-          {
-            lang === "es" ? (
-              <span class="flex items-center gap-2">
-                <img
-                  src="/flags/es.svg"
-                  alt=""
-                  class="w-4 h-4 rounded-full"
-                />
-                <span class="hidden md:inline">{t("español")}</span>
-              </span>
-            ) : (
-              <span class="flex items-center gap-2">
-                <img
-                  src="/flags/gb.svg"
-                  alt=""
-                  class="w-4 h-4 rounded-full"
-                />
-                <span class="text-sm hidden md:inline">{t("english")}</span>
-              </span>
-            )
-          }
-        </button>
-        <div
-          id="lang-menu"
-          class="theme-light hidden absolute right-0 mt-2 w-36 bg-background text-foreground border border-border rounded-xl shadow-lg z-50 overflow-hidden"
-        >
-          <button
-            class="block w-full text-left px-4 py-2 hover:bg-muted"
-            data-lang="es"
-          >
-            <span class="flex items-center gap-2">
-              <img
-                src="/flags/es.svg"
-                alt=""
-                class="w-5 h-5 rounded-full"
-              />
-              <span class="">{t("español")}</span>
-            </span>
-          </button>
-          <button
-            class="block w-full text-left px-4 py-2 hover:bg-muted"
-            data-lang="en"
-          >
-            <span class="flex items-center gap-2">
-              <img
-                src="/flags/gb.svg"
-                alt=""
-                class="w-5 h-5 rounded-full"
-              />
-              <span>{t("english")}</span>
-            </span>
-          </button>
+<header id="site-header" class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5" role="banner">
+  <div class="nav-shell mx-auto max-w-[74rem] px-3 sm:px-4">
+    <div class="flex h-14 items-center justify-between gap-6 md:grid md:grid-cols-[1fr_auto_1fr]">
+      <a class="flex items-center gap-2.5 text-white" href={homeHref} aria-label={`${t("home")} - Ángel Calderón`}>
+        <img src="/rect1.webp" alt="" width="24" height="24" class="h-6 w-6 invert" />
+        <span class="text-[15px] font-medium tracking-tight">angelcalderon.dev</span>
+      </a>
+
+      <nav aria-label={t("nav_aria")} class="hidden md:block">
+        <ul class="flex items-center gap-7">
+          {navLinks.map((link) => (
+            <li>
+              <a class="nav-link" href={`${homeHref}#${link.id}`} data-section={link.id}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="flex items-center justify-end gap-3">
+        <div class="lang-switch hidden sm:flex items-center" aria-label={t("language")}>
+          <a href={langHref("es")} hreflang="es" data-lang="es" aria-current={lang === "es" ? "true" : undefined}>ES</a>
+          <span class="text-white/20" aria-hidden="true">/</span>
+          <a href={langHref("en")} hreflang="en" data-lang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
         </div>
+        <a
+          href="/angel-calderon-cv.pdf"
+          download="Angel-Calderon-CV.pdf"
+          class="btn btn-primary btn-sm h-9 whitespace-nowrap"
+        >
+          <span class="min-[400px]:hidden">CV</span>
+          <span class="hidden min-[400px]:inline">{t("download_cv")}</span>
+        </a>
+        <button
+          id="nav-toggle"
+          type="button"
+          class="md:hidden -mr-1 grid h-9 w-9 place-items-center rounded-md text-white hover:bg-white/10"
+          aria-controls="nav-mobile"
+          aria-expanded="false"
+          aria-label={t("menu")}
+        >
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true">
+            <path class="nav-icon-open" d="M4 8h16M4 16h16" />
+            <path class="nav-icon-close hidden" d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
       </div>
     </div>
+
+    <!-- Menú móvil -->
+    <nav id="nav-mobile" aria-label={t("nav_aria")} class="md:hidden hidden border-t border-white/10 pb-4 pt-2">
+      <ul class="flex flex-col">
+        {navLinks.map((link) => (
+          <li>
+            <a class="block py-3 font-display text-3xl text-white" href={`${homeHref}#${link.id}`}>
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="lang-switch mt-3 flex items-center gap-1">
+        <a href={langHref("es")} hreflang="es" data-lang="es" aria-current={lang === "es" ? "true" : undefined}>Español</a>
+        <span class="text-white/20" aria-hidden="true">/</span>
+        <a href={langHref("en")} hreflang="en" data-lang="en" aria-current={lang === "en" ? "true" : undefined}>English</a>
+      </div>
+    </nav>
   </div>
 </header>
 
 <script is:inline>
-  // Guarda la preferencia y navega a la versión correspondiente.
-  // En la home, `/` es español y `/en` inglés; en el resto de páginas se recarga.
-  function setLanguage(lang) {
-    try {
-      document.cookie = `lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
-    } catch (e) {}
-    try {
-      window.localStorage.setItem("lang", lang);
-    } catch (e) {}
-    const path = location.pathname.replace(/\/+$/, "") || "/";
-    if (path === "/" || path === "/en") {
-      location.assign((lang === "en" ? "/en" : "/") + location.hash);
-    } else {
-      location.reload();
-    }
-  }
-
-  // Interactividad toggles
   document.addEventListener("DOMContentLoaded", () => {
-    const NAV_DEBUG =
-      typeof window !== "undefined" &&
-      (window.location.search.includes("navdebug=1") ||
-        window.localStorage.getItem("nav-debug") === "1");
-    // expose a helper for interactive inspection from console
-    try {
-      if (typeof window !== "undefined") window.__navBarDebug = { NAV_DEBUG };
-    } catch (e) {}
-    // Language
-    const langBtn = document.getElementById("lang-toggle");
-    const langMenu = document.getElementById("lang-menu");
-    if (langBtn && langMenu) {
-      langBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        langMenu.classList.toggle("hidden");
-      });
-      langMenu.querySelectorAll("button[data-lang]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          setLanguage(btn.getAttribute("data-lang"));
-          langMenu.classList.add("hidden");
-        });
-      });
-      document.addEventListener("click", (e) => {
-        if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-          langMenu.classList.add("hidden");
-        }
-      });
-    }
-    // Header scroll behavior
     const header = document.getElementById("site-header");
+    if (!header) return;
 
-    // NOTE: Color/contrast is handled via CSS using the `.scrolled` class.
-    // Avoid forcing inline colors here (causes flicker and breaks dark mode).
+    // Idioma: guarda la preferencia antes de navegar
+    header.querySelectorAll("a[data-lang]").forEach((a) => {
+      a.addEventListener("click", () => {
+        const lang = a.getAttribute("data-lang");
+        try {
+          document.cookie = `lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+          window.localStorage.setItem("lang", lang);
+        } catch (e) {}
+      });
+    });
 
-    function onScroll() {
-      if (!header) return;
-      const scrolled = window.scrollY > 20;
-      header.classList.toggle("scrolled", scrolled);
-      header.classList.toggle("max-w-[950px]", scrolled);
-      header.classList.toggle("ml-auto", scrolled);
-      header.classList.toggle("mr-auto", scrolled);
-    }
-
-    // Update on load and on scroll
+    // Barra de cristal al hacer scroll
+    const onScroll = () => {
+      header.classList.toggle("is-scrolled", window.scrollY > 24);
+      // De vuelta en el hero: ninguna sección activa
+      if (window.scrollY < window.innerHeight * 0.4) {
+        header.querySelectorAll("a[data-section]").forEach((a) => a.removeAttribute("aria-current"));
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
+    // Menú móvil
+    const toggle = document.getElementById("nav-toggle");
+    const panel = document.getElementById("nav-mobile");
+    const setOpen = (open) => {
+      header.classList.toggle("is-open", open);
+      panel?.classList.toggle("hidden", !open);
+      toggle?.setAttribute("aria-expanded", String(open));
+      toggle?.querySelector(".nav-icon-open")?.classList.toggle("hidden", open);
+      toggle?.querySelector(".nav-icon-close")?.classList.toggle("hidden", !open);
+    };
+    toggle?.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    panel?.querySelectorAll("a[href*='#']").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia("(min-width: 768px)").addEventListener("change", (e) => e.matches && setOpen(false));
+
+    // Sección activa en la navegación
+    const links = header.querySelectorAll("a[data-section]");
+    const sections = [...links]
+      .map((a) => document.getElementById(a.getAttribute("data-section")))
+      .filter(Boolean);
+    if (sections.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            links.forEach((a) =>
+              a.getAttribute("data-section") === entry.target.id
+                ? a.setAttribute("aria-current", "true")
+                : a.removeAttribute("aria-current"),
+            );
+          });
+        },
+        { rootMargin: "-45% 0px -50% 0px" },
+      );
+      sections.forEach((s) => observer.observe(s));
+    }
   });
 </script>

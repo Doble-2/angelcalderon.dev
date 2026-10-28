@@ -1,7 +1,6 @@
 ---
 import "../styles/global.css";
 import NavBar from "../components/share/NavBar.astro";
-import Rainy from "../components/share/Rainy.astro";
 import translations from "../i18n";
 import { resolveLangFromRequest } from "../lib/lang";
 import SpeedInsights from "@vercel/speed-insights/astro";
@@ -18,7 +17,7 @@ interface Props {
 const {
   title = "Ángel Calderón — Software Architect & AI Engineer",
   description = "Arquitecto de software e ingeniero de IA. Desarrollo productos web y mobile con foco en performance, UX, seguridad y despliegue. Python, Next.js, React Native, Flutter, RAG y sistemas IoT.",
-  image = "/cyberpunk.webp",
+  image = "/og.jpg",
   url = Astro.url?.toString() || "/",
   lang: forcedLang,
 } = Astro.props;
@@ -43,7 +42,7 @@ const imageUrl = (() => {
   try {
     return new URL(String(image), SITE).toString();
   } catch {
-    return new URL("/cyberpunk.webp", SITE).toString();
+    return new URL("/og.jpg", SITE).toString();
   }
 })();
 
@@ -114,7 +113,7 @@ const websiteJsonLd = {
     <meta name="geo.region" content="VE" />
     <meta name="geo.position" content="10.4806;-66.9036" />
     <meta name="twitter:image" content={imageUrl} />
-    <meta name="twitter:image:alt" content="Cyberpunk background thumbnail" />
+    <meta name="twitter:image:alt" content="Ángel Calderón — Software Architect & AI Engineer" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta property="og:image" content={imageUrl} />
@@ -131,13 +130,13 @@ const websiteJsonLd = {
     <link rel="icon" href="/rect1-optimized.webp" />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0b1220" />
+    <meta name="theme-color" content="#0c0e14" />
 
-    <!-- Inter font -->
+    <!-- Fuentes: Inter (texto) + Anton (titulares) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Anton&display=swap"
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
@@ -149,18 +148,12 @@ const websiteJsonLd = {
   </head>
   <body class="max-w-screen bg-background text-foreground">
     <a href="#main-content" class="sr-only focus:not-sr-only">{lang === "en" ? "Skip to content" : "Saltar al contenido"}</a>
-    <Rainy />
 
     <NavBar lang={lang} t={t} />
-    <main id="main-content" class="text-foreground">
-      <div
-        class="z-10 main-section surface-shell backdrop-blur-sm sm:backdrop-blur-md"
-      >
-        <slot />
-        <Footer lang={lang} />
-      </div>
-
+    <main id="main-content" class="relative text-foreground">
+      <slot />
     </main>
+    <Footer lang={lang} />
     <SpeedInsights />
   </body>
 </html>
@@ -168,4 +161,19 @@ const websiteJsonLd = {
   // Force light theme (site-wide)
   document.documentElement.classList.remove("dark");
   document.documentElement.setAttribute("data-theme", "light");
+
+  // Brillo de las tarjetas que sigue al cursor (solo con ratón)
+  if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    document.addEventListener(
+      "pointermove",
+      (e) => {
+        const card = e.target instanceof Element && e.target.closest(".card, .neomorphic");
+        if (!card) return;
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        card.style.setProperty("--my", `${e.clientY - r.top}px`);
+      },
+      { passive: true },
+    );
+  }
 </script>

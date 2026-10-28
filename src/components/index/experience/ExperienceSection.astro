@@ -1,141 +1,52 @@
 ---
-import {
-  Smartphone,
-  Globe,
-  Database,
-  Plug,
-  Server,
-} from "lucide-react";
 import TechnologyTag from "../projects/TechnologyTag";
+import { projects } from "../../../data/projects";
+import { getCollection } from "astro:content";
+
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
 const { t = (k: string) => k } = Astro.props as Props;
 
-const gradients = [
-  "from-blue-400 via-indigo-500 to-purple-500",
-  "from-emerald-400 via-teal-400 to-cyan-500",
-  "from-pink-400 via-rose-400 to-yellow-400",
-  "from-orange-400 via-amber-400 to-yellow-500",
+const certifieds = await getCollection("certifieds");
+
+// Datos, no párrafos: se entiende de un vistazo
+const stats = [
+  { value: "3+", label: t("stat_years") },
+  { value: String(projects.length), label: t("stat_projects") },
+  { value: "#2", label: t("stat_award") },
+  { value: String(certifieds.length), label: t("stat_certs") },
 ];
 
-const skills = [
-  {
-    name: t("skill_mobile"),
-    icon: Smartphone,
-    technologies: ["Flutter", "Dart", "React Native", "FlutterFlow"],
-    gradient: gradients[0],
-  },
-  {
-    name: t("skill_web"),
-    icon: Globe,
-    technologies: [
-      "React",
-      "Nextjs",
-      "Astro",
-      "TailwindCSS",
-      "Shadcn",
-      "Typescript",
-      "Vite",
-      "Wordpress",
-      "Laravel",
-    ],
-    gradient: gradients[1],
-  },
-  {
-    name: t("skill_backend_ai"),
-    icon: Database,
-    technologies: [
-      "Python",
-      "Nodejs",
-      "PHP",
-      "Firebase",
-      "MongoDB",
-      "MySQL",
-      "PostgreSQL",
-      "FastAPI",
-      "Redis",
-      "RAG",
-      "Vector DB",
-      "AI Agents",
-      "LLM",
-      "OpenAI",
-      "DeepSeek API",
-    ],
-    gradient: gradients[2],
-  },
-  {
-    name: t("skill_integrations"),
-    icon: Plug,
-    technologies: [
-      "WhatsApp Cloud API",
-      "REST APIs",
-      "Webhooks",
-      "Telegram Bots",
-      "PDF Generation",
-      "OAuth",
-    ],
-    gradient: gradients[3],
-  },
-  {
-    name: t("skill_devops"),
-    icon: Server,
-    technologies: [
-      "Linux (Arch)",
-      "Docker",
-      "Vercel",
-      "Render",
-      "Git",
-      "GitHub Actions",
-    ],
-    gradient: gradients[0],
-  },
-];
+const stackA = ["Python", "FastAPI", "Nextjs", "React", "Typescript", "Astro", "TailwindCSS", "Nodejs", "PostgreSQL", "Redis", "MongoDB", "Docker", "Vercel"];
+const stackB = ["Flutter", "Dart", "React Native", "RAG", "AI Agents", "LLM", "OpenAI", "DeepSeek API", "Vector DB", "WhatsApp Cloud API", "Firebase", "GitHub Actions", "Linux (Arch)"];
 ---
 
 <div class="container-content">
-  <div class="text-center mb-10">
-    <h2 class="type-h2 mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{t('professional_experience')}</h2>
-    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_1')}</p>
-    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_2')}</p>
-  </div>
+  <h2 class="type-h2">{t("nav_experience")}</h2>
 
-  <!-- Skills grid -->
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-    {skills.map((skill) => (
-      <div class="theme-light neomorphic group text-foreground flex flex-col gap-4 text-center p-6">
-        <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transition-transform duration-300 group-hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
-          <div class={`w-12 h-12 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${skill.gradient}`}>
-            <skill.icon className="h-6 w-6" />
-          </div>
-        </div>
-        <h3 class="font-semibold text-lg mb-1">{skill.name}</h3>
-        <div class="flex flex-wrap justify-center gap-2">
-          {((skill.technologies || []) as string[]).map((tech: string) => (
-            <TechnologyTag tech={tech} />
-          ))}
-        </div>
+  <dl class="mt-12 grid grid-cols-2 gap-y-10 md:grid-cols-4">
+    {stats.map((s) => (
+      <div class="flex flex-col border-l border-white/10 pl-5">
+        <dt class="text-sm text-muted-foreground">{s.label}</dt>
+        <dd class="order-first font-display text-7xl md:text-8xl leading-none text-white">{s.value}</dd>
       </div>
     ))}
-  </div>
-
-  <!-- Experience timeline 
-  <div class="mt-10">
-    <ol class="space-y-6">
-      {experiences.map((exp) => (
-        <li class="bg-white/90 p-6 rounded-2xl shadow-sm">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <h4 class="font-semibold">{exp.title} — <span class="font-normal">{exp.company}</span></h4>
-              <time class="text-sm text-muted-foreground">{exp.year}</time>
-            </div>
-          </div>
-          <p class="mt-3 text-muted-foreground">{t(exp.descriptionKey)}</p>
-        </li>
-      ))}
-    </ol>
-  </div>-->
-
+  </dl>
 </div>
 
+<!-- Stack: dos franjas en sentidos opuestos -->
+<div class="mt-16 flex flex-col gap-3" role="group" aria-label={t("stat_stack")}>
+  {[stackA, stackB].map((stack, i) => (
+    <div class="marquee" data-reverse={i === 1 ? "" : undefined} style={`--marquee-duration:${i ? 46 : 38}s`}>
+      {[0, 1].map((copy) => (
+        <ul class="marquee-track" aria-hidden={copy === 1 ? "true" : undefined}>
+          {stack.map((tech) => (
+            <li><TechnologyTag tech={tech} size="lg" /></li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  ))}
+</div>

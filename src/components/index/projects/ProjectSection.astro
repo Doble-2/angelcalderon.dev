@@ -1,37 +1,125 @@
 ---
-import ProjectsClient from "./ProjectsClient.astro";
 import { projects } from "../../../data/projects";
 
 interface Props {
-    lang: string;
-    t: (key: string) => string;
+  lang: string;
+  t: (key: string) => string;
 }
-const { lang = 'es', t = (k) => k } = Astro.props;
+const { t = (k) => k } = Astro.props;
 
-// Solo muestra proyectos que quieras destacar; el orden lo define `order` (desc).
-// Aquí reutilizamos el array tipado del portfolio.
-const featured = [...projects].sort((a, b) => b.order - a.order);
+// El orden lo define `order` (desc)
+const ordered = [...projects].sort((a, b) => b.order - a.order);
+const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
-<div class="relative z-10 overflow-hidden w-full" data-server-projects-count={featured.length}>
-    <div class="container-content relative">
-        <div class="text-center mb-10">
-            <h2 class="type-h2 mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{t('projects')}</h2>
-            <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('projectsSubtitle')}</p>
-        </div>
-
-        <div>
-            <!-- Render client-side interactive projects UI -->
-            <ProjectsClient
-                projects={featured as any}
-                labels={{
-                    projectsTitle: t('projects'),
-                    projectsSubtitle: t('projectsSubtitle')
-                }}
-                lang={lang}
-            />
-        </div>
+<!-- En escritorio la sección se ancla y el scroll vertical desplaza las
+     tarjetas en horizontal. En móvil / reduced-motion es un carrusel nativo. -->
+<section id="proyectos" aria-label={t("nav_projects")} class="relative" data-project-scroller>
+  <div class="md:sticky md:top-0 md:flex md:h-[100svh] md:flex-col md:justify-center overflow-hidden py-24 md:pb-0 md:pt-16">
+    <div class="container-page">
+      <div class="container-content flex items-end justify-between gap-6">
+        <h2 class="type-h2">{t("nav_projects")}</h2>
+        <p class="shrink-0 whitespace-nowrap font-display text-2xl md:text-5xl text-white/30 tabular-nums" aria-hidden="true">
+          <span data-project-current class="text-white">01</span> / {pad(ordered.length)}
+        </p>
+      </div>
     </div>
-</div>
 
+    <div class="project-viewport mt-8 md:mt-10 overflow-x-auto md:overflow-visible no-scrollbar snap-x snap-mandatory md:snap-none">
+      <ul class="project-rail w-max px-6 sm:px-8 lg:px-[max(4rem,calc((100vw-72rem)/2))]" data-project-rail>
+        {ordered.map((p, idx) => (
+          <li class="project-slide snap-center">
+            <article class="card group overflow-hidden p-0">
+              <div class="project-media aspect-[4/5] sm:aspect-[16/10] rounded-none border-0 md:aspect-[16/9]">
+                <img src={p.images[0]} alt="" loading={idx < 2 ? "eager" : "lazy"} decoding="async" />
+              </div>
+              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-8">
+                <div>
+                  <p class="text-sm text-white/70">{p.subtitle}</p>
+                  <h3 class="mt-1 font-display uppercase text-4xl md:text-7xl leading-[0.85] text-white">
+                    <a href={`/projects/${encodeURIComponent(p.slug)}`} class="card-link">{p.name}</a>
+                  </h3>
+                </div>
+                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#800020] text-white transition-transform duration-300 group-hover:rotate-45" aria-hidden="true">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
+                </span>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
 
+    <div class="container-page mt-8 hidden md:block" aria-hidden="true">
+      <div class="container-content h-px bg-white/10">
+        <div class="h-px w-full origin-left scale-x-0 bg-[#800020]" data-project-progress></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const section = document.querySelector<HTMLElement>("[data-project-scroller]");
+  const rail = section?.querySelector<HTMLElement>("[data-project-rail]");
+  const progressBar = section?.querySelector<HTMLElement>("[data-project-progress]");
+  const current = section?.querySelector<HTMLElement>("[data-project-current]");
+  const slides = rail ? ([...rail.children] as HTMLElement[]) : [];
+  const desktop = window.matchMedia("(min-width: 768px) and (prefers-reduced-motion: no-preference)");
+
+  if (section && rail && slides.length) {
+    let distance = 0; // px que recorre el carril en horizontal
+    let raf = 0;
+
+    const setCurrent = (i: number) => {
+      if (current) current.textContent = String(i + 1).padStart(2, "0");
+    };
+
+    const update = () => {
+      raf = 0;
+      if (!desktop.matches) return;
+      const top = section.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, -top / Math.max(1, distance)));
+      rail.style.transform = `translate3d(${-p * distance}px, 0, 0)`;
+      if (progressBar) progressBar.style.transform = `scaleX(${p})`;
+      setCurrent(Math.round(p * (slides.length - 1)));
+    };
+
+    const measure = () => {
+      if (!desktop.matches) {
+        section.style.height = "";
+        rail.style.transform = "";
+        return;
+      }
+      distance = Math.max(0, rail.scrollWidth - window.innerWidth);
+      // Altura = una pantalla + lo que hay que recorrer en horizontal
+      section.style.height = `${window.innerHeight + distance}px`;
+      update();
+    };
+
+    window.addEventListener("scroll", () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    }, { passive: true });
+    window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("load", measure);
+    desktop.addEventListener("change", measure);
+    measure();
+
+    // Teclado: al enfocar una tarjeta, lleva la página hasta ella
+    rail.addEventListener("focusin", (e) => {
+      if (!desktop.matches) return;
+      const slide = (e.target as HTMLElement).closest("li");
+      if (!slide) return;
+      const target = Math.min(distance, Math.max(0, slide.offsetLeft - (window.innerWidth - slide.offsetWidth) / 2));
+      window.scrollTo({ top: section.offsetTop + target, behavior: "instant" as ScrollBehavior });
+    });
+
+    // Móvil: el contador sigue al carrusel nativo
+    const viewport = section.querySelector<HTMLElement>(".project-viewport");
+    viewport?.addEventListener("scroll", () => {
+      if (desktop.matches) return;
+      const max = viewport.scrollWidth - viewport.clientWidth;
+      setCurrent(Math.round((viewport.scrollLeft / Math.max(1, max)) * (slides.length - 1)));
+    }, { passive: true });
+  }
+</script>

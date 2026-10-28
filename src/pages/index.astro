@@ -25,27 +25,16 @@ const t = (key: string) => translations[lang]?.[key] || key;
   title="Ángel Calderón — Software Architect & AI Engineer"
   description="Arquitecto de software e ingeniero de IA. Creo productos web y mobile con foco en performance, UX, seguridad y despliegue: Python, Next.js, React Native, Flutter, RAG, IoT y agentes de IA."
 >
-  <Section
-    ariaLabel="Hero"
-    variant="transparent"
-    size="hero"
-    className="md:justify-between md:items-center flex-col md:flex-row"
-  >
-    <ProfileSection lang={lang} t={t} />
-  </Section>
-  <Section id="proyectos" ariaLabel="Proyectos">
-    <ProjectSection lang={lang} t={t} />
-  </Section>
+  <ProfileSection lang={lang} t={t} />
+  <ProjectSection lang={lang} t={t} />
 
-  <Section ariaLabel="Experiencia">
+  <Section id="experiencia" ariaLabel="Experiencia">
     <ExperienceSection lang={lang} t={t} />
   </Section>
 
-  <Section id="certificados" ariaLabel="Certificados" className="flex-col flex md:flex-row">
+  <Section id="certificados" ariaLabel="Certificados">
     <CertifiedSection lang={lang} t={t} />
   </Section>
 
-  <Section id="contacto" ariaLabel="Contacto" size="tight">
-    <Contact lang={lang} t={t} />
-  </Section>
+  <Contact lang={lang} t={t} />
 </Layout>

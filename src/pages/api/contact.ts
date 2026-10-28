@@ -89,7 +89,7 @@ export async function POST({ request, clientAddress }: { request: Request; clien
       return json({ error: 'invalid_email' }, 400);
     }
 
-    const toEmail = process.env.TO_EMAIL || process.env.CONTACT_EMAIL || 'hola@angelcalderon.dev';
+    const toEmail = process.env.TO_EMAIL || process.env.CONTACT_EMAIL || 'angel@angelcalderon.dev';
     const fromEmail = process.env.FROM_EMAIL || `no-reply@${toEmail.split('@')[1] || 'example.com'}`;
     // Strip line breaks so user input can't inject extra mail headers.
     const safeHeader = (s: string) => s.replace(/[\r\n]+/g, ' ');

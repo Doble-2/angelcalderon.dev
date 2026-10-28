@@ -1,8 +1,0 @@
----
-import ProjectsClientReact from "./ProjectsClient";
-const { projects = [], labels = {}, lang = 'es' } = Astro.props;
----
-
-<div class="w-full">
-  <ProjectsClientReact client:visible={{ rootMargin: "200px" }} projects={projects} labels={labels} lang={lang} />
-</div>

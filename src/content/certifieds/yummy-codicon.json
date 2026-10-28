@@ -4,5 +4,7 @@
   "date": "27/08/2023",
   "order": 8,
   "code": null,
-  "asset": "yummy-codicon"
+  "asset": "yummy-codicon",
+  "name_en": "Yummy Codicon",
+  "kind": "hackathon"
 }

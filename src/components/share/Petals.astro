@@ -1,0 +1,394 @@
+---
+// Flor de Mayo (Cattleya mossiae), la flor nacional de Venezuela, cayendo:
+// flores completas, pétalos y sépalos sueltos.
+// - Capa trasera: dentro del hero, entre el cielo y la montaña.
+// - Capa delantera: fija sobre toda la página, más grande y cercana
+//   (el <canvas id="petals-front"> vive fuera del hero, ver ProfileSection).
+// El cursor las aparta y genera ráfagas; el scroll las empuja.
+// Decorativo: se desactiva con prefers-reduced-motion.
+---
+
+<canvas id="petals-back" class="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
+
+<script>
+  const back = document.getElementById("petals-back") as HTMLCanvasElement | null;
+  const front = document.getElementById("petals-front") as HTMLCanvasElement | null;
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (back && front && !reduceMotion) {
+    const bctx = back.getContext("2d")!;
+    const fctx = front.getContext("2d")!;
+
+    // Paletas de los tépalos (sépalos y pétalos) de Cattleya mossiae:
+    // [base, punta] — lavanda, rosado, casi blanca y lila intenso
+    const TEPALS = [
+      ["#f3e1f1", "#d9a3d6"],
+      ["#f6dcea", "#e29cc4"],
+      ["#fbf2f8", "#e6c3e3"],
+      ["#ecd0ec", "#c584c9"],
+    ];
+    const pickPalette = () => {
+      const r = Math.random();
+      return r < 0.4 ? 0 : r < 0.7 ? 1 : r < 0.85 ? 2 : 3;
+    };
+
+    const SPRITE = 128;
+    const C = SPRITE / 2;
+
+    // Contorno de un tépalo a lo largo del eje Y (base en 0,0 → punta en 0,-len).
+    // `ruffle` ondula el borde, más hacia la punta (como los pétalos de la Cattleya).
+    const tepalPath = (g: CanvasRenderingContext2D, len: number, width: number, waves: number, ruffle: number) => {
+      const N = 40;
+      const right: [number, number][] = [];
+      const left: [number, number][] = [];
+      for (let i = 0; i <= N; i++) {
+        const t = i / N;
+        const body = Math.pow(Math.sin(Math.PI * Math.min(1, t * 0.98 + 0.02)), 0.75);
+        const wave = ruffle * width * Math.sin(t * waves * Math.PI * 2) * t * t;
+        right.push([width * body + wave, -t * len]);
+        left.push([-(width * body + ruffle * width * Math.sin(t * waves * Math.PI * 2 + 1.7) * t * t), -t * len]);
+      }
+      g.beginPath();
+      g.moveTo(0, 0);
+      for (const [x, y] of right) g.lineTo(x, y);
+      for (let i = left.length - 1; i >= 0; i--) g.lineTo(left[i][0], left[i][1]);
+      g.closePath();
+    };
+
+    const fillTepal = (g: CanvasRenderingContext2D, len: number, width: number, waves: number, ruffle: number, pal: string[]) => {
+      tepalPath(g, len, width, waves, ruffle);
+      const grad = g.createLinearGradient(0, 0, 0, -len);
+      grad.addColorStop(0, pal[0]);
+      grad.addColorStop(0.55, pal[1]);
+      grad.addColorStop(1, pal[1]);
+      g.fillStyle = grad;
+      g.fill();
+      // Venas finas
+      g.save();
+      g.clip();
+      g.strokeStyle = "rgba(150, 60, 140, 0.16)";
+      g.lineWidth = 0.8;
+      for (let k = -2; k <= 2; k++) {
+        g.beginPath();
+        g.moveTo(0, -len * 0.04);
+        g.quadraticCurveTo(k * width * 0.35, -len * 0.5, k * width * 0.45, -len * 0.95);
+        g.stroke();
+      }
+      g.restore();
+    };
+
+    // Labelo: trompeta con borde muy ondulado, garganta amarilla y frente magenta
+    const drawLip = (g: CanvasRenderingContext2D, R: number, pal: string[]) => {
+      g.save();
+      g.translate(0, R * 0.08);
+      const N = 160;
+      g.beginPath();
+      g.moveTo(-R * 0.16, -R * 0.1);
+      for (let i = 0; i <= N; i++) {
+        const a = (-0.48 + (i / N) * 0.96) * Math.PI; // abanico hacia abajo
+        // Volantes suaves (no dientes): pocas ondas de baja frecuencia
+        const frill = 1 + 0.06 * Math.sin(a * 13) + 0.035 * Math.sin(a * 27 + 1.3);
+        const r = R * (0.55 + 0.45 * Math.cos(a * 0.95)) * frill;
+        g.lineTo(Math.sin(a) * r, Math.cos(a) * r);
+      }
+      g.lineTo(R * 0.16, -R * 0.1);
+      g.closePath();
+      const grad = g.createRadialGradient(0, R * 0.05, R * 0.04, 0, R * 0.2, R * 1.05);
+      grad.addColorStop(0, "#ffd84a");
+      grad.addColorStop(0.2, "#f2a33a");
+      grad.addColorStop(0.42, "#b8277a");
+      grad.addColorStop(0.72, "#7e1561");
+      grad.addColorStop(0.9, "#b56aba");
+      grad.addColorStop(1, pal[1]);
+      g.fillStyle = grad;
+      g.fill();
+      // Vetas moradas sobre la garganta
+      g.save();
+      g.clip();
+      g.strokeStyle = "rgba(110, 20, 90, 0.55)";
+      g.lineWidth = 1;
+      for (let k = -4; k <= 4; k++) {
+        const a = k * 0.13;
+        g.beginPath();
+        g.moveTo(Math.sin(a) * R * 0.06, R * 0.04);
+        g.quadraticCurveTo(Math.sin(a) * R * 0.3, R * 0.25, Math.sin(a * 1.3) * R * 0.55, R * 0.6);
+        g.stroke();
+      }
+      g.restore();
+      g.restore();
+    };
+
+    const sprite = (draw: (g: CanvasRenderingContext2D) => void, blur: number) => {
+      const c = document.createElement("canvas");
+      c.width = c.height = SPRITE;
+      const g = c.getContext("2d")!;
+      if (blur) g.filter = `blur(${blur}px)`;
+      g.translate(C, C);
+      draw(g);
+      return c;
+    };
+
+    // Flor completa vista de frente
+    const flower = (pal: string[]) => (g: CanvasRenderingContext2D) => {
+      const L = SPRITE * 0.4;
+      g.translate(0, -SPRITE * 0.06);
+      // 3 sépalos estrechos: dorsal arriba, laterales abajo
+      for (const a of [0, Math.PI * 0.78, -Math.PI * 0.78]) {
+        g.save();
+        g.rotate(a);
+        fillTepal(g, L * 0.98, L * 0.16, 1.5, 0.12, pal);
+        g.restore();
+      }
+      // 2 pétalos anchos y muy ondulados a los lados
+      for (const a of [Math.PI * 0.4, -Math.PI * 0.4]) {
+        g.save();
+        g.rotate(a);
+        fillTepal(g, L, L * 0.4, 2.5, 0.16, pal);
+        g.restore();
+      }
+      // Labelo abajo y columna blanca en el centro
+      drawLip(g, L * 0.8, pal);
+      g.fillStyle = "#fbf3f7";
+      g.beginPath();
+      g.ellipse(0, -L * 0.02, L * 0.07, L * 0.12, 0, 0, Math.PI * 2);
+      g.fill();
+    };
+
+    // Pétalo suelto (ancho y ondulado) y sépalo suelto (estrecho)
+    const petal = (pal: string[]) => (g: CanvasRenderingContext2D) => {
+      g.translate(0, SPRITE * 0.44);
+      fillTepal(g, SPRITE * 0.88, SPRITE * 0.2, 3.5, 0.22, pal);
+    };
+    const sepal = (pal: string[]) => (g: CanvasRenderingContext2D) => {
+      g.translate(0, SPRITE * 0.44);
+      fillTepal(g, SPRITE * 0.88, SPRITE * 0.08, 1.5, 0.12, pal);
+    };
+
+    // sprites[paleta][tipo * 2 + desenfocado]; tipo: 0 pétalo, 1 sépalo, 2 flor
+    const sprites = TEPALS.map((pal) =>
+      [petal(pal), sepal(pal), flower(pal)].flatMap((d) => [sprite(d, 0), sprite(d, 3)]),
+    );
+
+    type Petal = {
+      x: number; y: number; z: number; size: number; color: number; kind: number;
+      rot: number; spin: number; flip: number; flipSpeed: number;
+      sway: number; swaySpeed: number; vx: number; vy: number;
+    };
+
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+    let W = 0, H = 0, BW = 0, BH = 0;
+
+    // z: 0 = lejos (capa trasera) … 1 = muy cerca (delantera, desenfocada)
+    const spawn = (front: boolean, anywhere: boolean): Petal => {
+      const z = front ? rand(0.45, 1) : rand(0, 0.4);
+      const r = Math.random();
+      const kind = r < 0.38 ? 2 : r < 0.75 ? 0 : 1;
+      const w = front ? W : BW;
+      const h = front ? H : BH;
+      return {
+        x: rand(-40, w + 40),
+        y: anywhere ? rand(-h * 0.1, h) : rand(-120, -20),
+        z,
+        // 0 pétalo, 1 sépalo, 2 flor completa
+        kind: kind,
+        size: (kind === 2 ? 2 : 1.15) * (12 + z * 34),
+        color: pickPalette(),
+        rot: rand(0, Math.PI * 2),
+        spin: rand(-1.4, 1.4),
+        flip: rand(0, Math.PI * 2),
+        flipSpeed: rand(1.5, 3.5),
+        sway: rand(0, Math.PI * 2),
+        swaySpeed: rand(0.6, 1.4),
+        vx: 0,
+        vy: 0,
+      };
+    };
+
+    let backPetals: Petal[] = [];
+
+    // Ráfaga (p. ej. al enviar el formulario): flores que salen disparadas
+    // desde un punto y caen con gravedad; viven unos segundos.
+    type Burst = Petal & { life: number };
+    let burst: Burst[] = [];
+    window.addEventListener("petals:burst", (e) => {
+      const { x, y } = (e as CustomEvent<{ x: number; y: number }>).detail;
+      for (let i = 0; i < 46; i++) {
+        const a = rand(-Math.PI * 0.95, -Math.PI * 0.05); // hacia arriba, en abanico
+        const v = rand(260, 820);
+        const r = Math.random();
+        const kind = r < 0.5 ? 2 : r < 0.8 ? 0 : 1;
+        burst.push({
+          x, y, z: rand(0.55, 0.9), kind,
+          size: (kind === 2 ? 2 : 1.15) * rand(22, 38),
+          color: pickPalette(),
+          rot: rand(0, Math.PI * 2), spin: rand(-6, 6),
+          flip: rand(0, Math.PI * 2), flipSpeed: rand(3, 7),
+          sway: 0, swaySpeed: 0,
+          vx: Math.cos(a) * v, vy: Math.sin(a) * v,
+          life: rand(2.6, 3.6),
+        });
+      }
+    });
+    let frontPetals: Petal[] = [];
+
+    const fit = (c: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = c.clientWidth, h = c.clientHeight;
+      c.width = Math.round(w * dpr);
+      c.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return [w, h];
+    };
+
+    const resize = () => {
+      [BW, BH] = fit(back, bctx);
+      [W, H] = fit(front, fctx);
+      const area = (W * H) / 1e6; // megapíxeles del viewport
+      backPetals = Array.from({ length: Math.round(28 + area * 22) }, () => spawn(false, true));
+      frontPetals = Array.from({ length: Math.round(16 + area * 14) }, () => spawn(true, true));
+    };
+
+    // Interacción
+    const pointer = { x: -9999, y: -9999, vx: 0, vy: 0, t: 0 };
+    let gust = 0; // viento global extra, decae solo
+    let scrollKick = 0;
+    let lastScroll = window.scrollY;
+
+    window.addEventListener("pointermove", (e) => {
+      const now = performance.now();
+      const dt = Math.max(now - pointer.t, 16) / 1000;
+      pointer.vx = (e.clientX - pointer.x) / dt;
+      pointer.vy = (e.clientY - pointer.y) / dt;
+      if (pointer.t === 0 || Math.abs(pointer.vx) > 5000) pointer.vx = pointer.vy = 0;
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.t = now;
+      gust += Math.max(-1, Math.min(1, pointer.vx / 4000)) * 0.25;
+    }, { passive: true });
+
+    window.addEventListener("pointerleave", () => { pointer.x = pointer.y = -9999; });
+
+    window.addEventListener("scroll", () => {
+      const d = window.scrollY - lastScroll;
+      lastScroll = window.scrollY;
+      scrollKick += Math.max(-40, Math.min(40, d)) * 0.6;
+    }, { passive: true });
+
+    let heroVisible = true;
+    const hero = back.closest("section");
+    if (hero) {
+      new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
+    }
+
+    const step = (p: Petal, dt: number, t: number, offsetY: number, w: number, h: number, isFront: boolean) => {
+      const depth = 0.35 + p.z * 0.9;
+      const wind = 18 + gust * 220 + Math.sin(t * 0.25) * 14;
+      // Repulsión del cursor (en coordenadas de esta capa)
+      const dx = p.x - pointer.x;
+      const dy = p.y + offsetY - pointer.y;
+      const dist2 = dx * dx + dy * dy;
+      const R = 140 + p.z * 60;
+      if (dist2 < R * R) {
+        const dist = Math.sqrt(dist2) || 1;
+        const force = (1 - dist / R) * 900;
+        p.vx += (dx / dist) * force * dt + pointer.vx * 0.08 * dt * 10 * (1 - dist / R);
+        p.vy += (dy / dist) * force * dt + pointer.vy * 0.05 * dt * 10 * (1 - dist / R);
+        p.spin += (Math.random() - 0.5) * 6 * dt;
+      }
+      p.vx *= 1 - Math.min(dt * 1.8, 1);
+      p.vy *= 1 - Math.min(dt * 1.8, 1);
+
+      const fall = (26 + p.z * 46) * depth;
+      p.x += (wind * depth + Math.sin(p.sway) * 22 + p.vx) * dt;
+      p.y += (fall + p.vy - (isFront ? scrollKick : scrollKick * 0.4) * 0.9) * dt;
+      p.sway += p.swaySpeed * dt;
+      p.rot += p.spin * dt;
+      p.flip += p.flipSpeed * dt;
+
+      if (p.y > h + 40 || p.x > w + 80 || p.x < -120 || p.y < -200) {
+        Object.assign(p, spawn(isFront, false));
+        // Si el viento sopla fuerte, reaparecen por el lado izquierdo
+        if (wind > 120) { p.x = rand(-80, -20); p.y = rand(-40, h * 0.7); }
+      }
+    };
+
+    const draw = (ctx: CanvasRenderingContext2D, p: Petal, alpha: number) => {
+      const sprite = sprites[p.color][p.kind * 2 + (p.z > 0.94 ? 1 : 0)];
+      const flip = Math.cos(p.flip);
+      ctx.globalAlpha = alpha * (0.55 + 0.45 * Math.abs(flip));
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ctx.setTransform(dpr, 0, 0, dpr, p.x * dpr, p.y * dpr);
+      ctx.rotate(p.rot);
+      // Volteo 3D: las flores giran sobre un eje, los pétalos "aletean"
+      ctx.scale(p.kind === 2 ? Math.max(0.25, Math.abs(Math.cos(p.flip * 0.6))) : 1, Math.max(0.12, Math.abs(flip)));
+      ctx.drawImage(sprite, -p.size / 2, -p.size / 2, p.size, p.size);
+    };
+
+    let last = performance.now();
+    let frame = 0;
+    let running = false;
+
+    const loop = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const t = now / 1000;
+      gust *= 1 - Math.min(dt * 0.8, 1);
+      scrollKick *= 1 - Math.min(dt * 4, 1);
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      // Capa trasera: solo mientras el hero está en pantalla
+      if (heroVisible) {
+        const heroTop = back.getBoundingClientRect().top;
+        bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        bctx.clearRect(0, 0, BW, BH);
+        for (const p of backPetals) {
+          step(p, dt, t, heroTop, BW, BH, false);
+          draw(bctx, p, 0.75);
+        }
+      }
+
+      // Capa delantera: densa en el hero, unas pocas en el resto de la página
+      fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      fctx.clearRect(0, 0, W, H);
+      const active = heroVisible ? frontPetals.length : Math.ceil(frontPetals.length * 0.35);
+      for (let i = 0; i < active; i++) {
+        const p = frontPetals[i];
+        step(p, dt, t, 0, W, H, true);
+        draw(fctx, p, heroVisible ? 0.95 : 0.7);
+      }
+      // Ráfaga: balística simple con rozamiento y gravedad
+      for (const p of burst) {
+        p.vy += 520 * dt;
+        p.vx *= 1 - Math.min(dt * 1.2, 1);
+        p.vy *= 1 - Math.min(dt * 0.6, 1);
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.rot += p.spin * dt;
+        p.flip += p.flipSpeed * dt;
+        p.life -= dt;
+        draw(fctx, p, Math.min(1, p.life / 0.8));
+      }
+      burst = burst.filter((p) => p.life > 0 && p.y < H + 60);
+      fctx.globalAlpha = 1;
+      bctx.globalAlpha = 1;
+
+      frame = requestAnimationFrame(loop);
+    };
+
+    const start = () => {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      frame = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+    document.addEventListener("visibilitychange", () => (document.hidden ? stop() : start()));
+    start();
+  }
+</script>
