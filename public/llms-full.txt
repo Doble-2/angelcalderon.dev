@@ -1,0 +1,124 @@
+# Ángel Calderón — Software Architect & AI Engineer
+
+> Full portfolio and professional profile. Based in Caracas, Venezuela. Available for remote work worldwide.
+
+---
+
+## Professional Summary
+
+Ángel Calderón is a Software Architect and AI Engineer based in Caracas, Venezuela. He designs and builds web and mobile products with a focus on performance, user experience, security, and deployment automation. His expertise spans artificial intelligence (RAG, autonomous agents, LLM integration), cybersecurity (OSINT), full-stack web development, mobile development, and IoT systems.
+
+### Technical Skills
+
+**Languages & Frameworks:**
+- Python (FastAPI, Django, Flask, Typer)
+- TypeScript / JavaScript (Next.js, React, Astro, Node.js)
+- Dart (Flutter)
+- React Native
+
+**AI & Machine Learning:**
+- RAG (Retrieval-Augmented Generation) pipelines
+- Autonomous AI agents
+- LLM integration: OpenAI, Ollama, DeepSeek
+- Vector databases
+- Prompt engineering
+
+**Cybersecurity:**
+- OSINT (Open Source Intelligence) tooling
+- Identity investigation systems
+- Security-first architecture design
+
+**Infrastructure & DevOps:**
+- Docker, Kubernetes
+- AWS, Google Cloud, Vercel
+- PostgreSQL, Redis, Firebase, MongoDB
+- CI/CD with GitHub Actions
+
+**IoT:**
+- Hardware-software integration
+- Real-time data synchronization
+- Embedded systems communication
+
+**Design:**
+- Figma, Adobe XD
+- UX/UI design systems
+- Responsive and accessible interfaces
+
+---
+
+## Featured Projects
+
+### OSINT-D2 — Autonomous AI Agent for Identity Investigation
+- **URL:** https://angelcalderon.dev/projects/osint-d2
+- **Repository:** https://github.com/Doble-2/osint-d2
+- **Documentation:** https://osint-d2.angelcalderon.dev
+- **Role:** Creator & Security Engineer
+- **Year:** 2025
+- **Stack:** Python, FastAPI, Typer, Playwright, WeasyPrint, Docker, Ollama
+- **Description:** Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own, and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama. Features 9 agent tools and 287 tests.
+
+### Eficense Residence — IoT & AI Security Ecosystem
+- **URL:** https://angelcalderon.dev/projects/eficense
+- **Role:** Lead Software Architect
+- **Year:** 2024
+- **Stack:** Next.js, Python, FastAPI, PostgreSQL, Redis, DeepSeek API
+- **Description:** A comprehensive residential management platform bridging physical security hardware with modern cloud architecture. Designed to automate visitor access and streamline complex financial reporting for large-scale condominiums with 150+ units and real-time synchronization.
+
+### Studia — AI-Powered EdTech SaaS
+- **URL:** https://angelcalderon.dev/projects/studia
+- **Role:** Creator & Lead Engineer
+- **Year:** 2025
+- **Stack:** React Native, Python, FastAPI, PostgreSQL, WhatsApp Cloud API, Vector DB
+- **Description:** An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.
+
+### Scenery — Modern CLI Wallpaper Manager
+- **URL:** https://angelcalderon.dev/projects/scenery
+- **Repository:** https://github.com/Doble-2/scenery-wallpapers
+- **Role:** Open Source Maintainer
+- **Year:** 2026
+- **Stack:** Python, Typer, Rich, Pillow, GitHub Actions
+- **Description:** A high-performance CLI tool for Linux power users to manage, tag, and organize large wallpaper collections. Built to integrate seamlessly with tiling window managers like Hyprland.
+
+### Born AI — Predictive Genetics with LLMs
+- **URL:** https://angelcalderon.dev/projects/born-ai
+- **Demo:** https://born-ai.vercel.app/
+- **Repository:** https://github.com/Doble-2/herencia
+- **Role:** Dev Lead
+- **Year:** 2024
+- **Stack:** Next.js, OpenAI, TailwindCSS, React
+- **Award:** 2nd Place Winner in a coding competition
+- **Description:** A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs.
+
+### Appod — NASA APOD Explorer
+- **URL:** https://angelcalderon.dev/projects/appod
+- **Demo:** https://appod.angelcalderon.dev/
+- **Repository:** https://github.com/Doble-2/Appod-AstronomyPictureOfDay
+- **Role:** Mobile Developer
+- **Year:** 2024
+- **Stack:** Flutter, Python, Firebase
+- **Description:** A Flutter mobile app that integrates NASA's APOD API to browse and download astronomy images, backed by a lightweight Python backend. 500+ requests.
+
+### Onbox — 48h Hackathon Pet Adoption System
+- **URL:** https://angelcalderon.dev/projects/onbox
+- **Demo:** https://onbox.angelcalderon.dev
+- **Repository:** https://github.com/raishid/codicon-project
+- **Role:** Frontend Developer
+- **Year:** 2023
+- **Stack:** React, Vite
+- **Description:** Built during a 2-day hackathon. Shipped a pet adoption web app featuring two adoption flows.
+
+---
+
+## Contact Information
+
+- **Location:** Caracas, Venezuela (UTC−4, coordinates: 10.4806, -66.9036)
+- **Availability:** Open to remote work globally
+- **Response time:** Less than 24 hours
+- **Website:** https://angelcalderon.dev
+- **GitHub:** https://github.com/Doble-2
+- **LinkedIn:** https://www.linkedin.com/in/angeld2/
+- **X / Twitter:** https://x.com/angelcaldev
+
+---
+
+*This document was generated for AI and LLM consumption. For the full interactive experience, visit [angelcalderon.dev](https://angelcalderon.dev).*

@@ -3,5 +3,54 @@ Allow: /
 Disallow: /api/
 Disallow: /_astro/
 
+# --- AI Search & Citation Crawlers (ALLOW) ---
+# These bots fetch pages to answer user queries and provide citations.
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# --- AI Training Crawlers (ALLOW for visibility) ---
+# Allowing training crawlers increases the chance of being
+# represented in AI models' knowledge base.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 Sitemap: https://angelcalderon.dev/sitemap.xml
 Host: https://angelcalderon.dev
