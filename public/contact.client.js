@@ -1,23 +1,20 @@
 window.addEventListener("DOMContentLoaded", () => {
-  let i18n, lang;
-  try {
-    const raw = window.__I18N__;
-    i18n = typeof raw === "string" ? JSON.parse(raw) : raw;
-    lang = window.__LANG__;
-  } catch {
-    i18n = {};
-    lang = "es";
-  }
-  if (!lang) lang = "es";
-  function tJS(key) {
-    if (i18n[lang] && i18n[lang][key]) return i18n[lang][key];
-    if (i18n[lang] && i18n[lang].contact && i18n[lang].contact[key]) return i18n[lang].contact[key];
-    return key;
-  }
+  const i18n = window.__CONTACT_I18N__ || {};
+  const tJS = (key) => i18n[key] || key;
+
   const form = document.getElementById("contact-form");
   const status = document.getElementById("form-status");
   const submitBtn = document.getElementById("submit-btn");
   const copyBtn = document.getElementById("copy-email");
+
+  function setStatus(text, kind) {
+    if (!status) return;
+    status.textContent = text;
+    status.classList.remove("text-red-500", "text-green-600");
+    if (kind === "ok") status.classList.add("text-green-600");
+    if (kind === "error") status.classList.add("text-red-500");
+  }
+
   function showTempCheck(iconEl) {
     if (!iconEl) return;
     const original = iconEl.innerHTML;
@@ -29,72 +26,48 @@ window.addEventListener("DOMContentLoaded", () => {
       iconEl.classList.remove("scale-95");
     }, 1500);
   }
+
   copyBtn?.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText("hola@angelcalderon.dev");
-      status.textContent = tJS('copied');
-      status.classList.remove("text-red-500");
-      status.classList.add("text-green-600");
-      const copyIcon = document.getElementById("copy-icon");
-      if (copyIcon) {
-        copyIcon.classList.add("scale-90");
-      }
+      setStatus(tJS("copied"), "ok");
     } catch (e) {
-      status.textContent = tJS('copyError');
-      status.classList.remove("text-green-600");
-      status.classList.add("text-red-500");
+      setStatus(tJS("copyError"), "error");
     }
   });
+
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     submitBtn.disabled = true;
-    status.textContent = tJS('sending');
-    status.classList.remove("text-red-500", "text-green-600");
-    const projectType = form.projectType?.value?.trim?.() || "";
-    const timeline = form.timeline?.value?.trim?.() || "";
-    const budget = form.budget?.value?.trim?.() || "";
-    const goal = form.goal?.value?.trim?.() || "";
-    const subject = form.subject?.value?.trim?.() || "";
+    submitBtn.classList.add("scale-95");
+    setStatus(tJS("sending"));
 
-    const briefLines = [];
-    if (projectType) briefLines.push(`${tJS('briefProjectType')}: ${projectType}`);
-    if (timeline) briefLines.push(`${tJS('briefTimeline')}: ${timeline}`);
-    if (budget) briefLines.push(`${tJS('briefBudget')}: ${budget}`);
-    if (goal) briefLines.push(`${tJS('briefGoal')}: ${goal}`);
-
-    const baseMessage = (form.message?.value || "").trim();
-    const fullMessage =
-      briefLines.length > 0
-        ? `${baseMessage}\n\n---\n${briefLines.join('\n')}`
-        : baseMessage;
-
+    const field = (name) => (form.elements.namedItem(name)?.value || "").trim();
     const data = {
-      name: form.name.value,
-      email: form.email.value,
-      subject,
-      message: fullMessage,
+      name: field("name"),
+      email: field("email"),
+      subject: field("subject"),
+      message: field("message"),
+      website: field("website"),
     };
+
     try {
-      submitBtn.classList.add("scale-95");
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        status.textContent = tJS('success');
-        status.classList.add("text-green-600");
+        setStatus(tJS("success"), "ok");
         form.reset();
-        const sendIcon = document.getElementById("send-icon");
-        showTempCheck(sendIcon);
+        showTempCheck(document.getElementById("send-icon"));
       } else {
         const json = await res.json().catch(() => ({}));
-        status.textContent = json?.error || tJS('sendError');
-        status.classList.add("text-red-500");
+        const known = { rate_limited: "tooManyRequests", invalid_email: "invalidEmail" };
+        setStatus(tJS(known[json?.error] || "sendError"), "error");
       }
     } catch (err) {
-      status.textContent = tJS('networkError');
-      status.classList.add("text-red-500");
+      setStatus(tJS("networkError"), "error");
     } finally {
       submitBtn.disabled = false;
       submitBtn.classList.remove("scale-95");

@@ -9,11 +9,19 @@ import Contact from "../components/Contact.astro";
 import translations from "../i18n";
 import { resolveLangFromRequest } from "../lib/lang";
 
-const lang = resolveLangFromRequest(Astro.request);
+// `/` es siempre la versión en español (coherente con canonical/hreflang).
+// Si el visitante prefiere inglés (cookie o Accept-Language), lo enviamos a `/en`.
+Astro.response.headers.set("Vary", "Cookie, Accept-Language");
+if (resolveLangFromRequest(Astro.request) === "en") {
+  return Astro.redirect("/en", 302);
+}
+
+const lang = "es" as const;
 const t = (key: string) => translations[lang]?.[key] || key;
 ---
 
 <Layout
+  lang={lang}
   title="Ángel Calderón — Software Architect & AI Engineer"
   description="Arquitecto de software e ingeniero de IA. Creo productos web y mobile con foco en performance, UX, seguridad y despliegue: Python, Next.js, React Native, Flutter, RAG, IoT y agentes de IA."
 >

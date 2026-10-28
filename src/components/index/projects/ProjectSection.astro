@@ -25,11 +25,6 @@ const featured = [...projects].sort((a, b) => b.order - a.order);
             <ProjectsClient
                 projects={featured as any}
                 labels={{
-                    viewCase: t('viewCase'),
-                    liveDemo: t('liveDemo'),
-                    challenge: t('challenge'),
-                    solution: t('solution'),
-                    impact: t('impact'),
                     projectsTitle: t('projects'),
                     projectsSubtitle: t('projectsSubtitle')
                 }}

@@ -3,7 +3,12 @@ import { Icon } from "astro-icon/components";
 import translations from "../../i18n";
 import { resolveLangFromRequest } from "../../lib/lang";
 
-const lang = resolveLangFromRequest(Astro.request);
+interface Props {
+  lang?: "es" | "en";
+}
+
+// Usa el idioma de la página; la request es solo un fallback.
+const lang = Astro.props.lang ?? resolveLangFromRequest(Astro.request);
 const t = (key: string) => translations[lang]?.[key] || key;
 
 const year = new Date().getFullYear();
@@ -102,7 +107,7 @@ const basePath = lang === 'en' ? '/en' : '/';
       </div>
 
       <div class="mt-6 pt-4 border-t border-white/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-        <p class="text-xs text-muted-foreground">© {year} Angel Calderon. {t('footerRights')}</p>
+        <p class="text-xs text-muted-foreground">© {year} Ángel Calderón. {t('footerRights')}</p>
         <p class="text-xs text-muted-foreground">{t('footerLocation')}</p>
       </div>
     </div>

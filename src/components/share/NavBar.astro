@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { lang = "es", t = (k) => k } = Astro.props;
+const homeHref = lang === "en" ? "/en" : "/";
 ---
 
 <!-- bg-neutral-800/[.3] -->
@@ -16,16 +17,16 @@ const { lang = "es", t = (k) => k } = Astro.props;
   role="banner"
 >
   <div class="container-page flex justify-between items-center">
-    <a class="text-xl flex items-center gap-2" href="/#" aria-label="Inicio - Angel Calderon">
+    <a class="text-xl flex items-center gap-2" href={homeHref} aria-label={`${t("home")} - Ángel Calderón`}>
       <Image
         loading="eager"
         class="w-6 h-6 logo-img"
         width={12}
         height={12}
         src={"/rect1.webp"}
-        alt="Logo de Angel Calderon"
+        alt=""
       />
-      <h2 class="text-xl font-medium">angelcalderon.dev</h2>
+      <span class="text-xl font-medium">angelcalderon.dev</span>
     </a>
     <div class="flex items-center gap-2">
       <!-- Language Toggle -->
@@ -41,8 +42,8 @@ const { lang = "es", t = (k) => k } = Astro.props;
             lang === "es" ? (
               <span class="flex items-center gap-2">
                 <img
-                  src="https://hatscripts.github.io/circle-flags/flags/es.svg"
-                  alt="Español"
+                  src="/flags/es.svg"
+                  alt=""
                   class="w-4 h-4 rounded-full"
                 />
                 <span class="hidden md:inline">{t("español")}</span>
@@ -50,8 +51,8 @@ const { lang = "es", t = (k) => k } = Astro.props;
             ) : (
               <span class="flex items-center gap-2">
                 <img
-                  src="https://hatscripts.github.io/circle-flags/flags/gb.svg"
-                  alt="English"
+                  src="/flags/gb.svg"
+                  alt=""
                   class="w-4 h-4 rounded-full"
                 />
                 <span class="text-sm hidden md:inline">{t("english")}</span>
@@ -69,8 +70,8 @@ const { lang = "es", t = (k) => k } = Astro.props;
           >
             <span class="flex items-center gap-2">
               <img
-                src="https://hatscripts.github.io/circle-flags/flags/es.svg"
-                alt="Español"
+                src="/flags/es.svg"
+                alt=""
                 class="w-5 h-5 rounded-full"
               />
               <span class="">{t("español")}</span>
@@ -82,8 +83,8 @@ const { lang = "es", t = (k) => k } = Astro.props;
           >
             <span class="flex items-center gap-2">
               <img
-                src="https://hatscripts.github.io/circle-flags/flags/gb.svg"
-                alt="English"
+                src="/flags/gb.svg"
+                alt=""
                 class="w-5 h-5 rounded-full"
               />
               <span>{t("english")}</span>
@@ -92,23 +93,25 @@ const { lang = "es", t = (k) => k } = Astro.props;
         </div>
       </div>
     </div>
-    <!--
-
--->
   </div>
 </header>
 
 <script is:inline>
-  // Utilidades tema
-  // Utilidades idioma
+  // Guarda la preferencia y navega a la versión correspondiente.
+  // En la home, `/` es español y `/en` inglés; en el resto de páginas se recarga.
   function setLanguage(lang) {
     try {
-      document.cookie = `lang=${lang}; path=/;`;
+      document.cookie = `lang=${lang}; path=/; max-age=31536000; SameSite=Lax`;
     } catch (e) {}
     try {
       window.localStorage.setItem("lang", lang);
     } catch (e) {}
-    location.reload();
+    const path = location.pathname.replace(/\/+$/, "") || "/";
+    if (path === "/" || path === "/en") {
+      location.assign((lang === "en" ? "/en" : "/") + location.hash);
+    } else {
+      location.reload();
+    }
   }
 
   // Interactividad toggles

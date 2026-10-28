@@ -109,7 +109,7 @@ const websiteJsonLd = {
     <link rel="alternate" hreflang="x-default" href={alternateEs} />
     <link rel="alternate" hreflang="es" href={alternateEs} />
     <link rel="alternate" hreflang="en" href={alternateEn} />
-    <meta name="author" content="Angel Calderon" />
+    <meta name="author" content="Ángel Calderón" />
     <meta name="geo.placename" content="Caracas, Venezuela" />
     <meta name="geo.region" content="VE" />
     <meta name="geo.position" content="10.4806;-66.9036" />
@@ -122,12 +122,12 @@ const websiteJsonLd = {
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="Angel Calderon" />
+    <meta property="og:site_name" content="Ángel Calderón" />
     <meta property="og:locale" content={locale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@angelcaldev" />
     <meta name="twitter:creator" content="@angelcaldev" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" href="/rect1-optimized.webp" />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content="index, follow" />
@@ -137,7 +137,7 @@ const websiteJsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&display=swap"
       rel="stylesheet"
     />
     <meta name="generator" content={Astro.generator} />
@@ -148,8 +148,7 @@ const websiteJsonLd = {
     <script is:inline type="application/ld+json">{JSON.stringify(websiteJsonLd)}</script>
   </head>
   <body class="max-w-screen bg-background text-foreground">
-    <a href="#main-content" class="sr-only focus:not-sr-only">Skip to content</a
-    >
+    <a href="#main-content" class="sr-only focus:not-sr-only">{lang === "en" ? "Skip to content" : "Saltar al contenido"}</a>
     <Rainy />
 
     <NavBar lang={lang} t={t} />
@@ -158,56 +157,15 @@ const websiteJsonLd = {
         class="z-10 main-section surface-shell backdrop-blur-sm sm:backdrop-blur-md"
       >
         <slot />
-        <Footer />
+        <Footer lang={lang} />
       </div>
 
-      <!-- <div class="fixed bottom-4 right-4 z-30">
-				<button
-					id="rain-btn"
-					class="bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg inline-flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none h-10 w-10"
-					type="button"
-					id="radix-:r2:"
-					aria-haspopup="menu"
-					aria-expanded="true"
-					data-state="open"
-					aria-controls="radix-:r3:"
-				>
-					<Image
-						width="50"
-						height="50"
-						loading="lazy"
-						class="w-8 h-8"
-						src="https://img.icons8.com/ios/50/ffffff/blur.png"
-						alt="blur"
-					/>
-
-					<path d="M5 12h14"></path>
-					<path d="M12 5v14"></path>
-				</button>
-			</div> -->
     </main>
     <SpeedInsights />
   </body>
 </html>
 <script is:inline>
-  // Idioma
-  function setLanguage(lang) {
-    document.cookie = `lang=${lang}; path=/;`;
-    window.localStorage.setItem("lang", lang);
-    location.reload();
-  }
-  function getLanguage() {
-    return window.localStorage.getItem("lang") || "es";
-  }
-  document.addEventListener("DOMContentLoaded", () => {
-    // Force light theme (site-wide)
-    document.documentElement.classList.remove("dark");
-    document.documentElement.setAttribute("data-theme", "light");
-    // Si el idioma de cookie y localStorage no coinciden, sincroniza y recarga
-    const cookieLang = document.cookie.match(/lang=([^;]+)/);
-    const localLang = getLanguage();
-    if (cookieLang && cookieLang[1] !== localLang) {
-      setLanguage(localLang);
-    }
-  });
+  // Force light theme (site-wide)
+  document.documentElement.classList.remove("dark");
+  document.documentElement.setAttribute("data-theme", "light");
 </script>
