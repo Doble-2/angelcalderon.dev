@@ -1,5 +1,6 @@
 ---
 import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects";
 
 // Tier 1 tiene páginas dedicadas (ruta estática), pero dejamos un guardrail.
@@ -31,8 +32,20 @@ if (!project) {
     return Astro.redirect(`/projects/${byName.slug}`, 301);
   }
 
-  return Astro.redirect("/404");
+  // Devolver 404 real en vez de redirect (evita indexación de /404)
+  Astro.response.status = 404;
+  Astro.response.statusText = "Not Found";
 }
 ---
 
-<ProjectLayout project={project} />
+{project ? (
+  <ProjectLayout project={project} />
+) : (
+  <Layout lang="es" title="404 — No encontrado" description="Página no encontrada" robots="noindex, nofollow">
+    <section class="relative flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+      <h1 class="font-display text-[10rem] leading-none uppercase sm:text-[14rem]">404</h1>
+      <p class="mt-4 text-lg text-white/70 sm:text-xl">Proyecto no encontrado</p>
+      <a href="/" class="btn btn-primary mt-8">Volver al inicio</a>
+    </section>
+  </Layout>
+)}
