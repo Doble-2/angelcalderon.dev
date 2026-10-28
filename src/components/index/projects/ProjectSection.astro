@@ -123,3 +123,45 @@ const pad = (n: number) => String(n).padStart(2, "0");
     }, { passive: true });
   }
 </script>
+
+<script>
+  // 3D tilt effect on project cards
+  (() => {
+    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const noMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!canHover.matches || noMotion.matches) return;
+
+    const cards = document.querySelectorAll<HTMLElement>(".project-slide .card");
+    const MAX_DEG = 4;
+
+    cards.forEach((card) => {
+      let rafId = 0;
+      let targetX = 0;
+      let targetY = 0;
+
+      const applyTilt = () => {
+        card.style.transform =
+          `perspective(800px) rotateX(${targetX}deg) rotateY(${targetY}deg)`;
+        rafId = 0;
+      };
+
+      card.addEventListener("mousemove", (e: MouseEvent) => {
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        // Normalise to [-1, 1]
+        const px = (e.clientX - cx) / (rect.width / 2);
+        const py = (e.clientY - cy) / (rect.height / 2);
+        // rotateX: positive when cursor is above center (inverted Y)
+        targetX = -py * MAX_DEG;
+        targetY = px * MAX_DEG;
+        if (!rafId) rafId = requestAnimationFrame(applyTilt);
+      }, { passive: true });
+
+      card.addEventListener("mouseleave", () => {
+        if (rafId) { cancelAnimationFrame(rafId); rafId = 0; }
+        card.style.transform = "";
+      });
+    });
+  })();
+</script>

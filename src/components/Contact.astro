@@ -115,6 +115,9 @@ const channels = [
 
         <!-- Canales directos -->
         <div class="lg:col-span-5">
+          <div class="flex justify-center mb-8">
+            <canvas id="contact-globe" width="200" height="200" aria-hidden="true" class="rounded-full" style="background:transparent;"></canvas>
+          </div>
           <p class="type-meta text-muted-foreground">{t("contact_channels")}</p>
           <ul class="mt-4 divide-y divide-white/10 border-y border-white/10">
             <li>
@@ -151,3 +154,148 @@ const channels = [
 </script>
 
 <script is:inline src="/contact.client.js" type="module"></script>
+
+<script>
+  // Interactive wireframe globe with Caracas marker
+  (() => {
+    const canvas = document.getElementById("contact-globe") as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const W = canvas.width;
+    const H = canvas.height;
+    const CX = W / 2;
+    const CY = H / 2;
+    const R = 88; // sphere radius
+    const LAT_STEP = 30; // degrees between latitude lines
+    const LON_STEP = 30; // degrees between longitude lines
+    const DOT_R = 1.4;
+
+    // Caracas: 10.48°N, 66.9°W
+    const CARACAS_LAT = 10.48 * (Math.PI / 180);
+    const CARACAS_LON = -66.9 * (Math.PI / 180);
+
+    const toRad = (d: number) => d * (Math.PI / 180);
+
+    function project(lat: number, lon: number, rotation: number): [number, number, number] {
+      const adjustedLon = lon + rotation;
+      const x = R * Math.cos(lat) * Math.sin(adjustedLon);
+      const y = -R * Math.sin(lat);
+      const z = R * Math.cos(lat) * Math.cos(adjustedLon);
+      return [CX + x, CY + y, z];
+    }
+
+    function draw(rotation: number) {
+      ctx.clearRect(0, 0, W, H);
+
+      // Outer circle
+      ctx.beginPath();
+      ctx.arc(CX, CY, R, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(255,255,255,0.08)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Latitude lines + dots
+      for (let lat = -90 + LAT_STEP; lat < 90; lat += LAT_STEP) {
+        const latR = toRad(lat);
+        ctx.beginPath();
+        let first = true;
+        for (let lon = -180; lon <= 180; lon += 3) {
+          const lonR = toRad(lon);
+          const [px, py, pz] = project(latR, lonR, rotation);
+          if (pz < 0) { first = true; continue; }
+          if (first) { ctx.moveTo(px, py); first = false; }
+          else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = "rgba(255,255,255,0.07)";
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+
+        // Dots at intersections
+        for (let lon = -180; lon < 180; lon += LON_STEP) {
+          const lonR = toRad(lon);
+          const [px, py, pz] = project(latR, lonR, rotation);
+          if (pz < 0) continue;
+          const alpha = 0.15 + 0.2 * (pz / R);
+          ctx.beginPath();
+          ctx.arc(px, py, DOT_R, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+          ctx.fill();
+        }
+      }
+
+      // Longitude lines
+      for (let lon = -180; lon < 180; lon += LON_STEP) {
+        const lonR = toRad(lon);
+        ctx.beginPath();
+        let first = true;
+        for (let lat = -90; lat <= 90; lat += 3) {
+          const latR = toRad(lat);
+          const [px, py, pz] = project(latR, lonR, rotation);
+          if (pz < 0) { first = true; continue; }
+          if (first) { ctx.moveTo(px, py); first = false; }
+          else ctx.lineTo(px, py);
+        }
+        ctx.strokeStyle = "rgba(255,255,255,0.07)";
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+
+      // Caracas marker
+      const [cx, cy, cz] = project(CARACAS_LAT, CARACAS_LON, rotation);
+      if (cz > 0) {
+        // Outer glow
+        const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, 14);
+        gradient.addColorStop(0, "rgba(128,0,32,0.55)");
+        gradient.addColorStop(0.5, "rgba(128,0,32,0.15)");
+        gradient.addColorStop(1, "rgba(128,0,32,0)");
+        ctx.beginPath();
+        ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Core dot
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+
+        // Ring
+        ctx.beginPath();
+        ctx.arc(cx, cy, 5.5, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(128,0,32,0.8)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    if (reducedMotion) {
+      draw(0);
+    } else {
+      let angle = 0;
+      const speed = 0.003;
+      let animId = 0;
+
+      const tick = () => {
+        angle += speed;
+        draw(angle);
+        animId = requestAnimationFrame(tick);
+      };
+
+      // Only animate when visible
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (!animId) animId = requestAnimationFrame(tick);
+          } else {
+            if (animId) { cancelAnimationFrame(animId); animId = 0; }
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(canvas);
+    }
+  })();
+</script>

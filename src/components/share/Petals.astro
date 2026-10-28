@@ -244,8 +244,8 @@
       [BW, BH] = fit(back, bctx);
       [W, H] = fit(front, fctx);
       const area = (W * H) / 1e6; // megapíxeles del viewport
-      backPetals = Array.from({ length: Math.round(28 + area * 22) }, () => spawn(false, true));
-      frontPetals = Array.from({ length: Math.round(16 + area * 14) }, () => spawn(true, true));
+      backPetals = Array.from({ length: Math.round(16 + area * 12) }, () => spawn(false, true));
+      frontPetals = Array.from({ length: Math.round(8 + area * 8) }, () => spawn(true, true));
     };
 
     // Interacción

@@ -21,6 +21,30 @@ const stats = [
 
 const stackA = ["Python", "FastAPI", "Nextjs", "React", "Typescript", "Astro", "TailwindCSS", "Nodejs", "PostgreSQL", "Redis", "MongoDB", "Docker", "Vercel"];
 const stackB = ["Flutter", "Dart", "React Native", "RAG", "AI Agents", "LLM", "OpenAI", "DeepSeek API", "Vector DB", "WhatsApp Cloud API", "Firebase", "GitHub Actions", "Linux (Arch)"];
+
+const timeline = [
+  {
+    period: t("exp_period_1"),
+    role: t("exp_role_1"),
+    company: t("exp_company_1"),
+    description: t("exp_desc_1"),
+    highlights: ["OSINT-D2", "Studia", "Eficense"],
+  },
+  {
+    period: t("exp_period_2"),
+    role: t("exp_role_2"),
+    company: t("exp_company_2"),
+    description: t("exp_desc_2"),
+    highlights: ["React", "Next.js", "Flutter"],
+  },
+  {
+    period: t("exp_period_3"),
+    role: t("exp_role_3"),
+    company: t("exp_company_3"),
+    description: t("exp_desc_3"),
+    highlights: ["HTML/CSS", "JavaScript", "Python"],
+  },
+];
 ---
 
 <div class="container-content">
@@ -34,6 +58,50 @@ const stackB = ["Flutter", "Dart", "React Native", "RAG", "AI Agents", "LLM", "O
       </div>
     ))}
   </dl>
+
+  <!-- Timeline -->
+  <div class="mt-16">
+    <h3 class="text-lg font-semibold text-white mb-8">{t("exp_timeline_title")}</h3>
+    <div class="relative border-l-2 border-[#800020]/60 ml-3 md:ml-4 space-y-6">
+      {timeline.map((entry) => (
+        <div class="relative pl-8 md:pl-10">
+          {/* Dot on the timeline */}
+          <div
+            class="absolute left-[-9px] top-6 h-4 w-4 rounded-full border-2 border-[rgb(12,14,20)]"
+            style="background:#800020;"
+            aria-hidden="true"
+          ></div>
+
+          <div class="card p-5 md:p-6">
+            <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+              <span class="type-meta text-xs uppercase tracking-wider text-muted-foreground shrink-0">
+                {entry.period}
+              </span>
+              {entry.company && (
+                <span class="text-xs text-muted-foreground hidden sm:inline">·</span>
+                <span class="text-xs text-muted-foreground">{entry.company}</span>
+              )}
+            </div>
+            <h4 class="mt-1 font-semibold text-white text-base leading-snug">
+              {entry.role}
+            </h4>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {entry.description}
+            </p>
+            {entry.highlights.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                {entry.highlights.map((tag) => (
+                  <span class="inline-block rounded-full border border-white/10 px-2.5 py-0.5 text-xs text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
 </div>
 
 <!-- Stack: dos franjas en sentidos opuestos -->

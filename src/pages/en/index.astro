@@ -3,6 +3,7 @@ import ExperienceSection from "../../components/index/experience/ExperienceSecti
 import ProfileSection from "../../components/index/ProfileSection.astro";
 import ProjectSection from "../../components/index/projects/ProjectSection.astro";
 import CertifiedSection from "../../components/index/certifieds/CertifiedSection.astro";
+import AboutSection from "../../components/index/about/AboutSection.astro";
 import Section from "../../components/share/Section.astro";
 import Layout from "../../layouts/Layout.astro";
 import Contact from "../../components/Contact.astro";
@@ -20,6 +21,10 @@ const t = (key: string) => translations[lang]?.[key] || key;
   <ProfileSection lang={lang} t={t} />
 
   <ProjectSection lang={lang} t={t} />
+
+  <Section id="sobre-mi" ariaLabel="About Me">
+    <AboutSection lang={lang} t={t} />
+  </Section>
 
   <Section id="experiencia" ariaLabel="Experience">
     <ExperienceSection lang={lang} t={t} />

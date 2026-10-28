@@ -1,0 +1,84 @@
+---
+import Layout from "../layouts/Layout.astro";
+import translations from "../i18n";
+import { resolveLangFromRequest } from "../lib/lang";
+
+const lang = resolveLangFromRequest(Astro.request);
+const t = (key: string) => translations[lang]?.[key] || key;
+
+const subtitle = lang === "en" ? "Page not found" : "Esta página no existe";
+const cta = lang === "en" ? "Back to home" : "Volver al inicio";
+---
+
+<Layout
+  lang={lang}
+  title={`404 — ${subtitle}`}
+  description={subtitle}
+>
+  <section
+    class="relative flex min-h-[80vh] flex-col items-center justify-center px-6 text-center"
+  >
+    <!-- Floating petal -->
+    <svg
+      class="petal absolute opacity-20"
+      width="120"
+      height="180"
+      viewBox="0 0 120 180"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M60 0C60 0 20 40 10 90C0 140 30 175 60 180C90 175 120 140 110 90C100 40 60 0 60 0Z"
+        fill="url(#petalGrad)"
+      />
+      <path
+        d="M60 20C60 20 55 80 55 120C55 150 58 170 60 180C62 170 65 150 65 120C65 80 60 20 60 20Z"
+        fill="white"
+        fill-opacity="0.12"
+      />
+      <defs>
+        <linearGradient id="petalGrad" x1="60" y1="0" x2="60" y2="180" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c2185b" />
+          <stop offset="0.5" stop-color="#e91e8c" />
+          <stop offset="1" stop-color="#f48fb1" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <h1 class="font-display text-[10rem] leading-none uppercase sm:text-[14rem] lg:text-[18rem]">
+      404
+    </h1>
+
+    <p class="mt-4 text-lg text-white/70 sm:text-xl">
+      {subtitle}
+    </p>
+
+    <a href={lang === "en" ? "/en" : "/"} class="btn btn-primary mt-8">
+      {cta}
+    </a>
+  </section>
+</Layout>
+
+<style>
+  .petal {
+    top: 12%;
+    right: 18%;
+    animation: petal-float 6s ease-in-out infinite;
+  }
+
+  @keyframes petal-float {
+    0%, 100% {
+      transform: translateY(0) rotate(-8deg);
+    }
+    50% {
+      transform: translateY(-24px) rotate(8deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .petal {
+      animation: none;
+    }
+  }
+</style>

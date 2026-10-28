@@ -952,4 +952,10 @@
       transform: translateX(-100%);
     }
   }
+
+  /* 3D Tilt on project cards */
+  .project-slide .card {
+    transform-style: preserve-3d;
+    transition: transform 400ms cubic-bezier(0.03, 0.98, 0.52, 0.99);
+  }
 }
