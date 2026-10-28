@@ -1,0 +1,36 @@
+# Ángel Calderón
+
+> Software Architect & AI Engineer based in Caracas, Venezuela. I design and build web & mobile products with a focus on performance, UX, security, and deployment. My stack spans Python, Next.js, React Native, Flutter, RAG systems, and IoT. Open to remote work worldwide.
+
+## About
+- [Portfolio](https://angelcalderon.dev): My personal website showcasing projects, experience, certifications, and contact information.
+- [GitHub](https://github.com/Doble-2): Open-source projects and code repositories.
+- [LinkedIn](https://www.linkedin.com/in/angeld2/): Professional profile, work history, and endorsements.
+- [X / Twitter](https://x.com/angelcaldev): Tech commentary and project updates.
+
+## Featured Projects
+- [OSINT-D2](https://angelcalderon.dev/projects/osint-d2): Autonomous AI agent for identity investigation. Give it a username or email and it scans 20+ platforms, finds new leads, pivots on them autonomously, and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with AI able to run locally via Ollama. Stack: Python, FastAPI, Playwright, Docker.
+- [Eficense Residence](https://angelcalderon.dev/projects/eficense): IoT & AI security ecosystem for residential management. Bridges physical security hardware with modern cloud architecture, automating visitor access and financial reporting for 150+ unit condominiums. Stack: Next.js, Python, FastAPI, PostgreSQL, Redis, DeepSeek API.
+- [Studia](https://angelcalderon.dev/projects/studia): AI-powered EdTech SaaS. Omnichannel AI tutoring ecosystem for schools that ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp. Stack: React Native, Python, FastAPI, WhatsApp Cloud API, Vector DB.
+- [Scenery](https://angelcalderon.dev/projects/scenery): Modern CLI wallpaper manager for Linux power users. High-performance tool to manage, tag, and organize large wallpaper collections, integrating seamlessly with tiling window managers like Hyprland. Stack: Python, Typer, Rich.
+- [Born AI](https://angelcalderon.dev/projects/born-ai): Predictive genetics with LLMs. Web app using OpenAI to generate explanatory prediction summaries from structured inputs. 2nd Place Winner in a coding competition. Stack: Next.js, OpenAI, TailwindCSS.
+- [Appod](https://angelcalderon.dev/projects/appod): NASA APOD explorer mobile app. Flutter app integrating NASA's Astronomy Picture of the Day API with a Python backend. 500+ requests. Stack: Flutter, Python, Firebase.
+
+## Core Expertise
+- **AI & Agents**: RAG pipelines, autonomous agents, LLM integration (OpenAI, Ollama, DeepSeek), vector databases
+- **Cybersecurity**: OSINT tooling, identity investigation, security-first architecture
+- **Web Development**: Next.js, React, Astro, TailwindCSS, TypeScript, Vercel
+- **Mobile Development**: React Native, Flutter, Dart
+- **Backend & APIs**: Python, FastAPI, Django, Flask, Node.js, GraphQL
+- **Infrastructure**: Docker, Kubernetes, AWS, Google Cloud, PostgreSQL, Redis, Firebase
+- **IoT**: Hardware-software integration, real-time sync, embedded systems
+- **Design**: Figma, Adobe XD, UX/UI design systems
+
+## Contact
+- Location: Caracas, Venezuela (UTC−4)
+- Available for remote work globally
+- Response time: Less than 24 hours
+- Website: https://angelcalderon.dev
+- GitHub: https://github.com/Doble-2
+- LinkedIn: https://www.linkedin.com/in/angeld2/
+- X: https://x.com/angelcaldev

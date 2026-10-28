@@ -11,6 +11,29 @@ import translations from "../../i18n";
 
 const lang: 'en' = 'en';
 const t = (key: string) => translations[lang]?.[key] || key;
+
+const SITE = "https://angelcalderon.dev";
+const profilePageJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    name: "Ángel Calderón",
+    url: SITE,
+    image: `${SITE}/og.jpg`,
+    jobTitle: "Software Architect & AI Engineer",
+    description: "Software Architect & AI Engineer based in Caracas, Venezuela. Building web & mobile products with Python, Next.js, React Native, Flutter, RAG and IoT.",
+    address: { "@type": "PostalAddress", addressLocality: "Caracas", addressCountry: "VE" },
+    sameAs: [
+      "https://github.com/Doble-2",
+      "https://www.linkedin.com/in/angeld2/",
+      "https://x.com/angelcaldev",
+    ],
+    knowsAbout: ["Python", "AI Agents", "RAG", "OSINT", "Cybersecurity", "IoT", "FastAPI", "Next.js", "React", "React Native", "Flutter", "TypeScript", "PostgreSQL", "Docker", "AWS"],
+  },
+  dateCreated: "2024-01-01",
+  dateModified: new Date().toISOString().split("T")[0],
+});
 ---
 
 <Layout
@@ -18,6 +41,7 @@ const t = (key: string) => translations[lang]?.[key] || key;
   title="Ángel Calderón — Software Architect & AI Engineer"
   description="Software Architect & AI Engineer building web and mobile products with a focus on performance, UX, security and delivery: Python, Next.js, React Native, Flutter, RAG, IoT and AI agents."
 >
+  <script is:inline type="application/ld+json" set:html={profilePageJsonLd} />
   <ProfileSection lang={lang} t={t} />
 
   <ProjectSection lang={lang} t={t} />

@@ -19,6 +19,29 @@ if (resolveLangFromRequest(Astro.request) === "en") {
 
 const lang = "es" as const;
 const t = (key: string) => translations[lang]?.[key] || key;
+
+const SITE = "https://angelcalderon.dev";
+const profilePageJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    name: "Ángel Calderón",
+    url: SITE,
+    image: `${SITE}/og.jpg`,
+    jobTitle: "Software Architect & AI Engineer",
+    description: "Arquitecto de software e ingeniero de IA en Caracas, Venezuela. Desarrollo productos web y mobile con Python, Next.js, React Native, Flutter, RAG e IoT.",
+    address: { "@type": "PostalAddress", addressLocality: "Caracas", addressCountry: "VE" },
+    sameAs: [
+      "https://github.com/Doble-2",
+      "https://www.linkedin.com/in/angeld2/",
+      "https://x.com/angelcaldev",
+    ],
+    knowsAbout: ["Python", "AI Agents", "RAG", "OSINT", "Cybersecurity", "IoT", "FastAPI", "Next.js", "React", "React Native", "Flutter", "TypeScript", "PostgreSQL", "Docker", "AWS"],
+  },
+  dateCreated: "2024-01-01",
+  dateModified: new Date().toISOString().split("T")[0],
+});
 ---
 
 <Layout
@@ -26,6 +49,7 @@ const t = (key: string) => translations[lang]?.[key] || key;
   title="Ángel Calderón — Software Architect & AI Engineer"
   description="Arquitecto de software e ingeniero de IA. Creo productos web y mobile con foco en performance, UX, seguridad y despliegue: Python, Next.js, React Native, Flutter, RAG, IoT y agentes de IA."
 >
+  <script is:inline type="application/ld+json" set:html={profilePageJsonLd} />
   <ProfileSection lang={lang} t={t} />
   <ProjectSection lang={lang} t={t} />
 
