@@ -1,0 +1,65 @@
+---
+interface Props {
+  lang: string;
+  t: (key: string) => string;
+}
+const { t = (k: string) => k } = Astro.props as Props;
+---
+
+<div class="container-content">
+  <div class="grid gap-12 md:grid-cols-[1fr_1.4fr] md:items-center">
+    <!-- Left: title -->
+    <div>
+      <h2 class="type-h2">{t("about_title")}</h2>
+      <div class="mt-4 h-1 w-16 rounded-full" style="background:#800020;" aria-hidden="true"></div>
+    </div>
+
+    <!-- Right: text + photo -->
+    <div class="flex flex-col gap-8">
+      <div class="flex flex-col-reverse gap-8 sm:flex-row sm:items-start">
+        <!-- Text -->
+        <div class="flex-1 space-y-4">
+          <p class="text-base leading-relaxed text-white/90">
+            {t("about_p1")}
+          </p>
+          <p class="text-base leading-relaxed text-muted-foreground">
+            {t("about_p2")}
+          </p>
+          <p class="text-base leading-relaxed text-muted-foreground">
+            {t("about_p3")}
+          </p>
+        </div>
+
+        <!-- Photo -->
+        <div class="relative mx-auto shrink-0 sm:mx-0">
+          <div
+            class="h-32 w-32 overflow-hidden rounded-2xl border border-white/10 shadow-lg sm:h-40 sm:w-40"
+            style="box-shadow: 0 0 40px rgba(128,0,32,0.15);"
+          >
+            <img
+              src="/profile.webp"
+              alt="Ángel Calderón"
+              width="160"
+              height="160"
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover"
+            />
+          </div>
+          <!-- Vinotinto accent dot -->
+          <div
+            class="absolute -bottom-2 -right-2 h-5 w-5 rounded-full border-2 border-[rgb(12,14,20)]"
+            style="background:#800020;"
+            aria-hidden="true"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Availability tag -->
+      <div class="flex items-center gap-2">
+        <span class="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-sm text-muted-foreground">{t("about_available")}</span>
+      </div>
+    </div>
+  </div>
+</div>

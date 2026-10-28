@@ -77,15 +77,15 @@ const ICONS_MAP = {
   aws: SiAmazon,
 };
 
-const TechnologyTag = ({ tech }) => {
+const TechnologyTag = ({ tech, size = "md" }) => {
   const Icon = useMemo(() => {
     if (!tech) return null;
     return ICONS_MAP[tech.toLowerCase()] || null;
   }, [tech]);
 
   return (
-    <div className="inline-flex items-center justify-center rounded-md border border-border bg-muted/50 px-2 py-0.5 text-foreground text-xs font-medium gap-2">
-      {Icon && <Icon className="w-4 h-4 text-muted-foreground" />}
+    <div className={size === "lg" ? "tag gap-2 px-4 py-2.5 text-base whitespace-nowrap" : "tag gap-1.5 px-2 py-1 text-xs"}>
+      {Icon && <Icon className={size === "lg" ? "w-5 h-5 opacity-80" : "w-3.5 h-3.5 opacity-70"} aria-hidden="true" />}
       <span>{tech}</span>
     </div>
   );

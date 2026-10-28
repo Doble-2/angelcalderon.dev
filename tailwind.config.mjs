@@ -9,6 +9,9 @@ export default {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				display: ['Anton', 'Impact', '"Arial Narrow"', 'sans-serif'],
+			},
 			keyframes: {
 				// small rotation wiggle
 			

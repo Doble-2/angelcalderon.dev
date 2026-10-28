@@ -1,8 +1,13 @@
 {
-  "name": "Segundo lugar Codicon 2024",
+  "name": "Segundo lugar · Codicon 2024",
   "platform": "Lexpin",
   "date": "21/03/2024",
   "order": 10,
   "code": null,
-  "asset": "segundo-lugar-codicon-2024"
+  "asset": "segundo-lugar-codicon-2024",
+  "name_en": "Second place · Codicon 2024",
+  "kind": "award",
+  "place": 2,
+  "note": "Un software funcional en menos de 48 horas.",
+  "note_en": "Working software in under 48 hours."
 }

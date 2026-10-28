@@ -7,7 +7,7 @@ export type Project = {
   images: string[];
   tech: { primary: string[]; tools?: string[] };
   metrics?: { label: string; value: string }[];
-  links?: { demo?: string; repo?: string };
+  links?: { demo?: string; repo?: string; docs?: string };
   role: string;
   dateStart: string;
 };
@@ -17,25 +17,28 @@ export const projects: Project[] = [
     name: "OSINT-D2",
     slug: "osint-d2",
     order: 96,
-    subtitle: "AI-Powered Identity Intelligence Engine",
+    subtitle: "Autonomous AI agent for identity investigation",
     description:
-      "An automated Open Source Intelligence (OSINT) engine that triangulates digital footprints across 113+ platforms and leverages DeepSeek LLM to generate psychological profiles (OCEAN) and vulnerability assessments.",
+      "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama.",
     images: [
-      "/projects/osint-d2/osint-terminal.webp",
-      "/projects/osint-d2/osint-report-pdf.webp"
+      "/projects/osint-d2/agent-run.webp",
+      "/projects/osint-d2/trust-anchors.webp",
+      "/projects/osint-d2/dossier.webp",
+      "/projects/osint-d2/doctor.webp"
     ],
     tech: {
-      primary: ["Python", "Cybersecurity", "AI Agents"],
-      tools: ["DeepSeek API", "WeasyPrint", "Sherlock Core", "AsyncIO"],
+      primary: ["Python", "AI Agents", "Cybersecurity"],
+      tools: ["FastAPI", "Typer", "Playwright", "WeasyPrint", "Docker", "Ollama"],
     },
     metrics: [
-      { label: "Data Sources", value: "113+" },
-      { label: "Output", value: "PDF Dossier" },
+      { label: "Agent tools", value: "9" },
+      { label: "Tests", value: "287" },
     ],
     links: {
       repo: "https://github.com/Doble-2/osint-d2",
+      docs: "https://osint-d2.angelcalderon.dev",
     },
-    role: "Security Engineer & Creator",
+    role: "Creator & Security Engineer",
     dateStart: "2025",
   },
   {

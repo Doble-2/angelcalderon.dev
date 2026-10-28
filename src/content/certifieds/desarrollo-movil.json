@@ -1,8 +1,12 @@
 {
-  "name": "Desarrollo móvil",
+  "name": "Desarrollo de apps móviles",
   "platform": "Google",
   "date": "20/04/2023",
   "order": 7,
   "code": "U2G ZEU 2KW",
-  "asset": "desarrollo-movil"
+  "asset": "desarrollo-movil",
+  "name_en": "Mobile app development",
+  "kind": "course",
+  "hours": 40,
+  "issuer_detail": "Universidad Complutense"
 }

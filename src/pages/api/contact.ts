@@ -1,5 +1,34 @@
 // API endpoint: POST /api/contact
 // Supports SendGrid via SENDGRID_API_KEY or SMTP via dynamic import of nodemailer and SMTP_* env vars.
+// Errors returned to the client are generic codes; details are only logged on the server.
+
+const MAX_LENGTH = { name: 100, email: 254, subject: 150, message: 5000 };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Best-effort rate limit (per serverless instance): 5 requests / 10 min per IP.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const hits = new Map<string, number[]>();
+
+function isRateLimited(ip: string) {
+  const now = Date.now();
+  const recent = (hits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 1000) {
+    for (const [key, times] of hits) {
+      if (times.every((t) => now - t >= RATE_WINDOW_MS)) hits.delete(key);
+    }
+  }
+  return recent.length > RATE_LIMIT;
+}
+
+function json(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
 
 function escapeHtml(str: string) {
   return String(str)
@@ -10,33 +39,63 @@ function escapeHtml(str: string) {
     .replace(/'/g, '&#39;');
 }
 
-export async function POST({ request }: { request: Request }) {
+const field = (value: unknown) => (typeof value === 'string' ? value.trim() : '');
+
+export async function POST({ request, clientAddress }: { request: Request; clientAddress?: string }) {
   try {
     // Ensure environment variables are loaded (helps in dev when .env wasn't picked up)
-    if (!process.env.SMTP_HOST) {
+    if (!process.env.SMTP_HOST && !process.env.SENDGRID_API_KEY) {
       try {
         const dotenv = await import('dotenv');
         dotenv.config();
-        console.log('[contact API] dotenv loaded .env');
-      } catch (e) {
+      } catch {
         // ignore if dotenv not available
       }
     }
-    const data = await request.json();
-    const name = (data.name || '').trim();
-    const email = (data.email || '').trim();
-    const incomingSubject = (data.subject || '').trim();
-    const message = (data.message || '').trim();
 
-    if (!name || !email || !message) {
-      return new Response(JSON.stringify({ error: 'Missing fields' }), { status: 400 });
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || clientAddress || 'unknown';
+    if (isRateLimited(ip)) {
+      return json({ error: 'rate_limited' }, 429);
     }
 
-    const toEmail = process.env.TO_EMAIL || process.env.CONTACT_EMAIL || 'hola@angelcalderon.dev';
+    const data = await request.json().catch(() => null);
+    if (!data || typeof data !== 'object') {
+      return json({ error: 'invalid_request' }, 400);
+    }
+
+    // Honeypot: real users never fill this hidden field. Pretend success for bots.
+    if (field(data.website)) {
+      return json({ ok: true }, 200);
+    }
+
+    const name = field(data.name);
+    const email = field(data.email);
+    const incomingSubject = field(data.subject);
+    const message = field(data.message);
+
+    if (!name || !email || !message) {
+      return json({ error: 'missing_fields' }, 400);
+    }
+    if (
+      name.length > MAX_LENGTH.name ||
+      email.length > MAX_LENGTH.email ||
+      incomingSubject.length > MAX_LENGTH.subject ||
+      message.length > MAX_LENGTH.message
+    ) {
+      return json({ error: 'too_long' }, 400);
+    }
+    if (!EMAIL_RE.test(email)) {
+      return json({ error: 'invalid_email' }, 400);
+    }
+
+    const toEmail = process.env.TO_EMAIL || process.env.CONTACT_EMAIL || 'angel@angelcalderon.dev';
     const fromEmail = process.env.FROM_EMAIL || `no-reply@${toEmail.split('@')[1] || 'example.com'}`;
+    // Strip line breaks so user input can't inject extra mail headers.
+    const safeHeader = (s: string) => s.replace(/[\r\n]+/g, ' ');
     const subject = incomingSubject
-      ? `Portfolio: ${incomingSubject} — ${name}`
-      : `Nuevo mensaje desde portfolio: ${name}`;
+      ? `Portfolio: ${safeHeader(incomingSubject)} — ${safeHeader(name)}`
+      : `Nuevo mensaje desde portfolio: ${safeHeader(name)}`;
 
     const html = `
       <div>
@@ -59,88 +118,46 @@ export async function POST({ request }: { request: Request }) {
         body: JSON.stringify({
           personalizations: [{ to: [{ email: toEmail }] }],
           from: { email: fromEmail },
+          reply_to: { email, name },
           subject,
           content: [{ type: 'text/html', value: html }],
         }),
       });
 
       if (!sgRes.ok) {
-        const details = await sgRes.text();
-        return new Response(JSON.stringify({ error: 'SendGrid error', details }), { status: 502 });
+        console.error('[contact API] SendGrid error:', sgRes.status, await sgRes.text());
+        return json({ error: 'send_failed' }, 502);
       }
 
-      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+      return json({ ok: true }, 200);
     }
 
-    // Fallback: try nodemailer if available (dynamic import)
-    try {
-      const nodemailer = await import('nodemailer');
-
-      // Try to resolve an IPv4 for the SMTP host and use it to avoid IPv6/localhost resolution issues
-      let smtpHost = process.env.SMTP_HOST;
-      try {
-        const dns = await import('dns');
-        const dnsPromises = (dns as any).promises || dns.promises;
-        if (dnsPromises && smtpHost) {
-          const addrs: string[] = await dnsPromises.resolve4(smtpHost).catch(() => []);
-          if (addrs && addrs.length) smtpHost = addrs[0];
-        }
-      } catch (e) {
-        // ignore DNS resolution errors and fallback to provided host
-      }
-
-      // Log before creating transporter so we can see values used
-      console.log('[contact API] smtpHost resolved:', smtpHost, 'process.env.SMTP_HOST:', process.env.SMTP_HOST);
-
-      const transporter = nodemailer.createTransport({
-        host: smtpHost || process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: (process.env.SMTP_SECURE || 'false') === 'true',
-        auth: process.env.SMTP_USER
-          ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-          : undefined,
-        // If we connected using an IP address (smtpHost may be IPv4), set servername
-        // to the original hostname so TLS SNI verification matches the certificate.
-        tls: {
-          servername: process.env.SMTP_HOST,
-        },
-      });
-
-      // Log the host used so dev can see if it's resolving to ::1 or a real IP
-      const usedHost = transporter && (transporter as any).options && (transporter as any).options.host;
-      console.log('[contact API] transporter.options.host:', usedHost);
-
-      // Verify transporter connectivity/auth before sending to provide clearer errors
-      try {
-        await transporter.verify();
-      } catch (verifyErr: any) {
-        const vDetails = String(verifyErr?.message || verifyErr);
-        const vCode = verifyErr?.code || verifyErr?.errno || null;
-        console.error('[contact API] transporter.verify failed:', vDetails, vCode);
-        return new Response(
-          JSON.stringify({ error: 'Mailer verify failed', details: vDetails, code: vCode }),
-          { status: 502 }
-        );
-      }
-
-      await transporter.sendMail({
-        from: fromEmail,
-        to: toEmail,
-        subject,
-        html,
-      });
-
-      return new Response(JSON.stringify({ ok: true }), { status: 200 });
-    } catch (err: any) {
-      // If nodemailer missing or failed, return helpful message with error code
-      const details = String(err?.message || err);
-      const code = err?.code || err?.errno || null;
-      return new Response(
-        JSON.stringify({ error: 'No mailer available', details, code, hint: 'Set SENDGRID_API_KEY or verify SMTP_* env vars and connectivity' }),
-        { status: 500 }
-      );
+    if (!process.env.SMTP_HOST) {
+      console.error('[contact API] No mailer configured: set SENDGRID_API_KEY or SMTP_* env vars');
+      return json({ error: 'send_failed' }, 500);
     }
+
+    const nodemailer = await import('nodemailer');
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: (process.env.SMTP_SECURE || 'false') === 'true',
+      auth: process.env.SMTP_USER
+        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+        : undefined,
+    });
+
+    await transporter.sendMail({
+      from: fromEmail,
+      to: toEmail,
+      replyTo: { name, address: email },
+      subject,
+      html,
+    });
+
+    return json({ ok: true }, 200);
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: String(err?.message || err) }), { status: 500 });
+    console.error('[contact API] Unexpected error:', err?.code || '', err?.message || err);
+    return json({ error: 'send_failed' }, 500);
   }
 }

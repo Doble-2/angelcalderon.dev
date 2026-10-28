@@ -1,251 +1,188 @@
 ---
+// Plantilla común de las páginas de proyecto.
+// Orden: hero (nombre + datos) → portada → resumen → <slot/> (secciones
+// propias de cada proyecto) → capturas → siguiente proyecto.
 import Layout from "./Layout.astro";
-import type { Project } from "../data/projects";
-import TechIcon from "../components/projects/TechIcon.astro";
-import ProjectPager from "../components/projects/ProjectPager.astro";
+import TechnologyTag from "../components/index/projects/TechnologyTag";
+import { projects, type Project } from "../data/projects";
+import translations from "../i18n";
+import { resolveLangFromRequest } from "../lib/lang";
 
 interface Props {
   project: Project;
+  /** Imagen de portada (por defecto la primera del proyecto) */
+  cover?: string;
+  /** Capturas de la galería (por defecto el resto de imágenes) */
+  gallery?: string[];
   title?: string;
-  description?: string;
-  image?: string;
-  url?: string;
+  /** Resumen traducido (por defecto la descripción del proyecto, en inglés) */
+  summary?: string;
 }
 
-const { project } = Astro.props as Props;
+const { project, title } = Astro.props as Props;
+const lang = resolveLangFromRequest(Astro.request);
+const t = (key: string) => (translations as any)[lang]?.[key] || key;
+const homeHref = lang === "en" ? "/en" : "/";
 
 const safeUrl = (u: unknown) => {
-  if (!u) return null;
-  const s = String(u).trim();
-  if (!s || s === "#") return null;
-  return s;
+  const s = String(u ?? "").trim();
+  return s && s !== "#" ? s : null;
 };
-
-const demoUrl = safeUrl(project.links?.demo || (project as any).url || null);
-const repoUrl = safeUrl(project.links?.repo || (project as any).repo || null);
+const demoUrl = safeUrl(project.links?.demo);
+const repoUrl = safeUrl(project.links?.repo);
+const docsUrl = safeUrl(project.links?.docs);
 
 const images = (project.images || []).filter(Boolean);
-const heroImage = images[0] || "/rect1-optimized.webp";
-const gallery = images.slice(1);
+const cover = Astro.props.cover || images[0] || "/og.jpg";
+const gallery = (Astro.props.gallery ?? images.filter((src) => src !== cover)).filter(Boolean);
+const stack = Array.from(new Set([...(project.tech?.primary ?? []), ...(project.tech?.tools ?? [])]));
 
-const truncate = (str: string, n: number = 170) =>
-  str && str.length > n ? `${str.slice(0, n).trim()}...` : str;
+const ordered = [...projects].sort((a, b) => b.order - a.order);
+const index = ordered.findIndex((p) => p.slug === project.slug);
+const next = ordered[(index + 1) % ordered.length];
+const pad = (n: number) => String(n).padStart(2, "0");
 
-const pageTitle =
-  (Astro.props as Props).title ||
-  `${project.name} | Angel Calderon — Software Architect & AI Engineer`;
-
-const pageDescription =
-  (Astro.props as Props).description || truncate(project.description || "", 180);
-
-const pageImage = (Astro.props as Props).image || heroImage;
-const pageUrl = (Astro.props as Props).url || Astro.request.url;
-
-const primary = project.tech?.primary ?? [];
-const tools = project.tech?.tools ?? [];
-const t = (project.tech ?? {}) as any;
-const fullStack = Array.from(
-  new Set(
-    [
-      ...primary,
-      ...(t?.frontend ?? []),
-      ...(t?.backend ?? []),
-      ...(t?.mobile ?? []),
-      ...(t?.infra ?? []),
-      ...(t?.services ?? []),
-      ...tools,
-    ].filter(Boolean)
-  )
-);
-
+const pageTitle = title || `${project.name} — ${project.subtitle} | Ángel Calderón`;
+const pageDescription = project.description.length > 180 ? `${project.description.slice(0, 177).trim()}…` : project.description;
 ---
 
-<Layout title={pageTitle} description={pageDescription} image={pageImage} url={pageUrl}>
-  <main class="container-content pt-20 md:pt-14 px-3 py-10 md:py-14">
-    <header class="max-w-4xl">
-      <h1 class="type-display bg-gradient-to-r from-blue-300 via-blue-600 to-purple-500 bg-clip-text text-transparent">
-        {project.name}
-      </h1>
-      {project.subtitle ? (
-        <p class="mt-3 type-lead text-muted-foreground max-w-3xl">{project.subtitle}</p>
-      ) : null}
-
-      <!-- Mobile quick facts (glance) -->
-      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:hidden">
-        {project.role ? (
-          <div class="rounded-2xl neomorphic p-4">
-            <div class="text-xs text-muted-foreground">Role</div>
-            <div class="mt-1 text-sm font-semibold text-foreground">{project.role}</div>
-          </div>
-        ) : null}
-
-        {project.dateStart ? (
-          <div class="rounded-2xl neomorphic p-4">
-            <div class="text-xs text-muted-foreground">Date</div>
-            <div class="mt-1 text-sm font-semibold text-foreground">{project.dateStart}</div>
-          </div>
-        ) : null}
-
-        {Array.isArray(project.metrics) && project.metrics.length ? (
-          <div class="rounded-2xl neomorphic p-4 sm:col-span-2">
-            <div class="text-xs text-muted-foreground">Highlights</div>
-            <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {project.metrics.slice(0, 4).map((m) => (
-                <div class="rounded-xl border border-border bg-muted p-3">
-                  <div class="text-xs text-muted-foreground">{m.label}</div>
-                  <div class="mt-1 text-sm font-semibold text-foreground">{m.value}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
-        {fullStack.length ? (
-          <div class="rounded-2xl neomorphic p-4 sm:col-span-2">
-            <div class="text-xs text-muted-foreground">Stack</div>
-            <div class="mt-2 flex flex-wrap gap-2">
-              {fullStack.slice(0, 14).map((t) => (
-                <span class="chip inline-flex items-center gap-2">
-                  <TechIcon kind={t} />
-                  <span>{t}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : null}
+<Layout title={pageTitle} description={pageDescription} image={cover}>
+  <!-- Hero -->
+  <section class="container-page pt-28 md:pt-36">
+    <div class="container-content">
+      <div class="flex items-center justify-between gap-4 text-sm text-white/60">
+        <a href={`${homeHref}#proyectos`} class="inline-flex items-center gap-2 hover:text-white transition-colors">
+          <span aria-hidden="true">←</span> {t("project_back")}
+        </a>
+        <span class="font-display text-xl text-white/40 tabular-nums" aria-hidden="true">
+          <span class="text-white">{pad(index + 1)}</span> / {pad(ordered.length)}
+        </span>
       </div>
 
-      <div class="mt-5 hidden lg:flex flex-wrap gap-2">
-        {primary.map((t) => (
-          <span class="chip inline-flex items-center gap-2">
-            <TechIcon kind={t} />
-            <span>{t}</span>
-          </span>
+      <h1 class="mt-8 type-display break-words">{project.name}</h1>
+      <p class="mt-5 max-w-2xl text-lg md:text-2xl text-white/75">{project.subtitle}</p>
+
+      {(demoUrl || repoUrl || docsUrl) && (
+        <div class="mt-8 flex flex-wrap gap-3">
+          {demoUrl && (
+            <a class="btn btn-primary h-12 px-6 text-base" href={demoUrl} target="_blank" rel="noopener noreferrer">
+              {t("project_demo")} <span aria-hidden="true">↗</span>
+            </a>
+          )}
+          {docsUrl && (
+            <a class="btn btn-primary h-12 px-6 text-base" href={docsUrl} target="_blank" rel="noopener noreferrer">
+              {t("project_docs")} <span aria-hidden="true">↗</span>
+            </a>
+          )}
+          {repoUrl && (
+            <a class="btn btn-secondary h-12 px-6 text-base" href={repoUrl} target="_blank" rel="noopener noreferrer">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" /></svg>
+              {t("project_repo")}
+            </a>
+          )}
+        </div>
+      )}
+
+      <!-- Datos clave de un vistazo -->
+      <dl class="mt-12 grid grid-cols-2 gap-y-8 border-t border-white/10 pt-8 md:grid-cols-4">
+        <div class="flex flex-col pr-4">
+          <dt class="text-sm text-muted-foreground">{t("project_role")}</dt>
+          <dd class="order-first text-lg font-semibold leading-tight text-white">{project.role}</dd>
+        </div>
+        <div class="flex flex-col pr-4">
+          <dt class="text-sm text-muted-foreground">{t("project_year")}</dt>
+          <dd class="order-first text-lg font-semibold leading-tight text-white">{project.dateStart}</dd>
+        </div>
+        {(project.metrics ?? []).slice(0, 2).map((m) => (
+          <div class="flex flex-col pr-4">
+            <dt class="text-sm text-muted-foreground">{m.label}</dt>
+            <dd class="order-first text-lg font-semibold leading-tight text-white">{m.value}</dd>
+          </div>
         ))}
-      </div>
+      </dl>
+    </div>
+  </section>
 
-      <div class="mt-6 flex flex-col sm:flex-row gap-3">
-        {demoUrl ? (
-          <a
-            href={demoUrl}
-            class="btn btn-primary w-full sm:w-auto justify-center"
-            target={demoUrl.startsWith("/") ? undefined : "_blank"}
-            rel={demoUrl.startsWith("/") ? undefined : "noopener noreferrer"}
-          >
-            Demo
-          </a>
-        ) : null}
-        {repoUrl ? (
-          <a
-            href={repoUrl}
-            class="btn btn-brand-github w-full sm:w-auto justify-center"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.083-.729.083-.729 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.93 0-1.31.468-2.381 1.236-3.221-.124-.303-.536-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 013.003-.404c1.02.005 2.045.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.653.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.479 5.921.43.37.814 1.102.814 2.222 0 1.606-.015 2.898-.015 3.293 0 .32.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-            </svg>
-            <span>Repo</span>
-          </a>
-        ) : null}
-      </div>
-    </header>
+  <!-- Portada: la captura sobre su propio fondo difuminado, sirve para cualquier proporción -->
+  <section class="container-page mt-12 md:mt-16" aria-label={t("project_gallery")}>
+    <div class="container-content">
+      <button type="button" class="project-stage reveal group" data-zoom={cover} aria-label={`${t("project_zoom")}: ${project.name}`}>
+        <img src={cover} alt="" aria-hidden="true" class="project-stage__bg" />
+        <img src={cover} alt={`${project.name} — ${project.subtitle}`} class="project-stage__img" loading="eager" decoding="async" />
+      </button>
+    </div>
+  </section>
 
-    <section class="mt-10 grid lg:grid-cols-12 gap-6 md:gap-8 items-start">
-      <!-- 65/35: 8/4 columns -->
-      <div class="lg:col-span-8 order-2 lg:order-1">
-        <div class="space-y-4">
-          <div class="overflow-hidden rounded-2xl neomorphic">
-            <img
-              src={heroImage}
-              alt={`${project.name} hero`}
-              class="w-full h-auto object-cover"
-              loading="eager"
-              decoding="async"
-            />
-          </div>
+  <!-- Resumen: una frase grande + stack -->
+  <section class="container-page py-20 md:py-28">
+    <div class="container-content grid gap-10 lg:grid-cols-12">
+      <p class="lg:col-span-8 text-2xl md:text-4xl font-medium leading-snug tracking-tight text-white">
+        {Astro.props.summary || project.description}
+      </p>
+      <ul class="lg:col-span-4 flex flex-wrap content-start gap-2" aria-label={t("project_stack")}>
+        {stack.map((tech) => <li><TechnologyTag tech={tech} /></li>)}
+      </ul>
+    </div>
+  </section>
 
-          {gallery.length ? (
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {gallery.map((src, idx) => (
-                <div class="overflow-hidden rounded-2xl neomorphic">
-                  <img
-                    src={src}
-                    alt={`${project.name} gallery ${idx + 1}`}
-                    class="w-full h-full object-cover aspect-[4/3]"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-              ))}
-            </div>
-          ) : null}
+  <!-- Secciones propias del proyecto (páginas personalizadas) -->
+  <slot />
+
+  {gallery.length > 0 && (
+    <section class="container-page pb-20 md:pb-28" aria-label={t("project_gallery")}>
+      <div class="container-content">
+        <h2 class="type-h2">{t("project_gallery")}</h2>
+        <!-- Impar: la primera captura va a ancho completo, así nunca queda un hueco -->
+        <div class="mt-10 grid items-start gap-5 sm:grid-cols-2">
+          {gallery.map((src, i) => (
+            <button type="button" class={`reveal card block w-full overflow-hidden p-0 ${gallery.length % 2 === 1 && i === 0 ? "sm:col-span-2" : ""}`} data-zoom={src} aria-label={`${t("project_zoom")} ${i + 1}`}>
+              <img src={src} alt={`${project.name} — ${i + 1}`} class={`w-full transition-transform duration-700 hover:scale-[1.02] ${gallery.length % 2 === 1 && i === 0 ? "max-h-[80vh] object-contain bg-black/30" : "h-auto"}`} loading="lazy" decoding="async" />
+            </button>
+          ))}
         </div>
       </div>
-
-      <aside class="hidden lg:block lg:col-span-4 order-1 lg:order-2">
-        <div class="lg:sticky lg:top-24 space-y-4">
-          <div class="rounded-2xl neomorphic p-5 md:p-6">
-            <h2 class="type-h3">Project Info</h2>
-
-            <dl class="mt-4 grid gap-4">
-              <div>
-                <dt class="text-sm text-muted-foreground">Role</dt>
-                <dd class="mt-1 text-sm text-foreground opacity-90">{project.role}</dd>
-              </div>
-
-              <div>
-                <dt class="text-sm text-muted-foreground">Date</dt>
-                <dd class="mt-1 text-sm text-foreground opacity-90">{project.dateStart}</dd>
-              </div>
-
-              {fullStack.length ? (
-                <div>
-                  <dt class="text-sm text-muted-foreground">Stack</dt>
-                  <dd class="mt-2 flex flex-wrap gap-2">
-                    {fullStack.map((t) => (
-                      <span class="chip inline-flex items-center gap-2">
-                        <TechIcon kind={t} />
-                        <span>{t}</span>
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              ) : null}
-
-              <div>
-                <dt class="text-sm text-muted-foreground">Description</dt>
-                <dd class="mt-2 text-sm text-foreground opacity-90 leading-relaxed">
-                  {project.description}
-                </dd>
-              </div>
-            </dl>
-          </div>
-
-          {Array.isArray(project.metrics) && project.metrics.length ? (
-            <div class="rounded-2xl neomorphic p-5 md:p-6">
-              <h3 class="text-sm font-semibold text-foreground">Metrics</h3>
-              <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {project.metrics.slice(0, 4).map((m) => (
-                  <div class="rounded-xl border border-border bg-muted p-3">
-                    <div class="text-xs text-muted-foreground">{m.label}</div>
-                    <div class="mt-1 text-sm text-foreground opacity-90 font-semibold">{m.value}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </aside>
     </section>
+  )}
 
-    <ProjectPager currentSlug={project.slug} />
-  </main>
+  <!-- Siguiente proyecto: bloque grande y clicable -->
+  {next && next.slug !== project.slug && (
+    <section class="container-page pb-16">
+      <div class="container-content">
+        <a href={`/projects/${encodeURIComponent(next.slug)}`} class="next-project group">
+          <img src={next.images[0]} alt="" class="next-project__img" loading="lazy" decoding="async" />
+          <span class="relative z-10 flex h-full flex-col justify-end p-6 md:p-10">
+            <span class="text-sm text-white/70">{t("project_next")} →</span>
+            <span class="mt-2 font-display uppercase text-5xl md:text-8xl leading-[0.85] text-white">{next.name}</span>
+            <span class="mt-3 text-white/70">{next.subtitle}</span>
+          </span>
+        </a>
+      </div>
+    </section>
+  )}
+
+  <!-- Visor de capturas -->
+  <dialog id="media-viewer" class="media-dialog">
+    <div class="media-dialog__inner">
+      <button type="button" class="media-dialog__close" data-viewer-close aria-label={t("close")}>
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12" /></svg>
+      </button>
+      <img id="media-viewer-img" class="media-dialog__img" alt="" />
+    </div>
+  </dialog>
 </Layout>
+
+<script>
+  const viewer = document.getElementById("media-viewer") as HTMLDialogElement | null;
+  const viewerImg = document.getElementById("media-viewer-img") as HTMLImageElement | null;
+  document.querySelectorAll<HTMLElement>("[data-zoom]").forEach((el) => {
+    el.addEventListener("click", () => {
+      if (!viewer || !viewerImg) return;
+      viewerImg.src = el.dataset.zoom || "";
+      viewerImg.alt = el.querySelector("img:not([aria-hidden])")?.getAttribute("alt") || "";
+      viewer.showModal();
+    });
+  });
+  viewer?.addEventListener("click", (e) => {
+    if (e.target === viewer || (e.target as HTMLElement).closest("[data-viewer-close]")) viewer.close();
+  });
+</script>

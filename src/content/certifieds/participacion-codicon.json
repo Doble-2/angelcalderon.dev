@@ -1,8 +1,10 @@
 {
-  "name": "Participación CODICON",
+  "name": "Codicon 2023",
   "platform": "Lexpin",
   "date": "18/03/2023",
   "order": 6,
   "code": null,
-  "asset": "participacion-codicon"
+  "asset": "participacion-codicon",
+  "name_en": "Codicon 2023",
+  "kind": "hackathon"
 }

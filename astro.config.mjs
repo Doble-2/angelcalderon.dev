@@ -13,4 +13,9 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: { enabled: true }
   }),
+  vite: {
+    server: {
+      allowedHosts: ['.trycloudflare.com'],
+    },
+  },
 });

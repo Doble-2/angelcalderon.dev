@@ -1,141 +1,120 @@
 ---
-import {
-  Smartphone,
-  Globe,
-  Database,
-  Plug,
-  Server,
-} from "lucide-react";
 import TechnologyTag from "../projects/TechnologyTag";
+import { projects } from "../../../data/projects";
+import { getCollection } from "astro:content";
+
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
 const { t = (k: string) => k } = Astro.props as Props;
 
-const gradients = [
-  "from-blue-400 via-indigo-500 to-purple-500",
-  "from-emerald-400 via-teal-400 to-cyan-500",
-  "from-pink-400 via-rose-400 to-yellow-400",
-  "from-orange-400 via-amber-400 to-yellow-500",
+const certifieds = await getCollection("certifieds");
+
+// Datos, no párrafos: se entiende de un vistazo
+const stats = [
+  { value: "3+", label: t("stat_years") },
+  { value: String(projects.length), label: t("stat_projects") },
+  { value: "#2", label: t("stat_award") },
+  { value: String(certifieds.length), label: t("stat_certs") },
 ];
 
-const skills = [
+const stackA = ["Python", "FastAPI", "Nextjs", "React", "Typescript", "Astro", "TailwindCSS", "Nodejs", "PostgreSQL", "Redis", "MongoDB", "Docker", "Vercel"];
+const stackB = ["Flutter", "Dart", "React Native", "RAG", "AI Agents", "LLM", "OpenAI", "DeepSeek API", "Vector DB", "WhatsApp Cloud API", "Firebase", "GitHub Actions", "Linux (Arch)"];
+
+const timeline = [
   {
-    name: "Mobile Development",
-    icon: Smartphone,
-    technologies: ["Flutter", "Dart", "React Native", "FlutterFlow"],
-    gradient: gradients[0],
+    period: t("exp_period_1"),
+    role: t("exp_role_1"),
+    company: t("exp_company_1"),
+    description: t("exp_desc_1"),
+    highlights: ["OSINT-D2", "Studia", "Eficense"],
   },
   {
-    name: "Web Technologies",
-    icon: Globe,
-    technologies: [
-      "React",
-      "Nextjs",
-      "Astro",
-      "TailwindCSS",
-      "Shadcn",
-      "Typescript",
-      "Vite",
-      "Wordpress",
-      "Laravel",
-    ],
-    gradient: gradients[1],
+    period: t("exp_period_2"),
+    role: t("exp_role_2"),
+    company: t("exp_company_2"),
+    description: t("exp_desc_2"),
+    highlights: ["React", "Next.js", "Flutter"],
   },
   {
-    name: "Backend & AI",
-    icon: Database,
-    technologies: [
-      "Python",
-      "Nodejs",
-      "PHP",
-      "Firebase",
-      "MongoDB",
-      "MySQL",
-      "PostgreSQL",
-      "FastAPI",
-      "Redis",
-      "RAG",
-      "Vector DB",
-      "AI Agents",
-      "LLM",
-      "OpenAI",
-      "DeepSeek API",
-    ],
-    gradient: gradients[2],
-  },
-  {
-    name: "Integrations",
-    icon: Plug,
-    technologies: [
-      "WhatsApp Cloud API",
-      "REST APIs",
-      "Webhooks",
-      "Telegram Bots",
-      "PDF Generation",
-      "OAuth",
-    ],
-    gradient: gradients[3],
-  },
-  {
-    name: "Dev Ops",
-    icon: Server,
-    technologies: [
-      "Linux (Arch)",
-      "Docker",
-      "Vercel",
-      "Render",
-      "Git",
-      "GitHub Actions",
-    ],
-    gradient: gradients[0],
+    period: t("exp_period_3"),
+    role: t("exp_role_3"),
+    company: t("exp_company_3"),
+    description: t("exp_desc_3"),
+    highlights: ["HTML/CSS", "JavaScript", "Python"],
   },
 ];
 ---
 
 <div class="container-content">
-  <div class="text-center mb-10">
-    <h2 class="type-h2 mb-2 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{t('professional_experience')}</h2>
-    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_1')}</p>
-    <p class="mt-2 max-w-2xl mx-auto type-lead text-muted-foreground">{t('experience_description_2')}</p>
-  </div>
+  <h2 class="type-h2">{t("nav_experience")}</h2>
 
-  <!-- Skills grid -->
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-    {skills.map((skill) => (
-      <div class="theme-light neomorphic group text-foreground flex flex-col gap-4 text-center p-6">
-        <div class="w-20 h-20 rounded-full mx-auto mb-3 flex items-center justify-center transition-transform duration-300 group-hover:scale-105" style="background: linear-gradient(135deg, var(--tw-gradient-stops));">
-          <div class={`w-12 h-12 rounded-full flex items-center justify-center text-white bg-gradient-to-br ${skill.gradient}`}>
-            <skill.icon className="h-6 w-6" />
-          </div>
-        </div>
-        <h3 class="font-semibold text-lg mb-1">{skill.name}</h3>
-        <div class="flex flex-wrap justify-center gap-2">
-          {((skill.technologies || []) as string[]).map((tech: string) => (
-            <TechnologyTag tech={tech} />
-          ))}
-        </div>
+  <dl class="mt-12 grid grid-cols-2 gap-y-10 md:grid-cols-4">
+    {stats.map((s) => (
+      <div class="flex flex-col border-l border-white/10 pl-5">
+        <dt class="text-sm text-muted-foreground">{s.label}</dt>
+        <dd class="order-first font-display text-7xl md:text-8xl leading-none text-white">{s.value}</dd>
       </div>
     ))}
-  </div>
+  </dl>
 
-  <!-- Experience timeline 
-  <div class="mt-10">
-    <ol class="space-y-6">
-      {experiences.map((exp) => (
-        <li class="bg-white/90 p-6 rounded-2xl shadow-sm">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <h4 class="font-semibold">{exp.title} — <span class="font-normal">{exp.company}</span></h4>
-              <time class="text-sm text-muted-foreground">{exp.year}</time>
+  <!-- Timeline -->
+  <div class="mt-16">
+    <h3 class="text-lg font-semibold text-white mb-8">{t("exp_timeline_title")}</h3>
+    <div class="relative border-l-2 border-[#800020]/60 ml-3 md:ml-4 space-y-6">
+      {timeline.map((entry) => (
+        <div class="relative pl-8 md:pl-10">
+          {/* Dot on the timeline */}
+          <div
+            class="absolute left-[-9px] top-6 h-4 w-4 rounded-full border-2 border-[rgb(12,14,20)]"
+            style="background:#800020;"
+            aria-hidden="true"
+          ></div>
+
+          <div class="card p-5 md:p-6">
+            <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+              <span class="type-meta text-xs uppercase tracking-wider text-muted-foreground shrink-0">
+                {entry.period}
+              </span>
+              {entry.company && (
+                <span class="text-xs text-muted-foreground hidden sm:inline">·</span>
+                <span class="text-xs text-muted-foreground">{entry.company}</span>
+              )}
             </div>
+            <h4 class="mt-1 font-semibold text-white text-base leading-snug">
+              {entry.role}
+            </h4>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {entry.description}
+            </p>
+            {entry.highlights.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-2">
+                {entry.highlights.map((tag) => (
+                  <span class="inline-block rounded-full border border-white/10 px-2.5 py-0.5 text-xs text-white/70">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
-          <p class="mt-3 text-muted-foreground">{t(exp.descriptionKey)}</p>
-        </li>
+        </div>
       ))}
-    </ol>
-  </div>-->
-
+    </div>
+  </div>
 </div>
 
+<!-- Stack: dos franjas en sentidos opuestos -->
+<div class="mt-16 flex flex-col gap-3" role="group" aria-label={t("stat_stack")}>
+  {[stackA, stackB].map((stack, i) => (
+    <div class="marquee" data-reverse={i === 1 ? "" : undefined} style={`--marquee-duration:${i ? 46 : 38}s`}>
+      {[0, 1].map((copy) => (
+        <ul class="marquee-track" aria-hidden={copy === 1 ? "true" : undefined}>
+          {stack.map((tech) => (
+            <li><TechnologyTag tech={tech} size="lg" /></li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  ))}
+</div>
