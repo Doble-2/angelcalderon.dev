@@ -10,12 +10,13 @@ export default defineConfig({
   site: 'https://angelcalderon.dev',
   integrations: [tailwind(), icon(), react()],
   output: 'server',
+  trailingSlash: 'never',
+  compressHTML: true,
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'hover',
+  },
   adapter: vercel({
     webAnalytics: { enabled: true }
   }),
-  vite: {
-    server: {
-      allowedHosts: ['.trycloudflare.com'],
-    },
-  },
 });

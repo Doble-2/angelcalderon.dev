@@ -12,6 +12,7 @@ interface Props {
   image?: string;
   url?: string;
   lang?: "es" | "en";
+  robots?: string;
 }
 
 const {
@@ -20,6 +21,7 @@ const {
   image = "/og.jpg",
   url = Astro.url?.toString() || "/",
   lang: forcedLang,
+  robots = "index, follow",
 } = Astro.props;
 
 // Idioma determinado en el servidor mediante cookie o Accept-Language
@@ -28,6 +30,11 @@ const t = (key: string) => translations[lang]?.[key] || key;
 
 const SITE = (Astro.site?.toString() || "https://angelcalderon.dev").replace(/\/$/, "");
 const locale = lang === "en" ? "en_US" : "es_ES";
+const alternateLocale = lang === "en" ? "es_ES" : "en_US";
+
+const keywords = lang === "en"
+  ? "Ángel Calderón, software architect, AI engineer, AI agents, RAG, OSINT, cybersecurity, IoT, Python, FastAPI, Next.js, React, React Native, Flutter, TypeScript, PostgreSQL, Redis, Docker, Vercel, AWS, Figma, performance, UX, Caracas, Venezuela"
+  : "Ángel Calderón, arquitecto de software, ingeniero de IA, agentes de IA, RAG, OSINT, ciberseguridad, IoT, Python, FastAPI, Next.js, React, React Native, Flutter, TypeScript, PostgreSQL, Redis, Docker, Vercel, AWS, Figma, performance, UX, Caracas, Venezuela";
 
 const canonicalUrl = (() => {
   try {
@@ -54,6 +61,10 @@ const personJsonLd = {
   "@type": "Person",
   name: "Ángel Calderón",
   url: SITE,
+  image: `${SITE}/og.jpg`,
+  description: lang === "en"
+    ? "Software Architect & AI Engineer based in Caracas, Venezuela. Building web & mobile products with Python, Next.js, React Native, Flutter, RAG and IoT."
+    : "Arquitecto de Software e Ingeniero de IA en Caracas, Venezuela. Desarrollo productos web y mobile con Python, Next.js, React Native, Flutter, RAG e IoT.",
   sameAs: [
     "https://github.com/Doble-2",
     "https://www.linkedin.com/in/angeld2/",
@@ -103,7 +114,7 @@ const websiteJsonLd = {
     <meta name="description" content={description} />
     <meta
       name="keywords"
-      content="Ángel Calderón, software architect, AI engineer, agentes de IA, RAG, OSINT, ciberseguridad, IoT, Python, FastAPI, Next.js, React, React Native, Flutter, TypeScript, PostgreSQL, Redis, Docker, Vercel, AWS, Figma, performance, UX"
+      content={keywords}
     />
     <link rel="alternate" hreflang="x-default" href={alternateEs} />
     <link rel="alternate" hreflang="es" href={alternateEs} />
@@ -112,30 +123,39 @@ const websiteJsonLd = {
     <meta name="geo.placename" content="Caracas, Venezuela" />
     <meta name="geo.region" content="VE" />
     <meta name="geo.position" content="10.4806;-66.9036" />
+    <meta name="ICBM" content="10.4806, -66.9036" />
     <meta name="twitter:image" content={imageUrl} />
-    <meta name="twitter:image:alt" content="Ángel Calderón — Software Architect & AI Engineer" />
+    <meta name="twitter:image:alt" content={lang === "en" ? "Ángel Calderón — Software Architect & AI Engineer" : "Ángel Calderón — Arquitecto de Software e Ingeniero de IA"} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="Ángel Calderón" />
     <meta property="og:locale" content={locale} />
+    <meta property="og:locale:alternate" content={alternateLocale} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@angelcaldev" />
     <meta name="twitter:creator" content="@angelcaldev" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/rect1-optimized.webp" />
     <link rel="apple-touch-icon" href="/rect1-optimized.webp" />
     <link rel="canonical" href={canonicalUrl} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={robots} />
     <meta name="theme-color" content="#0c0e14" />
 
     <!-- Fuentes: Inter (texto) + Anton (titulares) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=Anton&display=swap"
       rel="stylesheet"
@@ -144,8 +164,8 @@ const websiteJsonLd = {
     <title>{title}</title>
 
     <!-- JSON-LD structured data -->
-    <script is:inline type="application/ld+json">{JSON.stringify(personJsonLd)}</script>
-    <script is:inline type="application/ld+json">{JSON.stringify(websiteJsonLd)}</script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
   </head>
   <body class="max-w-screen bg-background text-foreground">
     <a href="#main-content" class="sr-only focus:not-sr-only">{lang === "en" ? "Skip to content" : "Saltar al contenido"}</a>

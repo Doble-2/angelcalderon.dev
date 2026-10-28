@@ -43,10 +43,62 @@ const next = ordered[(index + 1) % ordered.length];
 const pad = (n: number) => String(n).padStart(2, "0");
 
 const pageTitle = title || `${project.name} — ${project.subtitle} | Ángel Calderón`;
-const pageDescription = project.description.length > 180 ? `${project.description.slice(0, 177).trim()}…` : project.description;
+const pageDescription = (() => {
+  if (project.description.length <= 180) return project.description;
+  const truncated = project.description.slice(0, 177);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return `${truncated.slice(0, lastSpace > 140 ? lastSpace : 177).trim()}…`;
+})();
+
+const SITE = (Astro.site?.toString() || "https://angelcalderon.dev").replace(/\/$/, "");
+
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: lang === "en" ? "Home" : "Inicio",
+      item: lang === "en" ? `${SITE}/en` : SITE,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: lang === "en" ? "Projects" : "Proyectos",
+      item: lang === "en" ? `${SITE}/en#proyectos` : `${SITE}/#proyectos`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: project.name,
+      item: `${SITE}/projects/${encodeURIComponent(project.slug)}`,
+    },
+  ],
+};
+
+const projectJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.name,
+  description: project.description,
+  image: cover.startsWith("http") ? cover : `${SITE}${cover}`,
+  url: `${SITE}/projects/${encodeURIComponent(project.slug)}`,
+  author: {
+    "@type": "Person",
+    name: "Ángel Calderón",
+    url: SITE,
+  },
+  dateCreated: `${project.dateStart}-01-01`,
+  keywords: [...(project.tech?.primary ?? []), ...(project.tech?.tools ?? [])].join(", "),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription} image={cover}>
+  <!-- JSON-LD: Breadcrumb + Project structured data -->
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(projectJsonLd)} />
+
   <!-- Hero -->
   <section class="container-page pt-28 md:pt-36">
     <div class="container-content">
