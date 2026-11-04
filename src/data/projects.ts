@@ -5,6 +5,8 @@ export type Project = {
   subtitle: string;
   description: string;
   images: string[];
+  /** Miniatura vertical (4:5) para la portada en el móvil; si falta, se recorta images[0] */
+  thumbMobile?: string;
   tech: { primary: string[]; tools?: string[] };
   metrics?: { label: string; value: string }[];
   links?: { demo?: string; repo?: string; docs?: string };
@@ -27,6 +29,7 @@ export const projects: Project[] = [
       "/projects/andolimpio/chart.webp",
       "/projects/andolimpio/levels.webp"
     ],
+    thumbMobile: "/projects/andolimpio/thumb-mobile.webp",
     tech: {
       primary: ["Astro", "TypeScript", "Data viz"],
       tools: ["SVG", "node:test", "Vercel"],
@@ -83,6 +86,7 @@ export const projects: Project[] = [
       "/projects/ceflow/patient-report.webp",
       "/projects/ceflow/odontogram.webp"
     ],
+    thumbMobile: "/projects/ceflow/thumb-mobile.webp",
     tech: {
       primary: ["React", "Three.js", "AI"],
       tools: ["TypeScript", "Web Workers", "DICOM", "Vercel AI SDK", "Playwright"],

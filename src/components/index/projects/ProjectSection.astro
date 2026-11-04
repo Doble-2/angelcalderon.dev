@@ -30,15 +30,19 @@ const pad = (n: number) => String(n).padStart(2, "0");
         {ordered.map((p, idx) => (
           <li class="project-slide snap-center">
             <article class="card group overflow-hidden p-0">
+              <a href={`/projects/${encodeURIComponent(p.slug)}`} class="card-link absolute inset-0 z-10 rounded-[14px]" aria-label={`${p.name}: ${p.subtitle}`}></a>
               <div class="project-media aspect-[4/5] sm:aspect-[16/10] rounded-none border-0 md:aspect-[16/9]">
-                <img src={p.images[0]} alt="" loading={idx < 2 ? "eager" : "lazy"} decoding="async" />
+                <picture>
+                  {p.thumbMobile && <source media="(max-width: 639px)" srcset={p.thumbMobile} />}
+                  <img src={p.images[0]} alt="" loading={idx < 2 ? "eager" : "lazy"} decoding="async" />
+                </picture>
               </div>
               <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
               <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-8">
                 <div>
                   <p class="text-sm text-white/70">{p.subtitle}</p>
                   <h3 class="mt-1 font-display uppercase text-4xl md:text-7xl leading-[0.85] text-white">
-                    <a href={`/projects/${encodeURIComponent(p.slug)}`} class="card-link">{p.name}</a>
+                    {p.name}
                   </h3>
                 </div>
                 <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#800020] text-white transition-transform duration-300 group-hover:rotate-45" aria-hidden="true">
