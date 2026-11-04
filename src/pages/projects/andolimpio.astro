@@ -1,0 +1,194 @@
+---
+// Andolimpio — cifras de ENCOVI 2025 (UCAB, lám. 36, 38 y 39) y del repo Doble-2/andolimpio.
+// Rendimiento y accesibilidad medidos en el sitio publicado (Pixel 7 en 3G lento, axe-core).
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { projects } from "../../data/projects";
+import { resolveLangFromRequest } from "../../lib/lang";
+
+const project = projects.find((p) => p.slug === "andolimpio");
+if (!project) return Astro.redirect("/404");
+
+const lang = resolveLangFromRequest(Astro.request);
+const es = lang === "es";
+
+// Ingreso mensual promedio por persona de cada decil, ENCOVI 2025 (US$)
+const deciles = [18.1, 37.6, 53.4, 69.4, 88.5, 109.1, 138.2, 181.3, 247.3, 474.5];
+const max = deciles[9];
+const fmt = (n: number) => (es ? n.toFixed(1).replace(".", ",") : n.toFixed(1));
+
+const copy = es
+  ? {
+      subtitle: "¿Cuántos venezolanos viven con menos que tu hogar?",
+      metrics: [{ label: "Hogares en la fuente", value: "11.352" }, { label: "Peso de la página", value: "~19 KB" }],
+      summary: "Escribes lo que entra a tu casa cada mes y te dice en qué lugar quedas en la distribución del ingreso de Venezuela, con los datos de la ENCOVI 2025 de la UCAB. Cada cifra cita la lámina de la que sale.",
+      howTitle: "Cómo funciona",
+      steps: [
+        ["Escribes lo que entra", "Sueldos, bonos, remesas y lo que se gane por cuenta propia, en dólares."],
+        ["Se divide entre la familia", "El ingreso por persona es la medida que usa la ENCOVI para comparar hogares de distinto tamaño."],
+        ["Te ubica entre 10 grupos", "Te dice cuántos venezolanos viven con menos y en qué nivel de ingreso quedas."],
+      ],
+      methodKicker: "El reto",
+      methodTitle: "Solo había 10 números",
+      methodLead: "La UCAB no publica los datos de cada hogar, solo el ingreso promedio de cada uno de los 10 grupos. Ajusté una curva por tramos que reproduce exactamente esos 10 promedios y ubico cada hogar sobre ella. Las pruebas verifican que cada tramo coincide con el dato publicado.",
+      methodCaption: "Ingreso mensual promedio por persona, ENCOVI 2025 (US$)",
+      group: "Grupo",
+      dataTitle: "Lo que dicen los datos",
+      kpis: [
+        ["76,5 %", "de las personas está bajo la línea de pobreza"],
+        ["38,5 %", "vive en pobreza extrema"],
+        ["26×", "gana el 10 % más rico frente al más pobre"],
+        ["0,459", "coeficiente de Gini, desde 0,539 en 2024"],
+      ],
+      dataSource: "Fuente: ENCOVI 2025, UCAB (láminas 36, 38 y 39).",
+      designTitle: "Hecho para Venezuela",
+      designLead: "Colores de la bandera usados con mesura: azul para los datos, amarillo para marcar tu hogar y rojo en los detalles. En la portada, el Ávila dibujado en SVG, con el Hotel Humboldt, la Silla de Caracas y el arco de ocho estrellas.",
+      detailsTitle: "Los detalles",
+      details: [
+        ["1,5 s", "hasta ver el resultado en un Android con 3G lento"],
+        ["0", "errores de accesibilidad según axe"],
+        ["Tu grupo", "es lo único que se comparte; el monto no sale de tu navegador"],
+      ],
+    }
+  : {
+      subtitle: project.subtitle,
+      metrics: undefined,
+      summary: project.description,
+      howTitle: "How it works",
+      steps: [
+        ["Type what comes in", "Salaries, bonuses, remittances and self-employment income, in dollars."],
+        ["Split across the household", "Income per person is the measure ENCOVI uses to compare households of different sizes."],
+        ["Placed among 10 groups", "It tells you how many Venezuelans live on less and which income level you fall into."],
+      ],
+      methodKicker: "The challenge",
+      methodTitle: "There were only 10 numbers",
+      methodLead: "UCAB does not publish household-level data, only the average income of each of the 10 groups. I fitted a piecewise curve that reproduces those 10 averages exactly and place each household on it. Tests check that every segment matches the published figure.",
+      methodCaption: "Average monthly income per person, ENCOVI 2025 (US$)",
+      group: "Group",
+      dataTitle: "What the data says",
+      kpis: [
+        ["76.5%", "of people live below the poverty line"],
+        ["38.5%", "live in extreme poverty"],
+        ["26×", "what the richest 10% earn versus the poorest 10%"],
+        ["0.459", "Gini coefficient, down from 0.539 in 2024"],
+      ],
+      dataSource: "Source: ENCOVI 2025, UCAB (slides 36, 38 and 39).",
+      designTitle: "Made for Venezuela",
+      designLead: "The flag colors, used sparingly: blue for data, yellow to mark your household, red for details. On the cover, El Ávila drawn in SVG, with the Hotel Humboldt, the Silla de Caracas and the arc of eight stars.",
+      detailsTitle: "The details",
+      details: [
+        ["1.5 s", "to see the result on an Android phone over slow 3G"],
+        ["0", "accessibility errors according to axe"],
+        ["Your group", "is all that gets shared; the amount never leaves your browser"],
+      ],
+    };
+
+const palette = [
+  { name: es ? "Amarillo" : "Yellow", hex: "#FFCC00" },
+  { name: es ? "Azul" : "Blue", hex: "#00247D" },
+  { name: es ? "Rojo" : "Red", hex: "#CF142B" },
+  { name: "Ávila", hex: "#4F7A64" },
+];
+---
+
+<ProjectLayout
+  project={project}
+  cover="/projects/andolimpio/hero.webp"
+  gallery={["/projects/andolimpio/result.webp", "/projects/andolimpio/chart.webp", "/projects/andolimpio/levels.webp"]}
+  summary={copy.summary}
+  subtitle={copy.subtitle}
+  metrics={copy.metrics}
+  title={`${project.name} — ${copy.subtitle} | Ángel Calderón`}
+>
+  <!-- 1. Cómo funciona -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.howTitle}</h2>
+      <ol class="mt-10 grid gap-4 md:grid-cols-3">
+        {copy.steps.map(([title, text], i) => (
+          <li class="card reveal p-5 md:p-7">
+            <span class="font-display text-5xl text-[#c2185b]">{i + 1}</span>
+            <p class="mt-4 text-xl font-semibold text-white">{title}</p>
+            <p class="mt-2 text-white/65">{text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 2. El método: los 10 promedios publicados -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid items-end gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="type-meta text-[#f48fb1]">{copy.methodKicker}</p>
+        <h2 class="mt-5 type-h2">{copy.methodTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.methodLead}</p>
+      </div>
+      <figure class="reveal lg:col-span-7 rounded-2xl border border-white/10 bg-white/[0.02] p-5 md:p-7">
+        <div class="flex h-64 items-end gap-1.5 md:gap-2.5" role="img" aria-label={`${copy.methodCaption}: ${deciles.map((d, i) => `${copy.group} ${i + 1} ${fmt(d)}`).join(", ")}`}>
+          {deciles.map((d, i) => (
+            <div class="flex h-full flex-1 flex-col justify-end" aria-hidden="true">
+              <span class="mb-1.5 text-center text-[0.65rem] tabular-nums text-white/60 md:text-xs">{fmt(d)}</span>
+              <div class="rounded-t-md" style={`height:${(d / max) * 100}%;background:${i === 9 ? "#c2185b" : `rgba(244,143,177,${0.18 + i * 0.05})`}`}></div>
+            </div>
+          ))}
+        </div>
+        <div class="mt-2 flex gap-1.5 md:gap-2.5" aria-hidden="true">
+          {deciles.map((_, i) => <span class="flex-1 text-center text-xs text-white/40">{i + 1}</span>)}
+        </div>
+        <figcaption class="mt-4 text-sm text-muted-foreground">{copy.methodCaption}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 3. Lo que dicen los datos -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.dataTitle}</h2>
+      <dl class="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 lg:grid-cols-4">
+        {copy.kpis.map(([value, label]) => (
+          <div class="flex flex-col bg-background p-5 md:p-7">
+            <dt class="order-2 mt-2 text-sm text-muted-foreground">{label}</dt>
+            <dd class="whitespace-nowrap font-display text-4xl text-white sm:text-5xl md:text-6xl">{value}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="mt-4 text-sm text-muted-foreground">{copy.dataSource}</p>
+    </div>
+  </section>
+
+  <!-- 4. Identidad visual -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid items-center gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <h2 class="type-h2">{copy.designTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.designLead}</p>
+        <ul class="mt-8 flex flex-wrap gap-3">
+          {palette.map((c) => (
+            <li class="flex items-center gap-2 rounded-full border border-white/10 py-1.5 pl-1.5 pr-3 text-sm text-white/80">
+              <span class="h-6 w-6 rounded-full" style={`background:${c.hex}`} aria-hidden="true"></span>{c.name}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-sm text-muted-foreground">Bricolage Grotesque · IBM Plex Sans</p>
+      </div>
+      <button type="button" class="reveal lg:col-span-7 block overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/andolimpio/mobile-flow.webp" aria-label="Andolimpio móvil">
+        <img src="/projects/andolimpio/mobile-flow.webp" alt="Andolimpio en el teléfono" class="w-full h-auto" loading="lazy" decoding="async" />
+      </button>
+    </div>
+  </section>
+
+  <!-- 5. Detalles -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.detailsTitle}</h2>
+      <ul class="mt-10 grid gap-4 md:grid-cols-3">
+        {copy.details.map(([value, label]) => (
+          <li class="card reveal p-5 md:p-7">
+            <span class="font-display text-4xl text-white">{value}</span>
+            <p class="mt-2 text-white/65">{label}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</ProjectLayout>

@@ -57,6 +57,16 @@
 - **Stack:** Astro, TypeScript, SVG, node:test, Vercel
 - **Description:** Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey publishes only ten decile averages; a fitted curve reproduces them exactly, and every figure is cited to its source slide.
 
+### Céflow — 3D Dental Planning in the Browser (Platanus Hack 26)
+- **URL:** https://angelcalderon.dev/projects/ceflow
+- **Demo:** https://ceflow-ph.onrender.com
+- **Repository:** https://github.com/platanus-hack/platanus-hack-26-ve-team-18
+- **Role:** Developer · Team 18 (team of five, including a dentist)
+- **Year:** 2026
+- **Award:** 5th of 22 teams, 3rd in technical execution, Platanus Hack 26 Caracas
+- **Stack:** React, Three.js, TypeScript, Web Workers, DICOM, Vercel AI SDK, Playwright
+- **Description:** Built in 48 hours. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram.
+
 ### OSINT-D2 — Autonomous AI Agent for Identity Investigation
 - **URL:** https://angelcalderon.dev/projects/osint-d2
 - **Repository:** https://github.com/Doble-2/osint-d2
@@ -64,7 +74,7 @@
 - **Role:** Creator & Security Engineer
 - **Year:** 2025
 - **Stack:** Python, FastAPI, Typer, Playwright, WeasyPrint, Docker, Ollama
-- **Description:** Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own, and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama. Features 9 agent tools and 287 tests.
+- **Description:** Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own, and delivers an evidence-based profile (6 dimensions, 3 of them opt-in because they are sensitive) as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama. Features 9 agent tools and 547 tests.
 
 ### Eficense Residence — IoT & AI Security Ecosystem
 - **URL:** https://angelcalderon.dev/projects/eficense
