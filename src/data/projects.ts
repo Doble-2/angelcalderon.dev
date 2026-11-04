@@ -12,13 +12,18 @@ export type Project = {
   links?: { demo?: string; repo?: string; docs?: string };
   role: string;
   dateStart: string;
+  /** Fuera de la portada y del recorrido "siguiente proyecto"; su página sigue accesible */
+  hidden?: boolean;
 };
+
+/** Proyectos de la portada, por prioridad */
+export const featured = () => projects.filter((p) => !p.hidden).sort((a, b) => b.order - a.order);
 
 export const projects: Project[] = [
   {
     name: "Andolimpio",
     slug: "andolimpio",
-    order: 104,
+    order: 103,
     subtitle: "How many Venezuelans live on less than your household?",
     description:
       "Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey only publishes ten decile averages, so I fitted a curve that reproduces them exactly, with every figure cited to its source slide.",
@@ -133,7 +138,8 @@ export const projects: Project[] = [
   {
     name: "Studia",
     slug: "studia",
-    order: 99,
+    order: 20,
+    hidden: true,
     subtitle: "AI-Powered EdTech SaaS",
     description:
       "An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.",
@@ -205,7 +211,7 @@ export const projects: Project[] = [
   {
     name: "Appod",
     slug: "appod",
-    order: 60,
+    order: 104,
     subtitle: "NASA's picture of the day, redesigned around the photograph",
     description:
       "A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a calendar where every day shows its picture, an endless archive spanning 30 years, favorites and full-screen views that follow your finger. It reads NASA's real archive, downloads 98% less image data than before and keeps every day it has seen, so it also works offline.",
@@ -234,7 +240,8 @@ export const projects: Project[] = [
   {
     name: "Onbox",
     slug: "onbox",
-    order: 50,
+    order: 10,
+    hidden: true,
     subtitle: "48h hackathon: two-mode adoption system",
     description:
       "Built during a 2-day hackathon. Shipped a pet adoption web app featuring two adoption flows using React + Vite.",

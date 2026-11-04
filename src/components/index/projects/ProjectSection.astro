@@ -1,5 +1,5 @@
 ---
-import { projects } from "../../../data/projects";
+import { featured } from "../../../data/projects";
 
 interface Props {
   lang: string;
@@ -8,7 +8,7 @@ interface Props {
 const { t = (k) => k } = Astro.props;
 
 // El orden lo define `order` (desc)
-const ordered = [...projects].sort((a, b) => b.order - a.order);
+const ordered = featured();
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
 

@@ -4,7 +4,7 @@
 // propias de cada proyecto) → capturas → siguiente proyecto.
 import Layout from "./Layout.astro";
 import TechnologyTag from "../components/index/projects/TechnologyTag";
-import { projects, type Project } from "../data/projects";
+import { featured, type Project } from "../data/projects";
 import translations from "../i18n";
 import { resolveLangFromRequest } from "../lib/lang";
 
@@ -42,7 +42,7 @@ const cover = Astro.props.cover || images[0] || "/og.jpg";
 const gallery = (Astro.props.gallery ?? images.filter((src) => src !== cover)).filter(Boolean);
 const stack = Array.from(new Set([...(project.tech?.primary ?? []), ...(project.tech?.tools ?? [])]));
 
-const ordered = [...projects].sort((a, b) => b.order - a.order);
+const ordered = featured();
 const index = ordered.findIndex((p) => p.slug === project.slug);
 const next = ordered[(index + 1) % ordered.length];
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -111,9 +111,11 @@ const projectJsonLd = {
         <a href={`${homeHref}#proyectos`} class="inline-flex items-center gap-2 hover:text-white transition-colors">
           <span aria-hidden="true">←</span> {t("project_back")}
         </a>
-        <span class="font-display text-xl text-white/40 tabular-nums" aria-hidden="true">
-          <span class="text-white">{pad(index + 1)}</span> / {pad(ordered.length)}
-        </span>
+        {index >= 0 && (
+          <span class="font-display text-xl text-white/40 tabular-nums" aria-hidden="true">
+            <span class="text-white">{pad(index + 1)}</span> / {pad(ordered.length)}
+          </span>
+        )}
       </div>
 
       <h1 class="mt-8 type-display break-words">{project.name}</h1>
