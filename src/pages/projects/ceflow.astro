@@ -1,0 +1,289 @@
+---
+// Céflow — Platanus Hack 26: Caracas ft. Yummy (23–25 oct. 2026, 36 horas, proyecto desde cero).
+// Puntajes: reconocimiento oficial del evento (public/certifieds/hd/platanus-hack-26-caracas.webp).
+// Técnica verificada en el repo platanus-hack/platanus-hack-26-ve-team-18 (Web Workers, BVH, ICP,
+// Marching Cubes, dicom-parser, Claude vía @ai-sdk/anthropic, Playwright).
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { projects } from "../../data/projects";
+import { resolveLangFromRequest } from "../../lib/lang";
+
+const project = projects.find((p) => p.slug === "ceflow");
+if (!project) return Astro.redirect("/404");
+
+const lang = resolveLangFromRequest(Astro.request);
+const es = lang === "es";
+const n = (v: number) => (es ? v.toFixed(1).replace(".", ",") : v.toFixed(1));
+
+// Fotos del evento: se muestran solo si hay alguna (rutas en /public/projects/ceflow/event/)
+const eventPhotos: string[] = [];
+
+// Reconocimiento oficial: puntaje del equipo, promedio de los 22 equipos, peso y puesto
+const criteria = [
+  { key: es ? "Aspecto técnico" : "Technical", weight: 25, score: 77.7, avg: 52.9, rank: 3 },
+  { key: es ? "Ambición" : "Ambition", weight: 20, score: 77.7, avg: 51.7, rank: 4 },
+  { key: es ? "Ejecución" : "Execution", weight: 20, score: 53.8, avg: 52.7, rank: null },
+  { key: es ? "Impacto" : "Impact", weight: 20, score: 53.4, avg: 43.0, rank: 7 },
+  { key: es ? "Originalidad" : "Originality", weight: 15, score: 52.5, avg: 42.3, rank: null },
+];
+
+const copy = es
+  ? {
+      subtitle: "Planificación odontológica 3D en el navegador · 5.º lugar en Platanus Hack 26",
+      metrics: [{ label: "Platanus Hack 26", value: "5.º de 22" }, { label: "Puntaje final", value: "64,3/100" }],
+      summary: "Lo construimos desde cero en las 36 horas de Platanus Hack 26 Caracas, un equipo de cinco con un odontólogo. El especialista carga escaneos intraorales y tomografías y obtiene un borrador de planificación en 3D en el navegador, sin licencias CAD ni GPU dedicada. El paciente recibe un informe interactivo con su modelo 3D.",
+      hackKicker: "Platanus Hack 26 · Caracas ft. Yummy",
+      hackTitle: "36 horas, desde cero",
+      hackLead: "Un fin de semana para pasar de una idea a un producto funcionando y presentarlo ante el jurado.",
+      timeline: [
+        ["Vie 23 · 22:00", "Empieza el hacking"],
+        ["Sáb 24 · 20:00", "Taller: cómo hacer un buen demo"],
+        ["Dom 25 · 08:30", "Fin del hacking"],
+        ["Dom 25 · 10:00", "Demo ante el jurado"],
+        ["Dom 25 · 13:30", "5.º lugar de 22 equipos"],
+      ],
+      problemTitle: "El problema",
+      problemLead: "Planificar un caso complejo puede tomar días entre el laboratorio y la clínica, con software de escritorio costoso.",
+      compare: [
+        ["Licencias", "CAD de más de US$ 15.000 y llave USB", "Web, sin candados de hardware"],
+        ["Equipo", "PC de escritorio con GPU dedicada", "Corre en el navegador de cualquier laptop"],
+        ["Paciente", "Capturas técnicas o PDF", "Informe 3D interactivo y odontograma"],
+      ],
+      before: "Antes",
+      after: "Céflow",
+      flowTitle: "Dos vistas",
+      doctorTitle: "Modo doctor",
+      doctorSteps: ["Prepara la evidencia: escaneos, geometría y tomografía", "Crea el plan automáticamente", "Propone conceptos de implante", "Los ajusta a la pose del escaneo", "Revisa el borrador con distancias y hallazgos"],
+      doctorNote: "El odontólogo revisa y aprueba todo: es un asistente, no un reemplazo.",
+      patientTitle: "Portal del paciente",
+      patientText: "Fotos, notas, odontograma FDI de 32 piezas y su boca en 3D para rotar con un dedo. Ayuda a explicar el tratamiento y a que el paciente lo acepte.",
+      scoreKicker: "Evaluación del jurado",
+      scoreTitle: "64,3/100",
+      scoreLead: "Promedio de los equipos: 49,1. Quedamos 5.º de 22, en el 23 % superior.",
+      team: "Céflow",
+      avg: "Promedio",
+      weight: "peso",
+      place: (r: number) => `${r}.º de 22`,
+      techTitle: "Todo el cálculo pesado, en el navegador",
+      tech: [
+        ["Web Workers", "El motor geométrico corre en hilos en segundo plano: la interfaz no se congela."],
+        ["BVH · KD-trees · ICP", "Colisiones de mordida, búsqueda espacial y alineación automática de arcadas."],
+        ["Marching Cubes", "Reconstruye superficies 3D a partir de tomografías DICOM."],
+        ["Claude", "Análisis estructurado de capturas 3D desde varias vistas, vía Vercel AI SDK."],
+      ],
+      testsNote: "Más de 1.000 tests unitarios y 10 pruebas de punta a punta con Playwright.",
+      eventTitle: "El evento",
+      teamTitle: "El equipo",
+    }
+  : {
+      subtitle: project.subtitle,
+      metrics: [{ label: "Platanus Hack 26", value: "5th of 22" }, { label: "Final score", value: "64.3/100" }],
+      summary: "Built from scratch in the 36 hours of Platanus Hack 26 Caracas by a team of five that included a dentist. The specialist loads intraoral scans and CT scans and gets a 3D planning draft in the browser, with no CAD license or dedicated GPU. The patient gets an interactive report with their 3D model.",
+      hackKicker: "Platanus Hack 26 · Caracas ft. Yummy",
+      hackTitle: "36 hours, from scratch",
+      hackLead: "One weekend to go from an idea to a working product and pitch it to the jury.",
+      timeline: [
+        ["Fri 23 · 22:00", "Hacking starts"],
+        ["Sat 24 · 20:00", "Workshop: how to give a good demo"],
+        ["Sun 25 · 08:30", "Hacking ends"],
+        ["Sun 25 · 10:00", "Demo to the jury"],
+        ["Sun 25 · 13:30", "5th place of 22 teams"],
+      ],
+      problemTitle: "The problem",
+      problemLead: "Planning a complex case can take days between lab and clinic, on expensive desktop software.",
+      compare: [
+        ["Licenses", "CAD over US$15,000 plus a USB dongle", "Web, no hardware locks"],
+        ["Hardware", "Desktop PC with a dedicated GPU", "Runs in any laptop's browser"],
+        ["Patient", "Technical screenshots or a PDF", "Interactive 3D report and odontogram"],
+      ],
+      before: "Before",
+      after: "Céflow",
+      flowTitle: "Two views",
+      doctorTitle: "Doctor mode",
+      doctorSteps: ["Prepares the evidence: scans, geometry and CT", "Creates the plan automatically", "Proposes implant concepts", "Fits them to the scan pose", "Reviews the draft with distances and findings"],
+      doctorNote: "The dentist reviews and approves everything: it is an assistant, not a replacement.",
+      patientTitle: "Patient portal",
+      patientText: "Photos, notes, a 32-tooth FDI odontogram and their mouth in 3D to rotate with a finger. It helps explain the treatment and get it accepted.",
+      scoreKicker: "Jury evaluation",
+      scoreTitle: "64.3/100",
+      scoreLead: "Team average: 49.1. We placed 5th of 22, in the top 23%.",
+      team: "Céflow",
+      avg: "Average",
+      weight: "weight",
+      place: (r: number) => `${r}${r === 3 ? "rd" : "th"} of 22`,
+      techTitle: "All the heavy math, in the browser",
+      tech: [
+        ["Web Workers", "The geometry engine runs on background threads, so the UI never freezes."],
+        ["BVH · KD-trees · ICP", "Bite collisions, spatial search and automatic arch alignment."],
+        ["Marching Cubes", "Rebuilds 3D surfaces from DICOM CT scans."],
+        ["Claude", "Structured analysis of multi-view 3D captures, via the Vercel AI SDK."],
+      ],
+      testsNote: "1,000+ unit tests and 10 end-to-end tests with Playwright.",
+      eventTitle: "The event",
+      teamTitle: "The team",
+    };
+
+const team = [
+  ["Ángel Calderón", "doble-2"],
+  ["Luis Aníbal Olivares", "anibaldbxd"],
+  ["Vicente Herrera", "vicenteluquez271-dev"],
+  ["Marcelo León", "marcebollin"],
+  ["Ariana Torres", "arianactorres"],
+];
+const LIME = "#E6F03C";
+---
+
+<ProjectLayout
+  project={project}
+  cover="/projects/ceflow/model-3d.webp"
+  gallery={["/projects/ceflow/patient-report.webp", "/projects/ceflow/odontogram.webp"]}
+  summary={copy.summary}
+  subtitle={copy.subtitle}
+  metrics={copy.metrics}
+  title={`Céflow — ${copy.subtitle} | Ángel Calderón`}
+>
+  <!-- 1. El hackathon: línea de tiempo -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <p class="type-meta" style={`color:${LIME}`}>{copy.hackKicker}</p>
+      <h2 class="mt-5 type-h2">{copy.hackTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.hackLead}</p>
+      <ol class="mt-12 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-5">
+        {copy.timeline.map(([when, what], i) => (
+          <li class="bg-background p-5">
+            <span class="block font-mono text-xs text-white/50">{when}</span>
+            <span class={`mt-2 block font-semibold ${i === copy.timeline.length - 1 ? "" : "text-white"}`} style={i === copy.timeline.length - 1 ? `color:${LIME}` : ""}>{what}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 2. El problema: antes vs Céflow -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.problemTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.problemLead}</p>
+      <div class="mt-10 overflow-hidden rounded-2xl border border-white/10">
+        <div class="hidden grid-cols-[10rem_1fr_1fr] border-b border-white/10 bg-white/[0.03] px-5 py-3 text-sm text-muted-foreground md:grid">
+          <span></span><span>{copy.before}</span><span class="text-white">{copy.after}</span>
+        </div>
+        {copy.compare.map(([what, before, after]) => (
+          <div class="grid gap-1 border-b border-white/10 px-5 py-4 last:border-b-0 md:grid-cols-[10rem_1fr_1fr] md:gap-4">
+            <span class="font-semibold text-white">{what}</span>
+            <span class="text-white/45 line-through decoration-white/20">{before}</span>
+            <span class="text-white">{after}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Dos vistas: doctor y paciente -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.flowTitle}</h2>
+      <div class="mt-10 grid items-start gap-12 lg:grid-cols-12">
+        <div class="lg:col-span-5 space-y-10">
+          <div>
+            <p class="text-xl font-semibold text-white">{copy.doctorTitle}</p>
+            <ol class="mt-4 space-y-3">
+              {copy.doctorSteps.map((step, i) => (
+                <li class="flex gap-3 text-white/80">
+                  <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/20 text-xs text-white/70">{i + 1}</span>{step}
+                </li>
+              ))}
+            </ol>
+            <p class="mt-4 text-sm text-muted-foreground">{copy.doctorNote}</p>
+          </div>
+          <div>
+            <p class="text-xl font-semibold text-white">{copy.patientTitle}</p>
+            <p class="mt-3 text-white/70">{copy.patientText}</p>
+          </div>
+        </div>
+        <button type="button" class="reveal lg:col-span-7 block overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/ceflow/mobile-flow.webp" aria-label={copy.patientTitle}>
+          <img src="/projects/ceflow/mobile-flow.webp" alt={`Céflow — ${copy.patientTitle}`} class="w-full h-auto" loading="lazy" decoding="async" />
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Evaluación del jurado -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-4">
+        <p class="type-meta" style={`color:${LIME}`}>{copy.scoreKicker}</p>
+        <h2 class="mt-5 type-h2">{copy.scoreTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.scoreLead}</p>
+        <p class="mt-6 flex flex-wrap gap-4 text-sm text-muted-foreground" aria-hidden="true">
+          <span class="flex items-center gap-2"><span class="h-2.5 w-6 rounded-full" style={`background:${LIME}`}></span>{copy.team}</span>
+          <span class="flex items-center gap-2"><span class="h-4 w-0.5 bg-white/60"></span>{copy.avg}</span>
+        </p>
+      </div>
+      <ul class="lg:col-span-8 space-y-6">
+        {criteria.map((c) => (
+          <li class="reveal">
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span class="text-lg font-semibold text-white">{c.key}</span>
+              <span class="text-sm text-muted-foreground">{c.weight} % {copy.weight}</span>
+              {c.rank && <span class="rounded px-2 py-0.5 font-mono text-xs font-bold text-black" style={`background:${LIME}`}>{copy.place(c.rank)}</span>}
+              <span class="ml-auto font-display text-3xl text-white tabular-nums">{n(c.score)}</span>
+            </div>
+            <div class="relative mt-2 h-3 rounded-full bg-white/10" role="img" aria-label={`${c.key}: ${n(c.score)} · ${copy.avg} ${n(c.avg)}`}>
+              <div class="h-full rounded-full" style={`width:${c.score}%;background:${LIME}`}></div>
+              <div class="absolute -top-1 h-5 w-0.5 bg-white/70" style={`left:${c.avg}%`}></div>
+            </div>
+            <span class="mt-1 block text-xs text-muted-foreground">{copy.avg} {n(c.avg)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. Técnica -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.techTitle}</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+        {copy.tech.map(([name, text]) => (
+          <li class="card reveal p-5 md:p-7">
+            <span class="font-mono text-sm" style={`color:${LIME}`}>{name}</span>
+            <p class="mt-2 text-white/75">{text}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-sm text-muted-foreground">{copy.testsNote}</p>
+    </div>
+  </section>
+
+  <!-- 6. El evento (fotos) -->
+  {eventPhotos.length > 0 && (
+    <section class="container-page pb-24 md:pb-32">
+      <div class="container-content">
+        <h2 class="type-h2">{copy.eventTitle}</h2>
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {eventPhotos.map((src, i) => (
+            <button type="button" class={`reveal card block overflow-hidden p-0 ${i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}`} data-zoom={src} aria-label={`${copy.eventTitle} ${i + 1}`}>
+              <img src={src} alt={`Platanus Hack 26 — ${i + 1}`} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- 7. El equipo -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.teamTitle}</h2>
+      <ul class="mt-10 flex flex-wrap gap-3">
+        {team.map(([name, gh]) => (
+          <li>
+            <a class="tag inline-flex items-center gap-2 px-4 py-2 text-sm hover:text-white" href={`https://github.com/${gh}`} target="_blank" rel="noopener noreferrer">
+              {name} <span class="text-white/40">@{gh}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</ProjectLayout>

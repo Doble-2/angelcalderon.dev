@@ -4,7 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import { projects } from "../../data/projects";
 
 // Tier 1 tiene páginas dedicadas (ruta estática), pero dejamos un guardrail.
-const TIER_1 = new Set(["osint-d2", "eficense", "studia", "andolimpio"]);
+const TIER_1 = new Set(["osint-d2", "eficense", "studia", "andolimpio", "ceflow"]);
 
 const raw = String(Astro.params.id || "");
 let decoded = raw;
