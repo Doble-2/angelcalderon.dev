@@ -90,7 +90,7 @@
 ### Eficense Residence — IoT & AI Security Ecosystem
 - **URL:** https://angelcalderon.dev/projects/eficense
 - **Role:** Lead Software Architect
-- **Year:** 2024
+- **Year:** 2025
 - **Stack:** Next.js, Python, FastAPI, PostgreSQL, Redis, DeepSeek API
 - **Description:** A comprehensive residential management platform bridging physical security hardware with modern cloud architecture. Designed to automate visitor access and streamline complex financial reporting for large-scale condominiums with 150+ units and real-time synchronization.
 

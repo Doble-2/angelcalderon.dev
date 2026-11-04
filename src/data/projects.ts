@@ -123,7 +123,7 @@ export const projects: Project[] = [
       demo: "",
     },
     role: "Lead Software Architect",
-    dateStart: "2024",
+    dateStart: "2025",
   },
   {
     name: "Studia",
