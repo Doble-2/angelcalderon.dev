@@ -95,7 +95,7 @@ export const projects: Project[] = [
       demo: "https://ceflow-ph.onrender.com",
       repo: "https://github.com/platanus-hack/platanus-hack-26-ve-team-18",
     },
-    role: "Developer · Team 18",
+    role: "Developer",
     dateStart: "2026",
   },
   {

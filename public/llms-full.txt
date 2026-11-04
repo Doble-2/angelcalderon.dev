@@ -61,7 +61,8 @@
 - **URL:** https://angelcalderon.dev/projects/ceflow
 - **Demo:** https://ceflow-ph.onrender.com
 - **Repository:** https://github.com/platanus-hack/platanus-hack-26-ve-team-18
-- **Role:** Developer · Team 18 (team of five, including a dentist)
+- **Role:** Developer (team of five, including a dentist)
+- **Pitch video:** https://youtu.be/6mIvorbU_T0?t=7057
 - **Year:** 2026
 - **Award:** 5th of 22 teams, 3rd in technical execution, Platanus Hack 26 Caracas
 - **Stack:** React, Three.js, TypeScript, Web Workers, DICOM, Vercel AI SDK, Playwright

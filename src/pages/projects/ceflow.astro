@@ -15,7 +15,14 @@ const es = lang === "es";
 const n = (v: number) => (es ? v.toFixed(1).replace(".", ",") : v.toFixed(1));
 
 // Fotos del evento: se muestran solo si hay alguna (rutas en /public/projects/ceflow/event/)
-const eventPhotos: string[] = [];
+const eventPhotos = [
+  { src: "/projects/ceflow/event/1.webp", alt: es ? "El equipo de Céflow revisando la demo en una laptop" : "The Céflow team reviewing the demo on a laptop" },
+  { src: "/projects/ceflow/event/2.webp", alt: es ? "La sala del hackathon, con el modelo 3D de Céflow en pantalla" : "The hackathon room, with Céflow's 3D model on screen" },
+  { src: "/projects/ceflow/event/3.webp", alt: es ? "Programando en la terminal durante el hackathon" : "Coding in the terminal during the hackathon" },
+  { src: "/projects/ceflow/event/4.webp", alt: es ? "Un integrante del equipo, agotado, revisando el teléfono" : "A worn-out team member checking the phone" },
+];
+// Presentaciones finales (canal de Platanus): Céflow va de 1:57:37 a 2:04:54
+const video = { id: "6mIvorbU_T0", start: 7057, end: 7494 };
 
 // Reconocimiento oficial: puntaje del equipo, promedio de los 22 equipos, peso y puesto
 const criteria = [
@@ -72,6 +79,8 @@ const copy = es
       ],
       testsNote: "Más de 1.000 tests unitarios y 10 pruebas de punta a punta con Playwright.",
       eventTitle: "El evento",
+      videoTitle: "La presentación",
+      videoLead: "Siete minutos ante el jurado, en el track 3D. Del video de presentaciones finales de Platanus.",
       teamTitle: "El equipo",
     }
   : {
@@ -119,6 +128,8 @@ const copy = es
       ],
       testsNote: "1,000+ unit tests and 10 end-to-end tests with Playwright.",
       eventTitle: "The event",
+      videoTitle: "The pitch",
+      videoLead: "Seven minutes in front of the jury, in the 3D track. From Platanus' final presentations video.",
       teamTitle: "The team",
     };
 
@@ -255,15 +266,34 @@ const LIME = "#E6F03C";
     </div>
   </section>
 
-  <!-- 6. El evento (fotos) -->
+  <!-- 6. La presentación (solo el tramo de Céflow) -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.videoTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.videoLead}</p>
+      <div class="reveal mt-10 aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black">
+        <iframe
+          class="h-full w-full"
+          src={`https://www.youtube-nocookie.com/embed/${video.id}?start=${video.start}&end=${video.end}&rel=0`}
+          title={`Céflow — ${copy.videoTitle} · Platanus Hack 26`}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. El evento (fotos) -->
   {eventPhotos.length > 0 && (
     <section class="container-page pb-24 md:pb-32">
       <div class="container-content">
         <h2 class="type-h2">{copy.eventTitle}</h2>
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {eventPhotos.map((src, i) => (
-            <button type="button" class={`reveal card block overflow-hidden p-0 ${i === 0 ? "sm:col-span-2 lg:row-span-2" : ""}`} data-zoom={src} aria-label={`${copy.eventTitle} ${i + 1}`}>
-              <img src={src} alt={`Platanus Hack 26 — ${i + 1}`} class="h-full w-full object-cover" loading="lazy" decoding="async" />
+        <div class="mt-10 grid gap-4 sm:grid-cols-2">
+          {eventPhotos.map((p) => (
+            <button type="button" class="reveal card block overflow-hidden p-0" data-zoom={p.src} aria-label={p.alt}>
+              <img src={p.src} alt={p.alt} class="aspect-[3/2] w-full object-cover transition-transform duration-700 hover:scale-[1.02]" loading="lazy" decoding="async" />
             </button>
           ))}
         </div>
@@ -271,7 +301,7 @@ const LIME = "#E6F03C";
     </section>
   )}
 
-  <!-- 7. El equipo -->
+  <!-- 8. El equipo -->
   <section class="container-page pb-24 md:pb-32">
     <div class="container-content">
       <h2 class="type-h2">{copy.teamTitle}</h2>
