@@ -211,8 +211,11 @@ export const projects: Project[] = [
       "A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a calendar where every day shows its picture, an endless archive spanning 30 years, favorites and full-screen views that follow your finger. It reads NASA's real archive, downloads 98% less image data than before and keeps every day it has seen, so it also works offline.",
     images: [
       "/projects/appod/home-2026.webp",
-      "/projects/appod/mobile-flow-2026.webp"
+      "/projects/appod/evolution.webp",
+      "/projects/appod/mobile-flow-2026.webp",
+      "/projects/appod/archive-2026.webp"
     ],
+    thumbMobile: "/projects/appod/thumb-mobile.webp",
     tech: {
       primary: ["Flutter", "Dart"],
       tools: ["Firebase", "Vercel", "Python"],
@@ -226,7 +229,7 @@ export const projects: Project[] = [
       repo: "https://github.com/Doble-2/Appod-AstronomyPictureOfDay",
     },
     role: "Creator",
-    dateStart: "2024",
+    dateStart: "2022",
   },
   {
     name: "Onbox",
