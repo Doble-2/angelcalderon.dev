@@ -45,8 +45,8 @@ const navLinks = [
           <a href={langHref("en")} hreflang="en" data-lang="en" aria-current={lang === "en" ? "true" : undefined}>EN</a>
         </div>
         <a
-          href="/angel-calderon-cv.pdf"
-          download="Angel-Calderon-CV.pdf"
+          href={lang === "en" ? "/angel-calderon-cv.pdf" : "/angel-calderon-cv-es.pdf"}
+          download={lang === "en" ? "Angel-Calderon-CV.pdf" : "Angel-Calderon-CV-ES.pdf"}
           class="btn btn-primary btn-sm h-9 whitespace-nowrap"
         >
           <span class="min-[400px]:hidden">CV</span>

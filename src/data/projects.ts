@@ -16,7 +16,7 @@ export const projects: Project[] = [
   {
     name: "Andolimpio",
     slug: "andolimpio",
-    order: 101,
+    order: 104,
     subtitle: "How many Venezuelans live on less than your household?",
     description:
       "Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey only publishes ten decile averages, so I fitted a curve that reproduces them exactly, with every figure cited to its source slide.",
@@ -45,10 +45,10 @@ export const projects: Project[] = [
   {
     name: "OSINT-D2",
     slug: "osint-d2",
-    order: 96,
+    order: 110,
     subtitle: "Autonomous AI agent for identity investigation",
     description:
-      "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama.",
+      "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based profile as a PDF dossier (6 dimensions, 3 of them opt-in because they are sensitive). Open source, Docker-ready, with the AI able to run locally via Ollama.",
     images: [
       "/projects/osint-d2/agent-run.webp",
       "/projects/osint-d2/trust-anchors.webp",
@@ -61,7 +61,7 @@ export const projects: Project[] = [
     },
     metrics: [
       { label: "Agent tools", value: "9" },
-      { label: "Tests", value: "287" },
+      { label: "Tests", value: "547" },
     ],
     links: {
       repo: "https://github.com/Doble-2/osint-d2",
@@ -69,6 +69,34 @@ export const projects: Project[] = [
     },
     role: "Creator & Security Engineer",
     dateStart: "2025",
+  },
+  {
+    name: "Céflow",
+    slug: "ceflow",
+    order: 105,
+    subtitle: "3D dental planning in the browser · 5th place, Platanus Hack 26",
+    description:
+      "Built in 36 hours at Platanus Hack 26 Caracas with a team of five, including a dentist. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram. 5th of 22 teams and 3rd in technical execution.",
+    images: [
+      "/projects/ceflow/model-3d.webp",
+      "/projects/ceflow/mobile-flow.webp",
+      "/projects/ceflow/patient-report.webp",
+      "/projects/ceflow/odontogram.webp"
+    ],
+    tech: {
+      primary: ["React", "Three.js", "AI"],
+      tools: ["TypeScript", "Web Workers", "DICOM", "Vercel AI SDK", "Playwright"],
+    },
+    metrics: [
+      { label: "Platanus Hack 26", value: "5th of 22" },
+      { label: "Tests", value: "1,000+" },
+    ],
+    links: {
+      demo: "https://ceflow-ph.onrender.com",
+      repo: "https://github.com/platanus-hack/platanus-hack-26-ve-team-18",
+    },
+    role: "Developer",
+    dateStart: "2026",
   },
   {
     name: "Eficense Residence",
@@ -95,7 +123,7 @@ export const projects: Project[] = [
       demo: "",
     },
     role: "Lead Software Architect",
-    dateStart: "2024",
+    dateStart: "2025",
   },
   {
     name: "Studia",
@@ -148,7 +176,7 @@ export const projects: Project[] = [
   {
     name: "Born AI",
     slug: "born-ai",
-    order: 55,
+    order: 61,
     subtitle: "Predictive genetics with LLMs (Next.js + OpenAI)",
     description:
       "A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs. Earned 2nd Place Winner in a coding competition.",
@@ -173,25 +201,26 @@ export const projects: Project[] = [
     name: "Appod",
     slug: "appod",
     order: 60,
-    subtitle: "APOD explorer: NASA in your pocket",
+    subtitle: "NASA's picture of the day, redesigned around the photograph",
     description:
-      "A Flutter mobile app that integrates NASA’s APOD API to browse and download astronomy images, backed by a lightweight Python backend.",
+      "A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a calendar where every day shows its picture, an endless archive spanning 30 years, favorites and full-screen views that follow your finger. It reads NASA's real archive, downloads 98% less image data than before and keeps every day it has seen, so it also works offline.",
     images: [
-      "/projects/appod/flow.webp",
-      "/projects/appod/home.webp",
-      "/projects/appod/apod.webp",
-      "/projects/appod/load.webp"
+      "/projects/appod/home-2026.webp",
+      "/projects/appod/mobile-flow-2026.webp"
     ],
     tech: {
-      primary: ["Flutter", "Python"],
-      tools: ["Firebase"],
+      primary: ["Flutter", "Dart"],
+      tools: ["Firebase", "Vercel", "Python"],
     },
-    metrics: [{ label: "Adoption", value: "500+ requests" }],
+    metrics: [
+      { label: "Image data", value: "−98%" },
+      { label: "Platforms", value: "Web · Android" },
+    ],
     links: {
       demo: "https://appod.angelcalderon.dev/",
       repo: "https://github.com/Doble-2/Appod-AstronomyPictureOfDay",
     },
-    role: "Mobile Developer",
+    role: "Creator",
     dateStart: "2024",
   },
   {

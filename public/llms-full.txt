@@ -46,6 +46,16 @@
 
 ---
 
+## Work Experience
+
+- **Full Stack Developer — TecnoRed** (Mar 2026 – present, full-time, on-site, Venezuela): automated payroll and settlements, cutting processing time by 85%; runs request, leave and vacation workflows for a large waste-collection company; built a payroll microservice with granular per-client permissions.
+- **Mobile App Developer — Rolapro** (May 2026 – Oct 2026, part-time, remote): MVPs and iOS/Android apps for major national clients.
+- **Lead Full Stack Developer — Eficense Residence** (Oct 2025 – Mar 2026, freelance, remote, Mexico): residential IoT security ecosystem with an AI orchestration layer and LLM agents for visitors and finances.
+- **Frontend Web Developer — Crypto Portfolio** (Mar 2025 – Oct 2025, full-time, remote): Next.js and TypeScript, CoinGecko and TradingView data, Stripe payments and subscriptions, TanStack Query, shadcn/ui.
+- **Semi-Senior Mobile Developer — Deepcompany** (Feb 2024 – Jul 2024, contract, remote): Flutter apps for industry-leading clients.
+- **Frontend Developer — Over Group** (Jul 2023 – Dec 2023, freelance, remote, Spain): Flutter, Next.js, TypeScript and Tailwind on crypto projects.
+- **Junior Developer — COLPIXTEC** (Apr 2022 – Dec 2023, apprenticeship, hybrid, Caracas): frontend and backend of the EnviosFarma startup with JavaScript, PHP and MySQL.
+
 ## Featured Projects
 
 ### Andolimpio — Venezuelan Household Income Calculator
@@ -57,6 +67,17 @@
 - **Stack:** Astro, TypeScript, SVG, node:test, Vercel
 - **Description:** Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey publishes only ten decile averages; a fitted curve reproduces them exactly, and every figure is cited to its source slide.
 
+### Céflow — 3D Dental Planning in the Browser (Platanus Hack 26)
+- **URL:** https://angelcalderon.dev/projects/ceflow
+- **Demo:** https://ceflow-ph.onrender.com
+- **Repository:** https://github.com/platanus-hack/platanus-hack-26-ve-team-18
+- **Role:** Developer (team of five, including a dentist)
+- **Pitch video:** https://youtu.be/6mIvorbU_T0?t=7057
+- **Year:** 2026
+- **Award:** 5th of 22 teams, 3rd in technical execution, Platanus Hack 26 Caracas
+- **Stack:** React, Three.js, TypeScript, Web Workers, DICOM, Vercel AI SDK, Playwright
+- **Description:** Built in 36 hours. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram.
+
 ### OSINT-D2 — Autonomous AI Agent for Identity Investigation
 - **URL:** https://angelcalderon.dev/projects/osint-d2
 - **Repository:** https://github.com/Doble-2/osint-d2
@@ -64,12 +85,12 @@
 - **Role:** Creator & Security Engineer
 - **Year:** 2025
 - **Stack:** Python, FastAPI, Typer, Playwright, WeasyPrint, Docker, Ollama
-- **Description:** Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own, and delivers an evidence-based 6-dimension profile as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama. Features 9 agent tools and 287 tests.
+- **Description:** Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own, and delivers an evidence-based profile (6 dimensions, 3 of them opt-in because they are sensitive) as a PDF dossier. Open source, Docker-ready, with the AI able to run locally via Ollama. Features 9 agent tools and 547 tests.
 
 ### Eficense Residence — IoT & AI Security Ecosystem
 - **URL:** https://angelcalderon.dev/projects/eficense
 - **Role:** Lead Software Architect
-- **Year:** 2024
+- **Year:** 2025
 - **Stack:** Next.js, Python, FastAPI, PostgreSQL, Redis, DeepSeek API
 - **Description:** A comprehensive residential management platform bridging physical security hardware with modern cloud architecture. Designed to automate visitor access and streamline complex financial reporting for large-scale condominiums with 150+ units and real-time synchronization.
 
@@ -98,14 +119,14 @@
 - **Award:** 2nd Place Winner in a coding competition
 - **Description:** A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs.
 
-### Appod — NASA APOD Explorer
+### Appod — NASA's Picture of the Day, Redesigned
 - **URL:** https://angelcalderon.dev/projects/appod
 - **Demo:** https://appod.angelcalderon.dev/
 - **Repository:** https://github.com/Doble-2/Appod-AstronomyPictureOfDay
-- **Role:** Mobile Developer
-- **Year:** 2024
-- **Stack:** Flutter, Python, Firebase
-- **Description:** A Flutter mobile app that integrates NASA's APOD API to browse and download astronomy images, backed by a lightweight Python backend. 500+ requests.
+- **Role:** Creator
+- **Year:** 2024 (redesigned in 2026)
+- **Stack:** Flutter, Dart, Firebase, Vercel
+- **Description:** A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a photo calendar, an endless 30-year archive, favorites and gesture-driven full-screen views. It reads NASA's real archive from science.nasa.gov, downloads 98% less image data and caches every day it has seen, so it also works offline.
 
 ### Onbox — 48h Hackathon Pet Adoption System
 - **URL:** https://angelcalderon.dev/projects/onbox

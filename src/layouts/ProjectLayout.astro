@@ -17,9 +17,14 @@ interface Props {
   title?: string;
   /** Resumen traducido (por defecto la descripción del proyecto, en inglés) */
   summary?: string;
+  /** Subtítulo y métricas traducidos (por defecto los del proyecto, en inglés) */
+  subtitle?: string;
+  metrics?: { label: string; value: string }[];
 }
 
 const { project, title } = Astro.props as Props;
+const subtitle = Astro.props.subtitle || project.subtitle;
+const metrics = Astro.props.metrics || project.metrics || [];
 const lang = resolveLangFromRequest(Astro.request);
 const t = (key: string) => (translations as any)[lang]?.[key] || key;
 const homeHref = lang === "en" ? "/en" : "/";
@@ -112,7 +117,7 @@ const projectJsonLd = {
       </div>
 
       <h1 class="mt-8 type-display break-words">{project.name}</h1>
-      <p class="mt-5 max-w-2xl text-lg md:text-2xl text-white/75">{project.subtitle}</p>
+      <p class="mt-5 max-w-2xl text-lg md:text-2xl text-white/75">{subtitle}</p>
 
       {(demoUrl || repoUrl || docsUrl) && (
         <div class="mt-8 flex flex-wrap gap-3">
@@ -145,7 +150,7 @@ const projectJsonLd = {
           <dt class="text-sm text-muted-foreground">{t("project_year")}</dt>
           <dd class="order-first text-lg font-semibold leading-tight text-white">{project.dateStart}</dd>
         </div>
-        {(project.metrics ?? []).slice(0, 2).map((m) => (
+        {metrics.slice(0, 2).map((m) => (
           <div class="flex flex-col pr-4">
             <dt class="text-sm text-muted-foreground">{m.label}</dt>
             <dd class="order-first text-lg font-semibold leading-tight text-white">{m.value}</dd>
@@ -160,7 +165,7 @@ const projectJsonLd = {
     <div class="container-content">
       <button type="button" class="project-stage reveal group" data-zoom={cover} aria-label={`${t("project_zoom")}: ${project.name}`}>
         <img src={cover} alt="" aria-hidden="true" class="project-stage__bg" />
-        <img src={cover} alt={`${project.name} — ${project.subtitle}`} class="project-stage__img" loading="eager" decoding="async" />
+        <img src={cover} alt={`${project.name} — ${subtitle}`} class="project-stage__img" loading="eager" decoding="async" />
       </button>
     </div>
   </section>
@@ -168,7 +173,7 @@ const projectJsonLd = {
   <!-- Resumen: una frase grande + stack -->
   <section class="container-page py-20 md:py-28">
     <div class="container-content grid gap-10 lg:grid-cols-12">
-      <p class="lg:col-span-8 text-2xl md:text-4xl font-medium leading-snug tracking-tight text-white">
+      <p class="lg:col-span-8 text-xl md:text-3xl font-medium leading-snug tracking-tight text-white">
         {Astro.props.summary || project.description}
       </p>
       <ul class="lg:col-span-4 flex flex-wrap content-start gap-2" aria-label={t("project_stack")}>
