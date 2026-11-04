@@ -16,7 +16,7 @@
 - [Studia](https://angelcalderon.dev/projects/studia): AI-powered EdTech SaaS. Omnichannel AI tutoring ecosystem for schools that ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp. Stack: React Native, Python, FastAPI, WhatsApp Cloud API, Vector DB.
 - [Scenery](https://angelcalderon.dev/projects/scenery): Modern CLI wallpaper manager for Linux power users. High-performance tool to manage, tag, and organize large wallpaper collections, integrating seamlessly with tiling window managers like Hyprland. Stack: Python, Typer, Rich.
 - [Born AI](https://angelcalderon.dev/projects/born-ai): Predictive genetics with LLMs. Web app using OpenAI to generate explanatory prediction summaries from structured inputs. 2nd Place Winner in a coding competition. Stack: Next.js, OpenAI, TailwindCSS.
-- [Appod](https://angelcalderon.dev/projects/appod): NASA APOD explorer mobile app. Flutter app integrating NASA's Astronomy Picture of the Day API with a Python backend. 500+ requests. Stack: Flutter, Python, Firebase.
+- [Appod](https://angelcalderon.dev/projects/appod): NASA's Astronomy Picture of the Day, redesigned in 2026 around the photograph. Flutter app for web and Android with a photo calendar, a 30-year archive, favorites and offline cache; downloads 98% less image data. Stack: Flutter, Dart, Firebase.
 
 ## Core Expertise
 - **AI & Agents**: RAG pipelines, autonomous agents, LLM integration (OpenAI, Ollama, DeepSeek), vector databases

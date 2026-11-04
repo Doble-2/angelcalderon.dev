@@ -109,14 +109,14 @@
 - **Award:** 2nd Place Winner in a coding competition
 - **Description:** A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs.
 
-### Appod — NASA APOD Explorer
+### Appod — NASA's Picture of the Day, Redesigned
 - **URL:** https://angelcalderon.dev/projects/appod
 - **Demo:** https://appod.angelcalderon.dev/
 - **Repository:** https://github.com/Doble-2/Appod-AstronomyPictureOfDay
-- **Role:** Mobile Developer
-- **Year:** 2024
-- **Stack:** Flutter, Python, Firebase
-- **Description:** A Flutter mobile app that integrates NASA's APOD API to browse and download astronomy images, backed by a lightweight Python backend. 500+ requests.
+- **Role:** Creator
+- **Year:** 2024 (redesigned in 2026)
+- **Stack:** Flutter, Dart, Firebase, Vercel
+- **Description:** A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a photo calendar, an endless 30-year archive, favorites and gesture-driven full-screen views. It reads NASA's real archive from science.nasa.gov, downloads 98% less image data and caches every day it has seen, so it also works offline.
 
 ### Onbox — 48h Hackathon Pet Adoption System
 - **URL:** https://angelcalderon.dev/projects/onbox
