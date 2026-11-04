@@ -76,7 +76,7 @@ export const projects: Project[] = [
     order: 100.5,
     subtitle: "3D dental planning in the browser · 5th place, Platanus Hack 26",
     description:
-      "Built in 48 hours at Platanus Hack 26 Caracas with a team of five, including a dentist. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram. 5th of 22 teams and 3rd in technical execution.",
+      "Built in 36 hours at Platanus Hack 26 Caracas with a team of five, including a dentist. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram. 5th of 22 teams and 3rd in technical execution.",
     images: [
       "/projects/ceflow/model-3d.webp",
       "/projects/ceflow/mobile-flow.webp",

@@ -65,7 +65,7 @@
 - **Year:** 2026
 - **Award:** 5th of 22 teams, 3rd in technical execution, Platanus Hack 26 Caracas
 - **Stack:** React, Three.js, TypeScript, Web Workers, DICOM, Vercel AI SDK, Playwright
-- **Description:** Built in 48 hours. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram.
+- **Description:** Built in 36 hours. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram.
 
 ### OSINT-D2 — Autonomous AI Agent for Identity Investigation
 - **URL:** https://angelcalderon.dev/projects/osint-d2
