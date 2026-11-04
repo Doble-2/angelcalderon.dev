@@ -46,6 +46,16 @@
 
 ---
 
+## Work Experience
+
+- **Full Stack Developer — TecnoRed** (Mar 2026 – present, full-time, on-site, Venezuela): automated payroll and settlements, cutting processing time by 85%; runs request, leave and vacation workflows for a large waste-collection company; built a payroll microservice with granular per-client permissions.
+- **Mobile App Developer — Rolapro** (May 2026 – Oct 2026, part-time, remote): MVPs and iOS/Android apps for major national clients.
+- **Lead Full Stack Developer — Eficense Residence** (Oct 2025 – Mar 2026, freelance, remote, Mexico): residential IoT security ecosystem with an AI orchestration layer and LLM agents for visitors and finances.
+- **Frontend Web Developer — Crypto Portfolio** (Mar 2025 – Oct 2025, full-time, remote): Next.js and TypeScript, CoinGecko and TradingView data, Stripe payments and subscriptions, TanStack Query, shadcn/ui.
+- **Semi-Senior Mobile Developer — Deepcompany** (Feb 2024 – Jul 2024, contract, remote): Flutter apps for industry-leading clients.
+- **Frontend Developer — Over Group** (Jul 2023 – Dec 2023, freelance, remote, Spain): Flutter, Next.js, TypeScript and Tailwind on crypto projects.
+- **Junior Developer — COLPIXTEC** (Apr 2022 – Dec 2023, apprenticeship, hybrid, Caracas): frontend and backend of the EnviosFarma startup with JavaScript, PHP and MySQL.
+
 ## Featured Projects
 
 ### Andolimpio — Venezuelan Household Income Calculator

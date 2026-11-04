@@ -1,13 +1,15 @@
 ---
 import TechnologyTag from "../projects/TechnologyTag";
 import { projects } from "../../../data/projects";
+import { jobs } from "../../../data/experience";
 import { getCollection } from "astro:content";
 
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { t = (k: string) => k } = Astro.props as Props;
+const { t = (k: string) => k, lang = "es" } = Astro.props as Props;
+const L = lang === "en" ? "en" : "es";
 
 const certifieds = await getCollection("certifieds");
 
@@ -23,29 +25,14 @@ const stats = [
 const stackA = ["Python", "FastAPI", "Nextjs", "React", "Typescript", "Astro", "TailwindCSS", "Nodejs", "PostgreSQL", "Redis", "MongoDB", "Docker", "Vercel"];
 const stackB = ["Flutter", "Dart", "React Native", "RAG", "AI Agents", "LLM", "OpenAI", "DeepSeek API", "Vector DB", "WhatsApp Cloud API", "Firebase", "GitHub Actions", "Linux (Arch)"];
 
-const timeline = [
-  {
-    period: t("exp_period_1"),
-    role: t("exp_role_1"),
-    company: t("exp_company_1"),
-    description: t("exp_desc_1"),
-    highlights: ["OSINT-D2", "Studia", "Eficense"],
-  },
-  {
-    period: t("exp_period_2"),
-    role: t("exp_role_2"),
-    company: t("exp_company_2"),
-    description: t("exp_desc_2"),
-    highlights: ["React", "Next.js", "Flutter"],
-  },
-  {
-    period: t("exp_period_3"),
-    role: t("exp_role_3"),
-    company: t("exp_company_3"),
-    description: t("exp_desc_3"),
-    highlights: ["HTML/CSS", "JavaScript", "Python"],
-  },
-];
+const timeline = jobs.map((j) => ({
+  period: j.period[L],
+  role: j.role[L],
+  company: j.company,
+  mode: j.mode[L],
+  description: j.description[L],
+  highlights: j.tags,
+}));
 ---
 
 <div class="container-content">
@@ -78,13 +65,10 @@ const timeline = [
               <span class="type-meta text-xs uppercase tracking-wider text-muted-foreground shrink-0">
                 {entry.period}
               </span>
-              {entry.company && (
-                <span class="text-xs text-muted-foreground hidden sm:inline">·</span>
-                <span class="text-xs text-muted-foreground">{entry.company}</span>
-              )}
+              <span class="text-xs text-muted-foreground">{entry.mode}</span>
             </div>
             <h4 class="mt-1 font-semibold text-white text-base leading-snug">
-              {entry.role}
+              {entry.role} <span class="font-normal text-white/60">· {entry.company}</span>
             </h4>
             <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
               {entry.description}
