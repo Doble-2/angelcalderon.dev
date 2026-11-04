@@ -13,7 +13,8 @@ const certifieds = await getCollection("certifieds");
 
 // Datos, no párrafos: se entiende de un vistazo
 const stats = [
-  { value: "3+", label: t("stat_years") },
+  // Desarrollando desde diciembre de 2021; se recalcula en cada build.
+  { value: `${Math.floor((Date.now() - Date.UTC(2021, 11, 1)) / (365.25 * 864e5))}+`, label: t("stat_years") },
   { value: String(projects.length), label: t("stat_projects") },
   { value: "#2", label: t("stat_award") },
   { value: String(certifieds.length), label: t("stat_certs") },

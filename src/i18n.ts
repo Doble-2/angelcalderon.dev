@@ -98,7 +98,7 @@ export default {
     exp_role_2: "Full-Stack Developer",
     exp_company_2: "Startup / Agencia",
     exp_desc_2: "Lideré el desarrollo de aplicaciones web y mobile. Enfoque en React, Next.js y Flutter con integración de APIs y despliegue continuo.",
-    exp_period_3: "2021 — 2022",
+    exp_period_3: "Dic. 2021 — 2022",
     exp_role_3: "Desarrollador Junior",
     exp_company_3: "Primeros pasos",
     exp_desc_3: "Comencé construyendo aplicaciones web y aprendiendo los fundamentos de la ingeniería de software, control de versiones y buenas prácticas."
@@ -202,7 +202,7 @@ export default {
     exp_role_2: "Full-Stack Developer",
     exp_company_2: "Startup / Agency",
     exp_desc_2: "Led development of web and mobile applications. Focus on React, Next.js, and Flutter with API integration and continuous deployment.",
-    exp_period_3: "2021 — 2022",
+    exp_period_3: "Dec 2021 — 2022",
     exp_role_3: "Junior Developer",
     exp_company_3: "Early career",
     exp_desc_3: "Started building web applications and learning the fundamentals of software engineering, version control, and best practices."

@@ -48,6 +48,15 @@
 
 ## Featured Projects
 
+### Andolimpio — Venezuelan Household Income Calculator
+- **URL:** https://angelcalderon.dev/projects/andolimpio
+- **Demo:** https://andolimpio.angelcalderon.dev
+- **Repository:** https://github.com/Doble-2/andolimpio
+- **Role:** Creator
+- **Year:** 2026
+- **Stack:** Astro, TypeScript, SVG, node:test, Vercel
+- **Description:** Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey publishes only ten decile averages; a fitted curve reproduces them exactly, and every figure is cited to its source slide.
+
 ### OSINT-D2 — Autonomous AI Agent for Identity Investigation
 - **URL:** https://angelcalderon.dev/projects/osint-d2
 - **Repository:** https://github.com/Doble-2/osint-d2

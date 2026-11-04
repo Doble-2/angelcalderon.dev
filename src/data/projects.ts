@@ -14,6 +14,35 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "Andolimpio",
+    slug: "andolimpio",
+    order: 101,
+    subtitle: "How many Venezuelans live on less than your household?",
+    description:
+      "Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey only publishes ten decile averages, so I fitted a curve that reproduces them exactly, with every figure cited to its source slide.",
+    images: [
+      "/projects/andolimpio/hero.webp",
+      "/projects/andolimpio/mobile-flow.webp",
+      "/projects/andolimpio/result.webp",
+      "/projects/andolimpio/chart.webp",
+      "/projects/andolimpio/levels.webp"
+    ],
+    tech: {
+      primary: ["Astro", "TypeScript", "Data viz"],
+      tools: ["SVG", "node:test", "Vercel"],
+    },
+    metrics: [
+      { label: "Households in source", value: "11,352" },
+      { label: "Page weight", value: "~19 KB" },
+    ],
+    links: {
+      demo: "https://andolimpio.angelcalderon.dev",
+      repo: "https://github.com/Doble-2/andolimpio",
+    },
+    role: "Creator",
+    dateStart: "2026",
+  },
+  {
     name: "OSINT-D2",
     slug: "osint-d2",
     order: 96,
