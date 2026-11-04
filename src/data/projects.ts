@@ -16,7 +16,7 @@ export const projects: Project[] = [
   {
     name: "Andolimpio",
     slug: "andolimpio",
-    order: 101,
+    order: 104,
     subtitle: "How many Venezuelans live on less than your household?",
     description:
       "Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey only publishes ten decile averages, so I fitted a curve that reproduces them exactly, with every figure cited to its source slide.",
@@ -45,7 +45,7 @@ export const projects: Project[] = [
   {
     name: "OSINT-D2",
     slug: "osint-d2",
-    order: 96,
+    order: 110,
     subtitle: "Autonomous AI agent for identity investigation",
     description:
       "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based profile as a PDF dossier (6 dimensions, 3 of them opt-in because they are sensitive). Open source, Docker-ready, with the AI able to run locally via Ollama.",
@@ -73,7 +73,7 @@ export const projects: Project[] = [
   {
     name: "Céflow",
     slug: "ceflow",
-    order: 100.5,
+    order: 105,
     subtitle: "3D dental planning in the browser · 5th place, Platanus Hack 26",
     description:
       "Built in 36 hours at Platanus Hack 26 Caracas with a team of five, including a dentist. Dentists load intraoral scans (STL, OBJ, PLY) and CBCT scans (DICOM) and get a 3D planning draft in the browser, with no CAD license or dedicated GPU. Patients get an interactive report with their 3D model and an FDI odontogram. 5th of 22 teams and 3rd in technical execution.",
@@ -176,7 +176,7 @@ export const projects: Project[] = [
   {
     name: "Born AI",
     slug: "born-ai",
-    order: 55,
+    order: 61,
     subtitle: "Predictive genetics with LLMs (Next.js + OpenAI)",
     description:
       "A web app concept that uses LLMs to generate explanatory prediction summaries from structured inputs. Earned 2nd Place Winner in a coding competition.",
