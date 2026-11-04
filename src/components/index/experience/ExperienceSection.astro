@@ -47,46 +47,40 @@ const timeline = jobs.map((j) => ({
     ))}
   </dl>
 
-  <!-- Timeline -->
+  <!-- Trayectoria: los 3 trabajos más recientes con detalle; el resto, compacto y plegado -->
   <div class="mt-16">
-    <h3 class="text-lg font-semibold text-white mb-8">{t("exp_timeline_title")}</h3>
-    <div class="relative border-l-2 border-[#800020]/60 ml-3 md:ml-4 space-y-6">
-      {timeline.map((entry) => (
-        <div class="relative pl-8 md:pl-10">
-          {/* Dot on the timeline */}
-          <div
-            class="absolute left-[-9px] top-6 h-4 w-4 rounded-full border-2 border-[rgb(12,14,20)]"
-            style="background:#800020;"
-            aria-hidden="true"
-          ></div>
-
-          <div class="card p-5 md:p-6">
-            <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
-              <span class="type-meta text-xs uppercase tracking-wider text-muted-foreground shrink-0">
-                {entry.period}
-              </span>
-              <span class="text-xs text-muted-foreground">{entry.mode}</span>
-            </div>
-            <h4 class="mt-1 font-semibold text-white text-base leading-snug">
-              {entry.role} <span class="font-normal text-white/60">· {entry.company}</span>
-            </h4>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {entry.description}
-            </p>
-            {entry.highlights.length > 0 && (
-              <div class="mt-3 flex flex-wrap gap-2">
-                {entry.highlights.map((tag) => (
-                  <span class="inline-block rounded-full border border-white/10 px-2.5 py-0.5 text-xs text-white/70">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+    <h3 class="mb-6 text-lg font-semibold text-white">{t("exp_timeline_title")}</h3>
+    <ol class="divide-y divide-white/10 border-y border-white/10">
+      {timeline.slice(0, 3).map((e) => (
+        <li class="grid gap-x-8 gap-y-1 py-5 md:grid-cols-[11rem_1fr]">
+          <div class="text-xs uppercase tracking-wider text-muted-foreground md:pt-1">
+            <span class="block">{e.period}</span>
+            <span class="mt-0.5 block normal-case tracking-normal text-white/40">{e.mode}</span>
           </div>
-        </div>
+          <div>
+            <h4 class="font-semibold leading-snug text-white">{e.role} <span class="font-normal text-white/60">· {e.company}</span></h4>
+            <p class="mt-1.5 text-sm leading-relaxed text-muted-foreground">{e.description}</p>
+            <p class="mt-2 text-xs text-white/50">{e.highlights.join(" · ")}</p>
+          </div>
+        </li>
       ))}
-    </div>
+    </ol>
+    <details class="group border-b border-white/10">
+      <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-sm font-semibold text-white/80 hover:text-white [&::-webkit-details-marker]:hidden">
+        {t("exp_more")} ({timeline.length - 3})
+        <span class="transition-transform group-open:rotate-180" aria-hidden="true">⌄</span>
+      </summary>
+      <ol class="pb-2">
+        {timeline.slice(3).map((e) => (
+          <li class="grid gap-x-8 py-2.5 text-sm md:grid-cols-[11rem_1fr]">
+            <span class="text-xs uppercase tracking-wider text-muted-foreground md:pt-0.5">{e.period}</span>
+            <span class="text-white">{e.role} <span class="text-white/60">· {e.company}</span> <span class="text-white/40">· {e.highlights.slice(0, 3).join(", ")}</span></span>
+          </li>
+        ))}
+      </ol>
+    </details>
   </div>
+</div>
 </div>
 
 <!-- Stack: dos franjas en sentidos opuestos -->
