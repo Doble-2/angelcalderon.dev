@@ -89,7 +89,8 @@ export default {
     about_p2: "Mi experiencia abarca web, mobile, agentes de IA, IoT y ciberseguridad. Actualmente construyo herramientas potenciadas por IA y exploro OSINT como área de investigación.",
     about_p3: "Disponible para trabajo remoto y colaboraciones con equipos de todo el mundo.",
     about_available: "Disponible para trabajo remoto · Caracas, UTC−4",
-    exp_timeline_title: "Trayectoria"
+    exp_timeline_title: "Trayectoria",
+    exp_more: "Experiencia anterior"
   },
   en: {
     contact_reply: "I reply within 24h · Caracas, UTC−4",
@@ -181,6 +182,7 @@ export default {
     about_p2: "My experience spans web, mobile, AI agents, IoT, and cybersecurity. I'm currently building AI-powered tools and exploring OSINT as a research area.",
     about_p3: "Available for remote work and collaborations with teams worldwide.",
     about_available: "Available for remote work · Caracas, UTC−4",
-    exp_timeline_title: "Career Path"
+    exp_timeline_title: "Career Path",
+    exp_more: "Earlier experience"
   }
 };

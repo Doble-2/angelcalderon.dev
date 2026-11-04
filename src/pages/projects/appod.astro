@@ -1,0 +1,167 @@
+---
+// Appod — datos del repo Doble-2/Appod-AstronomyPictureOfDay: 103 commits (2024–2026),
+// 29 tests, Flutter + BLoC + Firebase, v1.1.0 en Android, −98 % de descarga de imágenes
+// (de 35 MB a 0,6 MB al abrir, commit "perf: cut image downloads by 98%").
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import { projects } from "../../data/projects";
+import { resolveLangFromRequest } from "../../lib/lang";
+
+const project = projects.find((p) => p.slug === "appod");
+if (!project) return Astro.redirect("/404");
+
+const lang = resolveLangFromRequest(Astro.request);
+const es = lang === "es";
+const BLUE = "#5AA0FF";
+
+const copy = es
+  ? {
+      subtitle: "La foto astronómica del día de la NASA, rediseñada alrededor de la fotografía",
+      metrics: [{ label: "Datos de imagen", value: "−98 %" }, { label: "Plataformas", value: "Web · Android" }],
+      summary: "Mi primera app propia, y la que más he pulido. Explora la Astronomy Picture of the Day de la NASA: un calendario donde cada día muestra su foto, un archivo de 30 años, favoritos y vistas a pantalla completa que siguen tu dedo. Funciona sin conexión.",
+      evoKicker: "Mi primera app",
+      evoTitle: "Puliéndola desde 2022",
+      evoLead: "Empezó como un ejercicio para aprender Flutter y se convirtió en el proyecto donde pruebo todo lo que aprendo: arquitectura, rendimiento, diseño y accesibilidad.",
+      evoStats: [["103", "commits"], ["3", "rediseños"], ["29", "tests"]],
+      featTitle: "Lo que hace",
+      feats: [
+        ["Hoy", "La foto del día a pantalla completa, con los últimos 14 días a un toque."],
+        ["Calendario con fotos", "Cada día del mes muestra su imagen. Atajos: hoy, hace un año y sorpréndeme."],
+        ["Archivo de 30 años", "Un muro infinito de fotos desde 1995, y «en este día» de años anteriores."],
+        ["Tu cumpleaños", "Busca la foto que la NASA publicó el día que naciste."],
+        ["Gestos", "Desliza entre días, doble toque para ampliar y arrastra hacia abajo para cerrar."],
+        ["Favoritos", "Guarda y comparte fotos, con su crédito, en la web y en Android."],
+      ],
+      perfKicker: "Rendimiento",
+      perfTitle: "De 35 MB a 0,6 MB",
+      perfLead: "La NASA movió su archivo y su API empezó a devolver su logo en lugar de las fotos. Reescribí la capa de datos para leer el archivo real, pedir cada imagen al tamaño de pantalla y guardar cada día ya visto.",
+      perf: [["−98 %", "datos al abrir la app"], ["0", "llamadas para días ya guardados"], ["Sin conexión", "muestra el último día guardado"]],
+      techTitle: "Cómo está hecha",
+      tech: [
+        ["Flutter + BLoC", "Una sola base de código para web, Android y escritorio, con el estado separado de la interfaz."],
+        ["Firebase", "Cuentas y favoritos sincronizados entre dispositivos."],
+        ["Caché propia", "Cada día leído se guarda: un día del archivo nunca cambia."],
+        ["Español e inglés", "Interfaz traducida, modo oscuro por defecto y contraste probado en los dos temas."],
+      ],
+      apk: "Descargar para Android",
+      disclaimer: "App no oficial, sin relación con la NASA. Las fotos y textos son de la NASA y sus autores.",
+      galleryTitle: "En el escritorio",
+    }
+  : {
+      subtitle: project.subtitle,
+      metrics: undefined,
+      summary: "My first app of my own, and the one I have polished the most. It explores NASA's Astronomy Picture of the Day: a calendar where every day shows its picture, a 30-year archive, favorites and full-screen views that follow your finger. It works offline.",
+      evoKicker: "My first app",
+      evoTitle: "Polishing it since 2022",
+      evoLead: "It started as an exercise to learn Flutter and became the project where I try everything I learn: architecture, performance, design and accessibility.",
+      evoStats: [["103", "commits"], ["3", "redesigns"], ["29", "tests"]],
+      featTitle: "What it does",
+      feats: [
+        ["Today", "Today's picture full screen, with the last 14 days one tap away."],
+        ["Photo calendar", "Every day of the month shows its picture. Shortcuts: today, a year ago, surprise me."],
+        ["30-year archive", "An endless wall of pictures since 1995, plus “on this day” from past years."],
+        ["Your birthday", "Find the picture NASA published on the day you were born."],
+        ["Gestures", "Swipe between days, double-tap to zoom, drag down to close."],
+        ["Favorites", "Save and share pictures with their credit, on the web and Android."],
+      ],
+      perfKicker: "Performance",
+      perfTitle: "From 35 MB to 0.6 MB",
+      perfLead: "NASA moved its archive and its API started returning its logo instead of the pictures. I rewrote the data layer to read the real archive, request each image at screen size and keep every day already seen.",
+      perf: [["−98%", "data when opening the app"], ["0", "calls for days already saved"], ["Offline", "shows the last saved day"]],
+      techTitle: "How it's built",
+      tech: [
+        ["Flutter + BLoC", "One codebase for web, Android and desktop, with state kept apart from the UI."],
+        ["Firebase", "Accounts and favorites synced across devices."],
+        ["Own cache", "Every day read is kept: a day in the archive never changes."],
+        ["Spanish & English", "Translated UI, dark mode by default and contrast tested in both themes."],
+      ],
+      apk: "Download for Android",
+      disclaimer: "Unofficial app, not affiliated with NASA. Pictures and texts belong to NASA and their authors.",
+      galleryTitle: "On desktop",
+    };
+---
+
+<ProjectLayout
+  project={project}
+  cover="/projects/appod/home-2026.webp"
+  gallery={["/projects/appod/archive-2026.webp", "/projects/appod/day-2026.webp", "/projects/appod/onthisday-2026.webp"]}
+  summary={copy.summary}
+  subtitle={copy.subtitle}
+  metrics={copy.metrics}
+  title={`Appod — ${copy.subtitle} | Ángel Calderón`}
+>
+  <!-- 1. Evolución -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <p class="type-meta" style={`color:${BLUE}`}>{copy.evoKicker}</p>
+      <h2 class="mt-5 type-h2">{copy.evoTitle}</h2>
+      <p class="mt-5 max-w-2xl text-lg text-white/70">{copy.evoLead}</p>
+      <dl class="mt-8 flex flex-wrap gap-x-12 gap-y-4">
+        {copy.evoStats.map(([v, l]) => (
+          <div class="flex flex-col">
+            <dt class="order-2 text-sm text-muted-foreground">{l}</dt>
+            <dd class="font-display text-5xl text-white">{v}</dd>
+          </div>
+        ))}
+      </dl>
+      <button type="button" class="reveal mt-10 block w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/appod/evolution.webp" aria-label={copy.evoTitle}>
+        <img src="/projects/appod/evolution.webp" alt={es ? "Appod en 2024, enero de 2026 y noviembre de 2026" : "Appod in 2024, January 2026 and November 2026"} class="w-full h-auto" loading="lazy" decoding="async" />
+      </button>
+    </div>
+  </section>
+
+  <!-- 2. Funciones + teléfonos -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.featTitle}</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {copy.feats.map(([t, d]) => (
+          <li class="card reveal p-5 md:p-6">
+            <p class="text-lg font-semibold text-white">{t}</p>
+            <p class="mt-2 text-white/65">{d}</p>
+          </li>
+        ))}
+      </ul>
+      <button type="button" class="reveal mt-10 block w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/appod/mobile-flow-2026.webp" aria-label={copy.featTitle}>
+        <img src="/projects/appod/mobile-flow-2026.webp" alt={es ? "Inicio, calendario y detalle del día en el teléfono" : "Home, calendar and day detail on the phone"} class="w-full h-auto" loading="lazy" decoding="async" />
+      </button>
+    </div>
+  </section>
+
+  <!-- 3. Rendimiento -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content grid gap-12 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <p class="type-meta" style={`color:${BLUE}`}>{copy.perfKicker}</p>
+        <h2 class="mt-5 type-h2">{copy.perfTitle}</h2>
+        <p class="mt-5 text-lg text-white/70">{copy.perfLead}</p>
+      </div>
+      <ul class="lg:col-span-7 grid gap-px self-center overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+        {copy.perf.map(([v, l]) => (
+          <li class="bg-background p-6">
+            <span class="block font-display text-4xl leading-none md:text-[2.6rem]" style={`color:${BLUE}`}>{v}</span>
+            <span class="mt-2 block text-sm text-muted-foreground">{l}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Técnica -->
+  <section class="container-page pb-24 md:pb-32">
+    <div class="container-content">
+      <h2 class="type-h2">{copy.techTitle}</h2>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+        {copy.tech.map(([n, d]) => (
+          <li class="card reveal p-5 md:p-7">
+            <span class="font-mono text-sm" style={`color:${BLUE}`}>{n}</span>
+            <p class="mt-2 text-white/75">{d}</p>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-10 flex flex-wrap items-center gap-4">
+        <a class="btn btn-secondary h-12 px-6 text-base" href="https://appod.angelcalderon.dev/appod.apk" download>{copy.apk} ↓</a>
+        <p class="text-sm text-muted-foreground">{copy.disclaimer}</p>
+      </div>
+    </div>
+  </section>
+</ProjectLayout>

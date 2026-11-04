@@ -5,18 +5,25 @@ export type Project = {
   subtitle: string;
   description: string;
   images: string[];
+  /** Miniatura vertical (4:5) para la portada en el móvil; si falta, se recorta images[0] */
+  thumbMobile?: string;
   tech: { primary: string[]; tools?: string[] };
   metrics?: { label: string; value: string }[];
   links?: { demo?: string; repo?: string; docs?: string };
   role: string;
   dateStart: string;
+  /** Fuera de la portada y del recorrido "siguiente proyecto"; su página sigue accesible */
+  hidden?: boolean;
 };
+
+/** Proyectos de la portada, por prioridad */
+export const featured = () => projects.filter((p) => !p.hidden).sort((a, b) => b.order - a.order);
 
 export const projects: Project[] = [
   {
     name: "Andolimpio",
     slug: "andolimpio",
-    order: 104,
+    order: 103,
     subtitle: "How many Venezuelans live on less than your household?",
     description:
       "Type what your household earns each month and see where it falls in Venezuela's income distribution, built on the ENCOVI 2025 survey (UCAB). The survey only publishes ten decile averages, so I fitted a curve that reproduces them exactly, with every figure cited to its source slide.",
@@ -27,6 +34,7 @@ export const projects: Project[] = [
       "/projects/andolimpio/chart.webp",
       "/projects/andolimpio/levels.webp"
     ],
+    thumbMobile: "/projects/andolimpio/thumb-mobile.webp",
     tech: {
       primary: ["Astro", "TypeScript", "Data viz"],
       tools: ["SVG", "node:test", "Vercel"],
@@ -50,11 +58,12 @@ export const projects: Project[] = [
     description:
       "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based profile as a PDF dossier (6 dimensions, 3 of them opt-in because they are sensitive). Open source, Docker-ready, with the AI able to run locally via Ollama.",
     images: [
-      "/projects/osint-d2/agent-run.webp",
-      "/projects/osint-d2/trust-anchors.webp",
-      "/projects/osint-d2/dossier.webp",
-      "/projects/osint-d2/doctor.webp"
+      "/projects/osint-d2/dashboard-timeline.webp",
+      "/projects/osint-d2/dashboard-graph.webp",
+      "/projects/osint-d2/dashboard-report.webp",
+      "/projects/osint-d2/dossier-demo.webp"
     ],
+    thumbMobile: "/projects/osint-d2/thumb-mobile.webp",
     tech: {
       primary: ["Python", "AI Agents", "Cybersecurity"],
       tools: ["FastAPI", "Typer", "Playwright", "WeasyPrint", "Docker", "Ollama"],
@@ -83,6 +92,7 @@ export const projects: Project[] = [
       "/projects/ceflow/patient-report.webp",
       "/projects/ceflow/odontogram.webp"
     ],
+    thumbMobile: "/projects/ceflow/thumb-mobile.webp",
     tech: {
       primary: ["React", "Three.js", "AI"],
       tools: ["TypeScript", "Web Workers", "DICOM", "Vercel AI SDK", "Playwright"],
@@ -128,7 +138,8 @@ export const projects: Project[] = [
   {
     name: "Studia",
     slug: "studia",
-    order: 99,
+    order: 20,
+    hidden: true,
     subtitle: "AI-Powered EdTech SaaS",
     description:
       "An omnichannel AI tutoring ecosystem designed for schools. It ingests institutional data to create personalized RAG agents for students, accessible directly via WhatsApp.",
@@ -200,14 +211,17 @@ export const projects: Project[] = [
   {
     name: "Appod",
     slug: "appod",
-    order: 60,
+    order: 104,
     subtitle: "NASA's picture of the day, redesigned around the photograph",
     description:
       "A Flutter app for web and Android to explore NASA's Astronomy Picture of the Day. Redesigned in 2026 around the photograph: a calendar where every day shows its picture, an endless archive spanning 30 years, favorites and full-screen views that follow your finger. It reads NASA's real archive, downloads 98% less image data than before and keeps every day it has seen, so it also works offline.",
     images: [
       "/projects/appod/home-2026.webp",
-      "/projects/appod/mobile-flow-2026.webp"
+      "/projects/appod/evolution.webp",
+      "/projects/appod/mobile-flow-2026.webp",
+      "/projects/appod/archive-2026.webp"
     ],
+    thumbMobile: "/projects/appod/thumb-mobile.webp",
     tech: {
       primary: ["Flutter", "Dart"],
       tools: ["Firebase", "Vercel", "Python"],
@@ -221,12 +235,13 @@ export const projects: Project[] = [
       repo: "https://github.com/Doble-2/Appod-AstronomyPictureOfDay",
     },
     role: "Creator",
-    dateStart: "2024",
+    dateStart: "2022",
   },
   {
     name: "Onbox",
     slug: "onbox",
-    order: 50,
+    order: 10,
+    hidden: true,
     subtitle: "48h hackathon: two-mode adoption system",
     description:
       "Built during a 2-day hackathon. Shipped a pet adoption web app featuring two adoption flows using React + Vite.",
