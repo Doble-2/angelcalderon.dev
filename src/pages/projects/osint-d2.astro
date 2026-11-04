@@ -130,7 +130,7 @@ const deployFacts = es
 const commands = ["git clone https://github.com/Doble-2/osint-d2 && cd osint-d2", "cp .env.example .env", "docker compose up -d"];
 ---
 
-<ProjectLayout project={project} gallery={[]} summary={copy.summary} subtitle={copy.subtitle} metrics={copy.metrics} title={`${project.name} — Agentic OSINT | Ángel Calderón`}>
+<ProjectLayout project={project} gallery={["/projects/osint-d2/dashboard-graph.webp"]} summary={copy.summary} subtitle={copy.subtitle} metrics={copy.metrics} title={`${project.name} — Agentic OSINT | Ángel Calderón`}>
   <!-- 1. Cómo razona el agente: la traza como terminal -->
   <section class="container-page pb-24 md:pb-32">
     <div class="container-content">
@@ -246,8 +246,8 @@ const commands = ["git clone https://github.com/Doble-2/osint-d2 && cd osint-d2"
           ))}
         </ul>
       </div>
-      <button type="button" class="reveal block overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/osint-d2/trust-anchors.webp" aria-label="Trust anchors">
-        <img src="/projects/osint-d2/trust-anchors.webp" alt="OSINT-D2 — trust anchors" class="w-full h-auto" loading="lazy" decoding="async" />
+      <button type="button" class="reveal block overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/60" data-zoom="/projects/osint-d2/dashboard-report.webp" aria-label="Trust anchors">
+        <img src="/projects/osint-d2/dashboard-report.webp" alt="OSINT-D2 — informe con trust anchors, datos de demostración" class="w-full h-auto" loading="lazy" decoding="async" />
       </button>
     </div>
   </section>
@@ -255,8 +255,8 @@ const commands = ["git clone https://github.com/Doble-2/osint-d2 && cd osint-d2"
   <!-- 5. Dossier PDF -->
   <section class="container-page pb-24 md:pb-32">
     <div class="container-content grid items-center gap-12 lg:grid-cols-12">
-      <button type="button" class="reveal lg:col-span-5 mx-auto block w-full max-w-sm overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/60 -rotate-2 transition-transform hover:rotate-0" data-zoom="/projects/osint-d2/dossier.webp" aria-label="Dossier PDF">
-        <img src="/projects/osint-d2/dossier.webp" alt="OSINT-D2 — PDF dossier" class="w-full h-auto" loading="lazy" decoding="async" />
+      <button type="button" class="reveal lg:col-span-5 mx-auto block w-full max-w-sm overflow-hidden rounded-xl border border-white/10 shadow-2xl shadow-black/60 -rotate-2 transition-transform hover:rotate-0" data-zoom="/projects/osint-d2/dossier-demo.webp" aria-label="Dossier PDF">
+        <img src="/projects/osint-d2/dossier-demo.webp" alt="OSINT-D2 — PDF dossier" class="w-full h-auto" loading="lazy" decoding="async" />
       </button>
       <div class="lg:col-span-7">
         <h2 class="type-h2">{copy.dossierTitle}</h2>

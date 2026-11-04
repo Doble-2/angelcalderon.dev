@@ -53,11 +53,12 @@ export const projects: Project[] = [
     description:
       "Give it a username or email: an AI agent scans 20+ platforms, finds new leads, pivots on them on its own and delivers an evidence-based profile as a PDF dossier (6 dimensions, 3 of them opt-in because they are sensitive). Open source, Docker-ready, with the AI able to run locally via Ollama.",
     images: [
-      "/projects/osint-d2/agent-run.webp",
-      "/projects/osint-d2/trust-anchors.webp",
-      "/projects/osint-d2/dossier.webp",
-      "/projects/osint-d2/doctor.webp"
+      "/projects/osint-d2/dashboard-timeline.webp",
+      "/projects/osint-d2/dashboard-graph.webp",
+      "/projects/osint-d2/dashboard-report.webp",
+      "/projects/osint-d2/dossier-demo.webp"
     ],
+    thumbMobile: "/projects/osint-d2/thumb-mobile.webp",
     tech: {
       primary: ["Python", "AI Agents", "Cybersecurity"],
       tools: ["FastAPI", "Typer", "Playwright", "WeasyPrint", "Docker", "Ollama"],
