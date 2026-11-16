@@ -2,7 +2,7 @@
 // Flor de Mayo (Cattleya mossiae), la flor nacional de Venezuela, cayendo:
 // flores completas, pétalos y sépalos sueltos.
 // - Capa trasera: dentro del hero, entre el cielo y la montaña.
-// - Capa delantera: fija sobre toda la página, más grande y cercana
+// - Capa delantera: fija, más grande y cercana; visible en el hero y en contacto
 //   (el <canvas id="petals-front"> vive fuera del hero, ver ProfileSection).
 // El cursor las aparta y genera ráfagas; el scroll las empuja.
 // Decorativo: se desactiva con prefers-reduced-motion.
@@ -279,6 +279,14 @@
     if (hero) {
       new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; }).observe(hero);
     }
+    // La capa delantera solo acompaña al hero y al cierre (contacto): en medio,
+    // sobre capturas y texto, las flores estorban.
+    let contactVisible = false;
+    const contact = document.getElementById("contacto");
+    if (contact) {
+      new IntersectionObserver(([e]) => { contactVisible = e.isIntersecting; }, { rootMargin: "-20% 0px" }).observe(contact);
+    }
+    let frontAlpha = 0.95;
 
     const step = (p: Petal, dt: number, t: number, offsetY: number, w: number, h: number, isFront: boolean) => {
       const depth = 0.35 + p.z * 0.9;
@@ -347,14 +355,18 @@
         }
       }
 
-      // Capa delantera: densa en el hero, unas pocas en el resto de la página
+      // Capa delantera: densa en el hero, unas pocas en contacto, ninguna en medio
       fctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       fctx.clearRect(0, 0, W, H);
       const active = heroVisible ? frontPetals.length : Math.ceil(frontPetals.length * 0.35);
-      for (let i = 0; i < active; i++) {
-        const p = frontPetals[i];
-        step(p, dt, t, 0, W, H, true);
-        draw(fctx, p, heroVisible ? 0.95 : 0.7);
+      // Se desvanecen al salir del hero en vez de cortarse
+      frontAlpha += ((heroVisible ? 0.95 : contactVisible ? 0.7 : 0) - frontAlpha) * Math.min(dt * 3, 1);
+      if (frontAlpha > 0.01) {
+        for (let i = 0; i < active; i++) {
+          const p = frontPetals[i];
+          step(p, dt, t, 0, W, H, true);
+          draw(fctx, p, frontAlpha);
+        }
       }
       // Ráfaga: balística simple con rozamiento y gravedad
       for (const p of burst) {

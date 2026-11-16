@@ -1,8 +1,6 @@
 ---
 import TechnologyTag from "../projects/TechnologyTag";
-import { featured } from "../../../data/projects";
 import { jobs } from "../../../data/experience";
-import { getCollection } from "astro:content";
 
 interface Props {
   lang: string;
@@ -11,15 +9,12 @@ interface Props {
 const { t = (k: string) => k, lang = "es" } = Astro.props as Props;
 const L = lang === "en" ? "en" : "es";
 
-const certifieds = await getCollection("certifieds");
-
-// Datos, no párrafos: se entiende de un vistazo
+// Resultados medibles, no conteos: cada cifra sale de un trabajo o proyecto de esta página
 const stats = [
-  // Desarrollando desde diciembre de 2021; se recalcula en cada build.
-  { value: `${Math.floor((Date.now() - Date.UTC(2021, 11, 1)) / (365.25 * 864e5))}+`, label: t("stat_years") },
-  { value: String(featured().length), label: t("stat_projects") },
+  { value: "−85%", label: t("stat_payroll") },
+  { value: "547", label: t("stat_tests") },
   { value: "#2", label: t("stat_award") },
-  { value: String(certifieds.length), label: t("stat_certs") },
+  { value: "#3", label: t("stat_tech") },
 ];
 
 const stackA = ["Python", "FastAPI", "Nextjs", "React", "Typescript", "Astro", "TailwindCSS", "Nodejs", "PostgreSQL", "Redis", "MongoDB", "Docker", "Vercel"];
@@ -41,8 +36,8 @@ const timeline = jobs.map((j) => ({
   <dl class="mt-12 grid grid-cols-2 gap-y-10 md:grid-cols-4">
     {stats.map((s) => (
       <div class="flex flex-col border-l border-white/10 pl-5">
-        <dt class="text-sm text-muted-foreground">{s.label}</dt>
-        <dd class="order-first font-display text-7xl md:text-8xl leading-none text-white">{s.value}</dd>
+        <dt class="mt-2 max-w-[14rem] text-sm text-muted-foreground text-pretty">{s.label}</dt>
+        <dd class="order-first font-display text-[clamp(3.5rem,6.2vw,6rem)] leading-none text-white whitespace-nowrap">{s.value}</dd>
       </div>
     ))}
   </dl>
