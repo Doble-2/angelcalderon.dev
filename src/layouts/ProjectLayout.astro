@@ -4,7 +4,7 @@
 // propias de cada proyecto) → capturas → siguiente proyecto.
 import Layout from "./Layout.astro";
 import TechnologyTag from "../components/index/projects/TechnologyTag";
-import { featured, type Project } from "../data/projects";
+import { featured, localize, type Project } from "../data/projects";
 import translations from "../i18n";
 import { resolveLangFromRequest } from "../lib/lang";
 
@@ -15,17 +15,18 @@ interface Props {
   /** Capturas de la galería (por defecto el resto de imágenes) */
   gallery?: string[];
   title?: string;
-  /** Resumen traducido (por defecto la descripción del proyecto, en inglés) */
+  /** Resumen traducido (por defecto la descripción del proyecto en el idioma de la página) */
   summary?: string;
-  /** Subtítulo y métricas traducidos (por defecto los del proyecto, en inglés) */
+  /** Subtítulo y métricas traducidos (por defecto los del proyecto en el idioma de la página) */
   subtitle?: string;
   metrics?: { label: string; value: string }[];
 }
 
-const { project, title } = Astro.props as Props;
+const { title } = Astro.props as Props;
+const lang = resolveLangFromRequest(Astro.request);
+const project = localize(Astro.props.project, lang);
 const subtitle = Astro.props.subtitle || project.subtitle;
 const metrics = Astro.props.metrics || project.metrics || [];
-const lang = resolveLangFromRequest(Astro.request);
 const t = (key: string) => (translations as any)[lang]?.[key] || key;
 const homeHref = lang === "en" ? "/en" : "/";
 
@@ -44,7 +45,7 @@ const stack = Array.from(new Set([...(project.tech?.primary ?? []), ...(project.
 
 const ordered = featured();
 const index = ordered.findIndex((p) => p.slug === project.slug);
-const next = ordered[(index + 1) % ordered.length];
+const next = localize(ordered[(index + 1) % ordered.length], lang);
 const pad = (n: number) => String(n).padStart(2, "0");
 
 const pageTitle = title || `${project.name} — ${project.subtitle} | Ángel Calderón`;

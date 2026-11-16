@@ -137,9 +137,9 @@ const navLinks = [
 
     // Sección activa en la navegación
     const links = header.querySelectorAll("a[data-section]");
-    const sections = [...links]
-      .map((a) => document.getElementById(a.getAttribute("data-section")))
-      .filter(Boolean);
+    // Se observan todas las secciones, también las que no tienen enlace
+    // (hero, sobre mí): al entrar en ellas ningún enlace queda marcado.
+    const sections = links.length ? [...document.querySelectorAll("main section[id]")] : [];
     if (sections.length) {
       const observer = new IntersectionObserver(
         (entries) => {

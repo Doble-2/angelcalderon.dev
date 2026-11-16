@@ -1,0 +1,561 @@
+---
+// Navegación como el teleférico de Caracas: la página es una subida al Ávila.
+// Una cabina cuelga del cable y sube según el scroll; cada sección es una estación.
+// Se puede saltar a una estación con un clic o arrastrar la cabina por el cable.
+// Las altitudes son las del recorrido real (Maripérez ≈ 1.000 m → estación Ávila ≈ 2.105 m).
+interface Props {
+  lang: string;
+  t: (key: string) => string;
+}
+const { lang = "es", t = (k: string) => k } = Astro.props as Props;
+
+// De la estación base (abajo) a la cima (arriba)
+const stations = [
+  { id: "inicio", label: t("cable_base") },
+  { id: "proyectos", label: t("nav_projects") },
+  { id: "sobre-mi", label: t("cable_about") },
+  { id: "experiencia", label: t("nav_experience") },
+  { id: "certificados", label: t("certificates") },
+  { id: "contacto", label: t("contact") },
+];
+const last = stations.length - 1;
+const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
+---
+
+<nav
+  class="cablecar"
+  aria-label={t("cable_aria")}
+  data-cablecar
+  data-base="1000"
+  data-top="2105"
+  data-locale={locale}
+>
+  <svg class="cablecar__svg" aria-hidden="true">
+    <path data-cable-base class="cablecar__cable"></path>
+    <path data-cable-done class="cablecar__cable is-done"></path>
+  </svg>
+
+  <span class="cablecar__end cablecar__end--top" aria-hidden="true">2.105 m</span>
+  <span class="cablecar__end cablecar__end--base" aria-hidden="true">1.000 m</span>
+
+  <ol>
+    {stations.map((s, i) => (
+      <li style={`--t:${i / last}`}>
+        <a href={`#${s.id}`} data-station={s.id}>
+          <span class="cablecar__dot" aria-hidden="true"></span>
+          <span class="cablecar__label">{s.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <div class="cablecar__cabin" data-cable-cabin>
+    <div class="cablecar__swing" data-cable-swing>
+      <svg width="30" height="42" viewBox="0 0 30 42" fill="none" aria-hidden="true">
+        <!-- Pinza sobre el cable y brazo -->
+        <rect x="9" y="0.5" width="12" height="6" rx="3" fill="#f5f7ff" />
+        <circle cx="15" cy="3.5" r="1.1" fill="#9aa3c4" />
+        <path d="M15 6.5V14" stroke="#f5f7ff" stroke-width="1.8" stroke-linecap="round" />
+        <!-- Cabina -->
+        <path d="M5 17a5 5 0 0 1 5-3h10a5 5 0 0 1 5 3l1.4 14.6a4 4 0 0 1-4 4.4H7.6a4 4 0 0 1-4-4.4Z" fill="#800020" stroke="#e0527f" stroke-width="1.4" />
+        <rect class="cablecar__win" x="7.5" y="18.5" width="6" height="7.5" rx="1.6" />
+        <rect class="cablecar__win" x="16.5" y="18.5" width="6" height="7.5" rx="1.6" />
+        <path d="M5.2 29.5h19.6" stroke="#e0527f" stroke-width="1.1" opacity="0.7" />
+      </svg>
+    </div>
+    <span class="cablecar__readout" aria-hidden="true">
+      <span data-cable-name>{stations[0].label}</span>
+      <span class="tabular-nums" data-cable-alt>1.000 m</span>
+    </span>
+  </div>
+</nav>
+
+<style>
+  .cablecar {
+    --lean: 1.75rem; /* cuánto se inclina el cable de abajo a arriba */
+    --night: 0;
+    position: fixed;
+    z-index: 46; /* por encima del pie del hero (z-45), que si no se come los clics */
+    right: clamp(1rem, 2vw, 1.75rem);
+    top: 50%;
+    width: var(--lean);
+    height: min(54vh, 27rem);
+    transform: translateY(-50%);
+  }
+
+  .cablecar__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .cablecar__cable {
+    fill: none;
+    stroke: rgb(255 255 255 / 0.3);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Tramo ya recorrido */
+  .cablecar__cable.is-done {
+    stroke: #e0527f;
+    stroke-width: 1.6;
+  }
+
+  .cablecar ol {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cablecar li {
+    position: absolute;
+    left: calc(var(--t) * 100%);
+    bottom: calc(var(--t) * 100%);
+  }
+
+  /* Zona de clic cómoda centrada en el punto del cable */
+  .cablecar a {
+    position: absolute;
+    left: -14px;
+    bottom: -14px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+  }
+
+  .cablecar a:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 0.85);
+    outline-offset: 0;
+  }
+
+  .cablecar__dot {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgb(12 14 20);
+    box-shadow: 0 0 0 1.5px rgb(255 255 255 / 0.55);
+    transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), background-color 250ms ease, box-shadow 250ms ease;
+  }
+
+  .cablecar a[data-passed] .cablecar__dot {
+    background: #e0527f;
+    box-shadow: 0 0 0 1.5px #e0527f;
+  }
+
+  /* Al llegar a una estación, un anillo se expande desde ella */
+  .cablecar a[data-arrived] .cablecar__dot::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 999px;
+    border: 1.5px solid #ff8fb5;
+    animation: cable-ping 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  @keyframes cable-ping {
+    from {
+      transform: scale(0.4);
+      opacity: 1;
+    }
+    to {
+      transform: scale(2.6);
+      opacity: 0;
+    }
+  }
+
+  .cablecar a:hover .cablecar__dot,
+  .cablecar a:focus-visible .cablecar__dot {
+    transform: scale(1.5);
+    background: #fff;
+    box-shadow: 0 0 0 1.5px #fff;
+  }
+
+  .cablecar__label,
+  .cablecar__readout {
+    position: absolute;
+    right: calc(100% + 0.6rem);
+    white-space: nowrap;
+    font-size: 0.75rem;
+    line-height: 1;
+    padding: 0.4rem 0.6rem;
+    border-radius: 8px;
+    color: rgb(255 255 255 / 0.9);
+    background: rgb(12 14 20 / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.09);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Los nombres de las estaciones aparecen al acercar el cursor o con el teclado */
+  .cablecar__label {
+    opacity: 0;
+    transform: translateX(6px);
+    pointer-events: none;
+    transition: opacity 200ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .cablecar:hover .cablecar__label,
+  .cablecar:focus-within .cablecar__label {
+    opacity: 1;
+    transform: none;
+  }
+
+  .cablecar a:hover .cablecar__label,
+  .cablecar a:focus-visible .cablecar__label {
+    color: #fff;
+    border-color: rgb(255 255 255 / 0.35);
+  }
+
+  /* Altitudes de los extremos, muy discretas */
+  .cablecar__end {
+    position: absolute;
+    right: calc(100% + 0.7rem);
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    line-height: 1;
+    color: rgb(255 255 255 / 0.32);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    transition: opacity 200ms ease;
+  }
+
+  .cablecar__end--top {
+    top: -4px;
+  }
+
+  .cablecar__end--base {
+    bottom: -4px;
+  }
+
+  .cablecar:hover .cablecar__end,
+  .cablecar:focus-within .cablecar__end,
+  .cablecar[data-at-base] .cablecar__end--base {
+    opacity: 0;
+  }
+
+  .cablecar__cabin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: -3px 0 0 -15px;
+    will-change: transform;
+    pointer-events: none;
+    filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.5));
+  }
+
+  .cablecar__swing {
+    transform-origin: 50% 3.5px; /* cuelga de la pinza */
+    will-change: transform;
+  }
+
+  .cablecar__swing svg {
+    display: block;
+  }
+
+  /* Ventanas: de día reflejan el cielo; de noche, la luz de la cabina (--night la fija el hero 3D) */
+  .cablecar__win {
+    fill: color-mix(in srgb, #ffd37a calc(var(--night) * 100%), #f6dcea);
+    filter: drop-shadow(0 0 calc(var(--night) * 3px) rgb(255 205 110 / calc(var(--night) * 0.9)));
+  }
+
+  /* Lectura de altitud: solo en la base y mientras la cabina se mueve o llega */
+  .cablecar__readout {
+    top: 14px;
+    right: calc(100% + 0.5rem);
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .cablecar[data-at-base] .cablecar__readout,
+  .cablecar.is-moving .cablecar__readout {
+    opacity: 1;
+    transition-duration: 150ms;
+  }
+
+  .cablecar__readout [data-cable-alt] {
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .cablecar.cablecar:hover .cablecar__readout,
+  .cablecar.cablecar:focus-within .cablecar__readout {
+    opacity: 0;
+  }
+
+  /* Con ratón la cabina se puede agarrar y arrastrar por el cable */
+  @media (hover: hover) and (pointer: fine) {
+    .cablecar__cabin {
+      pointer-events: auto;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .cablecar.is-dragging .cablecar__cabin {
+      cursor: grabbing;
+    }
+
+    .cablecar.cablecar.is-dragging .cablecar__readout {
+      opacity: 1;
+    }
+  }
+
+  /* Pantallas estrechas: indicador fino en el margen; la lectura aparece al desplazarse */
+  @media (max-width: 1023px) {
+    .cablecar {
+      --lean: 0.5rem;
+      right: 0.5rem;
+      height: 36vh;
+      pointer-events: none;
+      opacity: 0.85;
+      transition: opacity 400ms ease;
+    }
+
+    /* Sobre el hero competiría con el nombre: entra al empezar a bajar */
+    .cablecar[data-at-base] {
+      opacity: 0;
+    }
+
+    .cablecar__label,
+    .cablecar__end {
+      display: none;
+    }
+
+    .cablecar__dot {
+      width: 5px;
+      height: 5px;
+    }
+
+    .cablecar__swing svg {
+      width: 21px;
+      height: 29px;
+    }
+
+    .cablecar__cabin {
+      margin: -2px 0 0 -10px;
+    }
+
+    .cablecar__swing {
+      transform-origin: 50% 2.5px;
+    }
+
+    .cablecar__readout {
+      top: 9px;
+      right: calc(100% + 0.35rem);
+      font-size: 0.6875rem;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .cablecar[data-at-base] .cablecar__readout {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>("[data-cablecar]");
+  const cabin = nav?.querySelector<HTMLElement>("[data-cable-cabin]");
+  const swing = nav?.querySelector<HTMLElement>("[data-cable-swing]");
+  if (nav && cabin && swing) {
+    const links = [...nav.querySelectorAll<HTMLAnchorElement>("a[data-station]")];
+    const targets = links.map((a) => document.getElementById(a.dataset.station!));
+    const nameEl = nav.querySelector<HTMLElement>("[data-cable-name]")!;
+    const altEl = nav.querySelector<HTMLElement>("[data-cable-alt]")!;
+    const baseEl = nav.querySelector<SVGPathElement>("[data-cable-base]")!;
+    const doneEl = nav.querySelector<SVGPathElement>("[data-cable-done]")!;
+    const svg = nav.querySelector<SVGSVGElement>(".cablecar__svg")!;
+    const base = Number(nav.dataset.base);
+    const top = Number(nav.dataset.top);
+    const fmt = new Intl.NumberFormat(nav.dataset.locale);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const last = links.length - 1;
+
+    let stops: number[] = []; // scrollY en el que la cabina llega a cada estación
+    let W = 0;
+    let H = 0;
+    let pts: { x: number; y: number }[] = [];
+    let sags: number[] = [];
+
+    let cur = 0; // posición pintada (0 base → 1 cima)
+    let prev = 0;
+    let raf = 0;
+    let station = -1;
+    let dragging = false;
+    // Péndulo: ángulo (°) y velocidad angular
+    let theta = 0;
+    let omega = 0;
+    let vPrev = 0;
+    let lastT = 0;
+
+    const measure = () => {
+      const vh = window.innerHeight;
+      const max = Math.max(1, document.documentElement.scrollHeight - vh);
+      let acc = 0;
+      stops = targets.map((el, i) => {
+        if (i === 0 || !el) return acc;
+        // La estación "llega" cuando su sección ocupa ya el tercio alto de la pantalla
+        acc = Math.max(acc, Math.min(max, el.getBoundingClientRect().top + window.scrollY - vh * 0.35));
+        return acc;
+      });
+      H = nav.clientHeight;
+      W = nav.clientWidth;
+      pts = links.map((_, i) => ({ x: (i / last) * W, y: H - (i / last) * H }));
+      // El cable cuelga entre estaciones como uno de verdad: una comba suave
+      sags = pts.slice(1).map((p, i) => Math.min(9, Math.hypot(p.x - pts[i].x, p.y - pts[i].y) * 0.07));
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      const d = pts.map((p, i) => (i === 0 ? `M${p.x} ${p.y}` : `Q${(p.x + pts[i - 1].x) / 2} ${(p.y + pts[i - 1].y) / 2 + 2 * sags[i - 1]} ${p.x} ${p.y}`)).join(" ");
+      baseEl.setAttribute("d", d);
+    };
+
+    const target = () => {
+      const y = window.scrollY;
+      let i = 0;
+      while (i < last - 1 && y >= stops[i + 1]) i++;
+      const span = stops[i + 1] - stops[i];
+      const f = span > 0 ? Math.min(1, Math.max(0, (y - stops[i]) / span)) : 1;
+      return (i + f) / last;
+    };
+
+    /** Punto del cable (con su comba) para una posición 0–1, y el tramo recorrido hasta ahí */
+    const along = (c: number) => {
+      const i = Math.min(last - 1, Math.floor(c * last));
+      const f = c * last - i;
+      const a = pts[i], b = pts[i + 1];
+      const cx = (a.x + b.x) / 2, cy = (a.y + b.y) / 2 + 2 * sags[i];
+      const u = 1 - f;
+      const x = u * u * a.x + 2 * u * f * cx + f * f * b.x;
+      const y = u * u * a.y + 2 * u * f * cy + f * f * b.y;
+      let d = `M${pts[0].x} ${pts[0].y}`;
+      for (let k = 0; k < i; k++) d += `Q${(pts[k + 1].x + pts[k].x) / 2} ${(pts[k + 1].y + pts[k].y) / 2 + 2 * sags[k]} ${pts[k + 1].x} ${pts[k + 1].y}`;
+      // Tramo parcial: la curva se corta en f (de Casteljau)
+      d += `Q${a.x + (cx - a.x) * f} ${a.y + (cy - a.y) * f} ${x} ${y}`;
+      return { x, y, d };
+    };
+
+    let arrivedTimer = 0;
+    let movingTimer = 0;
+    const flashReadout = () => {
+      nav.classList.add("is-moving");
+      clearTimeout(movingTimer);
+      movingTimer = window.setTimeout(() => nav.classList.remove("is-moving"), 1500);
+    };
+
+    const paint = () => {
+      const p = along(cur);
+      cabin.style.transform = `translate3d(${p.x.toFixed(2)}px, ${p.y.toFixed(2)}px, 0)`;
+      swing.style.transform = `rotate(${theta.toFixed(2)}deg)`;
+      doneEl.setAttribute("d", p.d);
+      nav.toggleAttribute("data-at-base", cur < 0.02);
+      altEl.textContent = `${fmt.format(Math.round(base + cur * (top - base)))} m`;
+      const s = Math.min(last, Math.floor(cur * last + 0.02));
+      if (s !== station) {
+        const arrived = station !== -1;
+        station = s;
+        nameEl.textContent = links[s].textContent!.trim();
+        links.forEach((a, i) => {
+          a.toggleAttribute("data-passed", i <= s);
+          i === s ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current");
+        });
+        if (arrived) {
+          // Llegada: el anillo se expande y la lectura se queda un momento
+          const a = links[s];
+          a.removeAttribute("data-arrived");
+          void a.offsetWidth; // reinicia la animación
+          a.setAttribute("data-arrived", "");
+          clearTimeout(arrivedTimer);
+          arrivedTimer = window.setTimeout(() => a.removeAttribute("data-arrived"), 1000);
+          flashReadout();
+        }
+      }
+    };
+
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, Math.max(0.001, (now - lastT) / 1000 || 0.016));
+      lastT = now;
+      const t = target();
+      if (reduce) {
+        cur = t;
+        theta = omega = 0;
+        paint();
+        raf = 0;
+        return;
+      }
+      if (!dragging) cur += (t - cur) * (1 - Math.exp(-dt * 11));
+      // El péndulo: la cabina se retrasa al acelerar y oscila hasta calmarse
+      const v = ((cur - prev) * H) / dt; // px/s a lo largo del cable
+      prev = cur;
+      const accel = Math.max(-3e4, Math.min(3e4, (v - vPrev) / dt));
+      vPrev = v;
+      omega += (-60 * theta - 5 * omega + 0.05 * accel) * dt;
+      theta = Math.max(-16, Math.min(16, theta + omega * dt));
+      paint();
+      if (dragging || Math.abs(t - cur) > 0.0004 || Math.abs(theta) > 0.03 || Math.abs(omega) > 0.1) {
+        raf = requestAnimationFrame(frame);
+      } else {
+        theta = omega = vPrev = 0;
+        cur = prev = t;
+        paint();
+        raf = 0;
+      }
+    };
+    const kick = () => {
+      if (raf) return;
+      lastT = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const onScroll = () => {
+      flashReadout();
+      kick();
+    };
+
+    measure();
+    cur = prev = target();
+    paint();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    // El alto de la página cambia (galería anclada, fuentes, imágenes): se vuelve a medir
+    new ResizeObserver(() => {
+      measure();
+      kick();
+    }).observe(document.body);
+    window.addEventListener("resize", () => {
+      measure();
+      kick();
+    }, { passive: true });
+
+    // De noche en el Ávila (lo dice el hero 3D), las ventanas se encienden
+    window.addEventListener("avila:sky", (e) => nav.style.setProperty("--night", (e as CustomEvent<{ night: number }>).detail.night.toFixed(2)));
+
+    // Arrastrar la cabina: la página sigue al cursor por el cable
+    cabin.addEventListener("pointerdown", (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      nav.classList.add("is-dragging");
+      cabin.setPointerCapture(e.pointerId);
+      kick();
+      e.preventDefault();
+    });
+    cabin.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const r = nav.getBoundingClientRect();
+      const c = Math.min(1, Math.max(0, 1 - (e.clientY - r.top) / r.height));
+      const i = Math.min(last - 1, Math.floor(c * last));
+      cur = c;
+      window.scrollTo({ top: stops[i] + (c * last - i) * (stops[i + 1] - stops[i]), behavior: "instant" as ScrollBehavior });
+      flashReadout();
+    });
+    const drop = () => {
+      dragging = false;
+      nav.classList.remove("is-dragging");
+      kick();
+    };
+    cabin.addEventListener("pointerup", drop);
+    cabin.addEventListener("pointercancel", drop);
+  }
+</script>

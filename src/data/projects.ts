@@ -12,9 +12,14 @@ export type Project = {
   links?: { demo?: string; repo?: string; docs?: string };
   role: string;
   dateStart: string;
+  /** Textos en español; los campos de arriba son la versión en inglés */
+  es?: { subtitle: string; description: string; role?: string; metrics?: { label: string; value: string }[] };
   /** Fuera de la portada y del recorrido "siguiente proyecto"; su página sigue accesible */
   hidden?: boolean;
 };
+
+/** El proyecto con sus textos en el idioma pedido */
+export const localize = (p: Project, lang: string): Project => (lang === "es" && p.es ? { ...p, ...p.es } : p);
 
 /** Proyectos de la portada, por prioridad */
 export const featured = () => projects.filter((p) => !p.hidden).sort((a, b) => b.order - a.order);
@@ -23,6 +28,21 @@ export const projects: Project[] = [
   {
     name: "Andolimpio",
     slug: "andolimpio",
+    es: {
+      subtitle: "¿Cuántos venezolanos viven con menos que tu hogar?",
+      description: "Escribes lo que entra a tu casa cada mes y te dice en qué lugar quedas en la distribución del ingreso de Venezuela, con los datos de la ENCOVI 2025 de la UCAB. Cada cifra cita la lámina de la que sale.",
+      role: "Creador",
+      metrics: [
+        {
+          label: "Hogares en la fuente",
+          value: "11.352"
+        },
+        {
+          label: "Peso de la página",
+          value: "~19 KB"
+        }
+      ]
+    },
     order: 103,
     subtitle: "How many Venezuelans live on less than your household?",
     description:
@@ -53,6 +73,21 @@ export const projects: Project[] = [
   {
     name: "OSINT-D2",
     slug: "osint-d2",
+    es: {
+      subtitle: "Agente de IA autónomo para investigar identidades",
+      description: "Le das un usuario o un email y un agente de IA lo investiga solo: busca en más de 20 plataformas, sigue las pistas que encuentra y entrega un dossier PDF basado en evidencia. Open source, con Docker y la opción de correr la IA en local con Ollama.",
+      role: "Creador e ingeniero de seguridad",
+      metrics: [
+        {
+          label: "Tests",
+          value: "547"
+        },
+        {
+          label: "Herramientas del agente",
+          value: "9"
+        }
+      ]
+    },
     order: 110,
     subtitle: "Autonomous AI agent for identity investigation",
     description:
@@ -69,8 +104,8 @@ export const projects: Project[] = [
       tools: ["FastAPI", "Typer", "Playwright", "WeasyPrint", "Docker", "Ollama"],
     },
     metrics: [
-      { label: "Agent tools", value: "9" },
       { label: "Tests", value: "547" },
+      { label: "Agent tools", value: "9" },
     ],
     links: {
       repo: "https://github.com/Doble-2/osint-d2",
@@ -82,6 +117,21 @@ export const projects: Project[] = [
   {
     name: "Céflow",
     slug: "ceflow",
+    es: {
+      subtitle: "Planificación odontológica 3D en el navegador · 5.º lugar en Platanus Hack 26",
+      description: "Lo construimos desde cero en las 36 horas de Platanus Hack 26 Caracas, un equipo de cinco con un odontólogo. El especialista carga escaneos intraorales y tomografías y obtiene un borrador de planificación en 3D en el navegador, sin licencias CAD ni GPU dedicada. El paciente recibe un informe interactivo con su modelo 3D.",
+      role: "Desarrollador",
+      metrics: [
+        {
+          label: "Platanus Hack 26",
+          value: "5.º de 22"
+        },
+        {
+          label: "Tests",
+          value: "1.000+"
+        }
+      ]
+    },
     order: 105,
     subtitle: "3D dental planning in the browser · 5th place, Platanus Hack 26",
     description:
@@ -111,6 +161,21 @@ export const projects: Project[] = [
   {
     name: "Eficense Residence",
     slug: "eficense",
+    es: {
+      subtitle: "Ecosistema de seguridad residencial con IoT e IA",
+      description: "Una plataforma de gestión residencial que conecta el hardware de seguridad física con una arquitectura cloud moderna. Automatiza el acceso de visitantes y simplifica los reportes financieros de condominios grandes.",
+      role: "Arquitecto de software líder",
+      metrics: [
+        {
+          label: "Unidades",
+          value: "150+"
+        },
+        {
+          label: "Sincronización",
+          value: "Tiempo real"
+        }
+      ]
+    },
     order: 100,
     subtitle: "IoT & AI Security Ecosystem",
     description:
@@ -138,6 +203,11 @@ export const projects: Project[] = [
   {
     name: "Studia",
     slug: "studia",
+    es: {
+      subtitle: "SaaS educativo con IA",
+      description: "Un ecosistema de tutoría con IA para colegios. Toma la información de la institución y crea agentes RAG personalizados para cada estudiante, disponibles directamente por WhatsApp.",
+      role: "Creador e ingeniero líder"
+    },
     order: 20,
     hidden: true,
     subtitle: "AI-Powered EdTech SaaS",
@@ -162,6 +232,21 @@ export const projects: Project[] = [
   {
     name: "Scenery",
     slug: "scenery",
+    es: {
+      subtitle: "Gestor de fondos de pantalla para la terminal",
+      description: "Una herramienta de línea de comandos para usuarios avanzados de Linux: gestiona, etiqueta y organiza colecciones grandes de fondos de pantalla. Se integra con gestores de ventanas en mosaico como Hyprland.",
+      role: "Mantenedor open source",
+      metrics: [
+        {
+          label: "Tipo",
+          value: "Open source"
+        },
+        {
+          label: "Interfaz",
+          value: "TUI"
+        }
+      ]
+    },
     order: 98,
     subtitle: "Modern CLI Wallpaper Manager",
     description:
@@ -187,6 +272,17 @@ export const projects: Project[] = [
   {
     name: "Born AI",
     slug: "born-ai",
+    es: {
+      subtitle: "Genética predictiva con LLMs (Next.js + OpenAI)",
+      description: "Un concepto de app web que usa LLMs para generar resúmenes explicativos de predicción a partir de datos estructurados. Ganó el segundo lugar en una competencia de programación.",
+      role: "Líder de desarrollo",
+      metrics: [
+        {
+          label: "Premio",
+          value: "2.º lugar"
+        }
+      ]
+    },
     order: 61,
     subtitle: "Predictive genetics with LLMs (Next.js + OpenAI)",
     description:
@@ -211,6 +307,21 @@ export const projects: Project[] = [
   {
     name: "Appod",
     slug: "appod",
+    es: {
+      subtitle: "La foto astronómica del día de la NASA, rediseñada alrededor de la fotografía",
+      description: "Mi primera app propia, y la que más he pulido. Explora la Astronomy Picture of the Day de la NASA: un calendario donde cada día muestra su foto, un archivo de 30 años, favoritos y vistas a pantalla completa que siguen tu dedo. Funciona sin conexión.",
+      role: "Creador",
+      metrics: [
+        {
+          label: "Datos de imagen",
+          value: "−98 %"
+        },
+        {
+          label: "Plataformas",
+          value: "Web · Android"
+        }
+      ]
+    },
     order: 104,
     subtitle: "NASA's picture of the day, redesigned around the photograph",
     description:
@@ -240,6 +351,17 @@ export const projects: Project[] = [
   {
     name: "Onbox",
     slug: "onbox",
+    es: {
+      subtitle: "Hackatón de 48 h: adopción de mascotas en dos modalidades",
+      description: "Hecho en un hackatón de dos días: una web de adopción de mascotas con dos flujos de adopción, en React + Vite.",
+      role: "Desarrollador frontend",
+      metrics: [
+        {
+          label: "Tiempo",
+          value: "2 días"
+        }
+      ]
+    },
     order: 10,
     hidden: true,
     subtitle: "48h hackathon: two-mode adoption system",

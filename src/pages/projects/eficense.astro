@@ -1,34 +1,31 @@
 ---
 import ProjectLayout from "../../layouts/ProjectLayout.astro";
 import { projects } from "../../data/projects";
+import { resolveLangFromRequest } from "../../lib/lang";
 
 const project = projects.find((p) => p.slug === "eficense");
 if (!project) return Astro.redirect("/404");
 
+const es = resolveLangFromRequest(Astro.request) === "es";
+
 // Las tres piezas del sistema, en vez de un bloque de texto
-const pillars = [
-  {
-    title: "Admin dashboard",
-    text: "Role-based operations, visitor access and financial reporting at condominium scale.",
-    tags: ["Next.js", "PostgreSQL"],
-  },
-  {
-    title: "AI concierge",
-    text: "Residents ask on Telegram; a cost-efficient DeepSeek agent answers and issues QR passes.",
-    tags: ["DeepSeek API", "Telegram"],
-  },
-  {
-    title: "Hardware bridge",
-    text: "Cameras and barriers wired in through custom wrappers and resilient polling.",
-    tags: ["Python", "Hikvision", "WebSockets"],
-  },
-];
+const pillars = es
+  ? [
+      { title: "Panel de administración", text: "Operación por roles, acceso de visitantes y reportes financieros a escala de condominio.", tags: ["Next.js", "PostgreSQL"] },
+      { title: "Conserje con IA", text: "Los residentes preguntan por Telegram; un agente de DeepSeek, barato de operar, responde y emite pases QR.", tags: ["DeepSeek API", "Telegram"] },
+      { title: "Puente con el hardware", text: "Cámaras y barreras integradas con wrappers propios y polling resistente a fallos.", tags: ["Python", "Hikvision", "WebSockets"] },
+    ]
+  : [
+      { title: "Admin dashboard", text: "Role-based operations, visitor access and financial reporting at condominium scale.", tags: ["Next.js", "PostgreSQL"] },
+      { title: "AI concierge", text: "Residents ask on Telegram; a cost-efficient DeepSeek agent answers and issues QR passes.", tags: ["DeepSeek API", "Telegram"] },
+      { title: "Hardware bridge", text: "Cameras and barriers wired in through custom wrappers and resilient polling.", tags: ["Python", "Hikvision", "WebSockets"] },
+    ];
 ---
 
-<ProjectLayout project={project} title={`${project.name} — Enterprise IoT SaaS | Ángel Calderón`}>
+<ProjectLayout project={project} title={`${project.name} — ${es ? "SaaS IoT empresarial" : "Enterprise IoT SaaS"} | Ángel Calderón`}>
   <section class="container-page pb-20 md:pb-28">
     <div class="container-content">
-      <h2 class="type-h2">The system</h2>
+      <h2 class="type-h2">{es ? "El sistema" : "The system"}</h2>
       <ol class="mt-10 grid gap-5 md:grid-cols-3">
         {pillars.map((p, i) => (
           <li class="card reveal flex flex-col p-6 md:p-8">

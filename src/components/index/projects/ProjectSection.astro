@@ -1,66 +1,103 @@
 ---
-import { featured } from "../../../data/projects";
+import { featured, localize } from "../../../data/projects";
 
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { t = (k) => k } = Astro.props;
+const { lang = "es", t = (k) => k } = Astro.props;
 
-// El orden lo define `order` (desc)
-const ordered = featured();
+// El orden lo define `order` (desc). Los primeros van en el carril con su
+// captura; el resto, en una lista compacta: se llega antes a la experiencia.
+const RAIL = 4;
+const ordered = featured().map((p) => localize(p, lang));
+const rail = ordered.slice(0, RAIL);
+const more = ordered.slice(RAIL);
 const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
-<!-- En escritorio la sección se ancla y el scroll vertical desplaza las
-     tarjetas en horizontal. En móvil / reduced-motion es un carrusel nativo. -->
-<section id="proyectos" aria-label={t("nav_projects")} class="relative" data-project-scroller>
-  <div class="md:sticky md:top-0 md:flex md:h-[100svh] md:flex-col md:justify-center overflow-hidden py-24 md:pb-0 md:pt-16">
-    <div class="container-page">
-      <div class="container-content flex items-end justify-between gap-6">
-        <h2 class="type-h2">{t("nav_projects")}</h2>
-        <p class="shrink-0 whitespace-nowrap font-display text-2xl md:text-5xl text-white/30 tabular-nums" aria-hidden="true">
-          <span data-project-current class="text-white">01</span> / {pad(ordered.length)}
-        </p>
+<section id="proyectos" aria-label={t("nav_projects")} class="relative">
+  <!-- En escritorio el bloque se ancla y el scroll vertical desplaza las
+       tarjetas en horizontal. En móvil / reduced-motion es un carrusel nativo. -->
+  <div class="relative" data-project-scroller>
+    <div class="md:sticky md:top-0 md:flex md:h-[100svh] md:flex-col md:justify-center overflow-hidden pt-24 pb-10 md:pb-0 md:pt-16">
+      <div class="container-page">
+        <div class="container-content flex items-end justify-between gap-6">
+          <h2 class="type-h2">{t("nav_projects")}</h2>
+          <p class="shrink-0 whitespace-nowrap font-display text-2xl md:text-5xl text-white/30 tabular-nums" aria-hidden="true">
+            <span data-project-current class="text-white">01</span> / {pad(rail.length)}
+          </p>
+        </div>
       </div>
-    </div>
 
-    <div class="project-viewport mt-8 md:mt-10 overflow-x-auto md:overflow-visible no-scrollbar snap-x snap-mandatory md:snap-none">
-      <ul class="project-rail w-max px-6 sm:px-8 lg:px-[max(4rem,calc((100vw-72rem)/2))]" data-project-rail>
-        {ordered.map((p, idx) => (
-          <li class="project-slide snap-center">
-            <article class="card group overflow-hidden p-0">
-              <a href={`/projects/${encodeURIComponent(p.slug)}`} class="card-link absolute inset-0 z-10 rounded-[14px]" aria-label={`${p.name}: ${p.subtitle}`}></a>
-              <div class="project-media aspect-[4/5] sm:aspect-[16/10] rounded-none border-0 md:aspect-[16/9]">
-                <picture>
-                  {p.thumbMobile && <source media="(max-width: 639px)" srcset={p.thumbMobile} />}
-                  <img src={p.images[0]} alt="" loading={idx < 2 ? "eager" : "lazy"} decoding="async" />
-                </picture>
-              </div>
-              <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
-              <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-8">
-                <div>
-                  <p class="text-sm text-white/70">{p.subtitle}</p>
-                  <h3 class="mt-1 font-display uppercase text-4xl md:text-7xl leading-[0.85] text-white">
-                    {p.name}
-                  </h3>
+      <div class="project-viewport mt-8 md:mt-10 overflow-x-auto md:overflow-visible no-scrollbar snap-x snap-mandatory md:snap-none">
+        <ul class="project-rail w-max px-6 sm:px-8 lg:px-[max(4rem,calc((100vw-72rem)/2))]" data-project-rail>
+          {rail.map((p, idx) => (
+            <li class="project-slide snap-center">
+              <article class="card group overflow-hidden p-0">
+                <a href={`/projects/${encodeURIComponent(p.slug)}`} class="card-link absolute inset-0 z-10 rounded-[14px]" aria-label={`${p.name}: ${p.subtitle}`}></a>
+                <div class="project-media aspect-[4/5] sm:aspect-[16/10] rounded-none border-0 md:aspect-[16/9]">
+                  <picture>
+                    {p.thumbMobile && <source media="(max-width: 639px)" srcset={p.thumbMobile} />}
+                    <img src={p.images[0]} alt="" loading={idx < 2 ? "eager" : "lazy"} decoding="async" />
+                  </picture>
                 </div>
-                <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#800020] text-white transition-transform duration-300 group-hover:rotate-45" aria-hidden="true">
-                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
-                </span>
-              </div>
-            </article>
-          </li>
-        ))}
-      </ul>
-    </div>
+                <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 md:p-8">
+                  <div class="min-w-0">
+                    <p class="text-sm text-white/70 text-pretty">{p.subtitle}</p>
+                    <h3 class="mt-1 font-display uppercase text-4xl md:text-7xl leading-[0.85] text-white">
+                      {p.name}
+                    </h3>
+                    {p.metrics?.length && (
+                      <dl class="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm">
+                        {p.metrics.slice(0, 2).map((m) => (
+                          <div class="flex items-baseline gap-1.5">
+                            <dt class="text-white/60">{m.label}</dt>
+                            <dd class="order-first font-semibold text-white tabular-nums">{m.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    )}
+                  </div>
+                  <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#800020] text-white transition-transform duration-300 group-hover:rotate-45" aria-hidden="true">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
+                  </span>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </div>
 
-    <div class="container-page mt-8 hidden md:block" aria-hidden="true">
-      <div class="container-content h-px bg-white/10">
-        <div class="h-px w-full origin-left scale-x-0 bg-[#800020]" data-project-progress></div>
+      <div class="container-page mt-8 hidden md:block" aria-hidden="true">
+        <div class="container-content h-px bg-white/10">
+          <div class="h-px w-full origin-left scale-x-0 bg-[#800020]" data-project-progress></div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- El resto de proyectos: una fila cada uno -->
+  {more.length > 0 && (
+    <div class="container-page pb-8 md:pt-4">
+      <div class="container-content">
+        <h3 class="mb-6 text-lg font-semibold text-white">{t("projects_more")}</h3>
+        <ul class="divide-y divide-white/10 border-y border-white/10">
+          {more.map((p) => (
+            <li>
+              <a href={`/projects/${encodeURIComponent(p.slug)}`} class="project-row group">
+                <span class="font-display uppercase text-3xl md:text-4xl leading-none text-white">{p.name}</span>
+                <span class="text-sm text-muted-foreground md:text-base">{p.subtitle}</span>
+                <span class="hidden text-sm tabular-nums text-white/40 md:block">{p.dateStart}</span>
+                <svg class="h-5 w-5 shrink-0 text-white/40 transition-all duration-300 group-hover:rotate-45 group-hover:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )}
 </section>
 
 <script>
@@ -115,7 +152,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
       const slide = (e.target as HTMLElement).closest("li");
       if (!slide) return;
       const target = Math.min(distance, Math.max(0, slide.offsetLeft - (window.innerWidth - slide.offsetWidth) / 2));
-      window.scrollTo({ top: section.offsetTop + target, behavior: "instant" as ScrollBehavior });
+      window.scrollTo({ top: section.getBoundingClientRect().top + window.scrollY + target, behavior: "instant" as ScrollBehavior });
     });
 
     // Móvil: el contador sigue al carrusel nativo

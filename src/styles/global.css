@@ -826,6 +826,17 @@
     pointer-events: none;
   }
 
+  /* El pie del hero se funde con el fondo de la página y da contraste al texto */
+  .hero-fade {
+    background: linear-gradient(
+      0deg,
+      rgb(var(--background)) 0%,
+      rgb(var(--background) / 0.78) 34%,
+      rgb(var(--background) / 0.35) 68%,
+      rgb(var(--background) / 0) 100%
+    );
+  }
+
   .hero-layer {
     position: absolute;
     inset: 0;
@@ -834,6 +845,31 @@
     object-fit: cover;
     object-position: 42% 50%;
     filter: brightness(0.86) saturate(1.12);
+  }
+
+  /* Modo 3D: cielo (lienzo WebGL) detrás del nombre y montaña delante.
+     Hasta que la escena está lista se ve la foto; después se funden. */
+  .hero-sky3d,
+  .hero-canvas3d {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+
+  .hero-photo {
+    transition: opacity 1.4s ease;
+  }
+
+  .hero.is-3d .hero-canvas3d,
+  .hero.is-3d .hero-sky3d {
+    opacity: 1;
+  }
+
+  .hero.is-3d .hero-photo {
+    opacity: 0;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -884,7 +920,7 @@
     line-height: 0.9;
     letter-spacing: -0.01em;
     font-size: clamp(5.5rem, 24vw, 9rem);
-    text-shadow: 0 12px 60px rgb(40 10 40 / 0.25);
+    text-shadow: 0 2px 36px rgb(8 10 30 / 0.34), 0 12px 70px rgb(40 10 40 / 0.22);
     transform: translate3d(var(--px, 0), var(--py, 0), 0);
   }
 
@@ -920,6 +956,192 @@
     /* La tarjeta crece hasta llenar la altura disponible bajo el título */
     .project-slide {
       width: min(72vw, calc((100svh - 18rem) * 16 / 9));
+    }
+  }
+
+  /* Retrato de "Sobre mí" */
+  .about-photo {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    aspect-ratio: 4 / 5;
+    max-height: 34rem;
+    width: 100%;
+    box-shadow: 0 40px 90px -40px rgb(128 0 32 / 0.55);
+  }
+
+  .about-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about-photo figcaption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 3rem 1.1rem 1rem;
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.85);
+    background: linear-gradient(0deg, rgb(8 8 14 / 0.85), transparent);
+  }
+
+  .about-photo figcaption > span {
+    flex: none;
+    transform: translateY(-1px);
+  }
+
+  /* Hora de Caracas editable */
+  .hero-time {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    padding: 0 0.1rem;
+    color: rgb(255 255 255 / 0.85);
+    border-bottom: 1px dotted rgb(255 255 255 / 0.4);
+    transition: color 150ms ease, border-color 150ms ease;
+    cursor: default;
+  }
+
+  .hero-time__icon {
+    display: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    align-self: center;
+    opacity: 0.7;
+  }
+
+  .hero.is-3d .hero-time {
+    cursor: pointer;
+  }
+
+  .hero.is-3d .hero-time__icon {
+    display: block;
+  }
+
+  .hero.is-3d .hero-time:hover,
+  .hero-time[aria-expanded='true'] {
+    color: #fff;
+    border-color: #fff;
+  }
+
+  .hero-time:focus-visible,
+  .hero-time__chip:focus-visible,
+  .hero-time__live:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 0.85);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .hero[data-simulated] .hero-time {
+    color: #ffc2d8;
+    border-color: #e0527f;
+  }
+
+  .hero-time-panel:not([hidden]) {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 0.9rem);
+    z-index: 5;
+    display: block;
+    width: min(21rem, calc(100vw - 3rem));
+    padding: 1.1rem 1.2rem 1.2rem;
+    border-radius: 16px;
+    color: #fff;
+    background: rgb(12 14 20 / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 30px 70px -20px rgb(0 0 0 / 0.7);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    animation: panel-in 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+
+  .hero-time__range {
+    flex: 1;
+    min-width: 0;
+    height: 1.5rem;
+    accent-color: #e0527f;
+    cursor: pointer;
+  }
+
+  .hero-time__chip {
+    padding: 0.45rem 0.8rem;
+    text-align: center;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.85);
+    background: rgb(255 255 255 / 0.08);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+
+  .hero-time__chip:hover {
+    background: rgb(255 255 255 / 0.16);
+    border-color: rgb(255 255 255 / 0.3);
+  }
+
+  .hero-time__live:not([hidden]) {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.8125rem;
+    color: #ffc2d8;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* Fila de la lista compacta de proyectos */
+  .project-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 1.5rem;
+    row-gap: 0.35rem;
+    padding: 1.1rem 0.25rem;
+    transition: background-color 200ms ease, padding 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .project-row > :nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .project-row > svg {
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+
+  .project-row:hover,
+  .project-row:focus-visible {
+    background: rgb(255 255 255 / 0.04);
+    padding-inline: 1rem;
+  }
+
+  .project-row:focus-visible {
+    outline: 2px solid rgb(255 255 255 / 0.6);
+    outline-offset: -2px;
+  }
+
+  @media (min-width: 768px) {
+    .project-row {
+      grid-template-columns: minmax(12rem, 0.8fr) 2fr auto auto;
+      padding-block: 1.4rem;
+    }
+
+    .project-row > :nth-child(2),
+    .project-row > svg {
+      grid-column: auto;
+      grid-row: auto;
     }
   }
 

@@ -1,37 +1,56 @@
 ---
 import ProjectLayout from "../../layouts/ProjectLayout.astro";
 import { projects } from "../../data/projects";
+import { resolveLangFromRequest } from "../../lib/lang";
 
 const project = projects.find((p) => p.slug === "studia");
 if (!project) return Astro.redirect("/404");
 
-// RAG explicado como una suma
-const formula = [
-  { title: "School data", text: "Policies · guides · curriculum" },
-  { title: "Student question", text: "WhatsApp · mobile · web" },
-  { title: "Personal answer", text: "Grounded · context-aware · safe" },
-];
+const es = resolveLangFromRequest(Astro.request) === "es";
 
-const channels = [
-  { kicker: "Web", title: "Admin dashboard", text: "Manage institutions, upload knowledge, track cohorts and engagement." },
-  { kicker: "Mobile", title: "Student app", text: "A native tutoring experience built for focus: chat, quizzes and progress." },
-  { kicker: "WhatsApp", title: "Instant access", text: "Students reach the tutor where they already are, via Cloud API." },
-];
+const copy = es
+  ? { ragTitle: "RAG que se siente personal", channelsTitle: "Un cerebro, tres canales", appTitle: "La app móvil", pageTitle: "Tutor de IA con RAG" }
+  : { ragTitle: "RAG that feels personal", channelsTitle: "One brain, three channels", appTitle: "The mobile app", pageTitle: "AI tutor with RAG" };
+
+// RAG explicado como una suma
+const formula = es
+  ? [
+      { title: "Datos del colegio", text: "Normas · guías · plan de estudios" },
+      { title: "Pregunta del estudiante", text: "WhatsApp · móvil · web" },
+      { title: "Respuesta personal", text: "Fundamentada · con contexto · segura" },
+    ]
+  : [
+      { title: "School data", text: "Policies · guides · curriculum" },
+      { title: "Student question", text: "WhatsApp · mobile · web" },
+      { title: "Personal answer", text: "Grounded · context-aware · safe" },
+    ];
+
+const channels = es
+  ? [
+      { kicker: "Web", title: "Panel de administración", text: "Gestiona instituciones, sube el conocimiento y sigue a cada grupo y su participación." },
+      { kicker: "Móvil", title: "App del estudiante", text: "Una experiencia nativa de tutoría pensada para concentrarse: chat, quizzes y progreso." },
+      { kicker: "WhatsApp", title: "Acceso inmediato", text: "El estudiante llega al tutor donde ya está, por la Cloud API." },
+    ]
+  : [
+      { kicker: "Web", title: "Admin dashboard", text: "Manage institutions, upload knowledge, track cohorts and engagement." },
+      { kicker: "Mobile", title: "Student app", text: "A native tutoring experience built for focus: chat, quizzes and progress." },
+      { kicker: "WhatsApp", title: "Instant access", text: "Students reach the tutor where they already are, via Cloud API." },
+    ];
 
 const phones = [
   { src: "/projects/studia/chatbot.webp", label: "Chat" },
   { src: "/projects/studia/quizes.webp", label: "Quiz" },
-  { src: "/projects/studia/themes.webp", label: "Themes" },
+  { src: "/projects/studia/themes.webp", label: es ? "Temas" : "Themes" },
 ];
 
 const gallery = ["/projects/studia/dashboardadmin.webp", "/projects/studia/dashboardowner.webp", "/projects/studia/light-dark.webp"];
 ---
 
-<ProjectLayout project={project} gallery={gallery} title={`${project.name} — AI tutor with RAG | Ángel Calderón`}>
+<ProjectLayout project={project} gallery={gallery} title={`${project.name} — ${copy.pageTitle} | Ángel Calderón`}>
   <!-- RAG en una línea -->
   <section class="container-page pb-20 md:pb-28">
     <div class="container-content">
-      <h2 class="type-h2">RAG that feels personal</h2>
+      <h2 class="type-h2">{copy.ragTitle}</h2>
       <div class="mt-10 grid items-stretch gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
         {formula.map((f, i) => (
           <>
@@ -51,7 +70,7 @@ const gallery = ["/projects/studia/dashboardadmin.webp", "/projects/studia/dashb
   <!-- Omnicanal -->
   <section class="container-page pb-20 md:pb-28">
     <div class="container-content">
-      <h2 class="type-h2">One brain, three channels</h2>
+      <h2 class="type-h2">{copy.channelsTitle}</h2>
       <div class="mt-10 grid gap-5 md:grid-cols-3">
         {channels.map((c) => (
           <article class="card reveal p-6 md:p-8">
@@ -67,7 +86,7 @@ const gallery = ["/projects/studia/dashboardadmin.webp", "/projects/studia/dashb
   <!-- App móvil: tres pantallas en fila -->
   <section class="container-page pb-20 md:pb-28">
     <div class="container-content">
-      <h2 class="type-h2">The mobile app</h2>
+      <h2 class="type-h2">{copy.appTitle}</h2>
       <div class="mt-10 grid grid-cols-3 gap-3 md:gap-8">
         {phones.map((p, i) => (
           <figure class={`reveal ${i === 1 ? "md:-mt-8" : ""}`}>

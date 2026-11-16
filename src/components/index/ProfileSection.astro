@@ -5,13 +5,27 @@ interface Props {
   lang: string;
   t: (key: string) => string;
 }
-const { t = (k: string) => k } = Astro.props as Props;
+const { lang = "es", t = (k: string) => k } = Astro.props as Props;
+
+// Hora de Caracas: se pinta en el servidor y el cliente la mantiene al minuto
+const timeLocale = lang === "en" ? "en-US" : "es-VE";
+const caracasTime = new Intl.DateTimeFormat(timeLocale, { hour: "numeric", minute: "2-digit", timeZone: "America/Caracas" }).format(new Date());
+
+const presets = [
+  { hour: 6, label: t("time_dawn") },
+  { hour: 12, label: t("time_noon") },
+  { hour: 17.75, label: t("time_sunset") },
+  { hour: 22, label: t("time_night") },
+];
 
 const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2560.webp 2560w`;
 ---
 
-<section aria-label={t("hero_aria")} class="hero relative h-[100svh] min-h-[560px] overflow-hidden">
-  <!-- 1. Cielo + montaña (foto completa) -->
+<section id="inicio" aria-label={t("hero_aria")} class="hero relative h-[100svh] min-h-[560px] overflow-hidden" data-hero data-locale={timeLocale} data-sim-label={t("time_simulated")}>
+  <!-- 0. Cielo en 3D (shader): hasta que está listo se ve la foto -->
+  <canvas class="hero-sky3d" data-avila-sky aria-hidden="true"></canvas>
+
+  <!-- 1. Cielo + montaña (foto completa): primera imagen y respaldo -->
   <img
     src="/hero/avila-1280.webp"
     srcset={srcset("avila")}
@@ -19,7 +33,7 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
     alt=""
     fetchpriority="high"
     decoding="async"
-    class="hero-layer hero-sky"
+    class="hero-layer hero-sky hero-photo"
   />
 
   <div class="hero-top-shade" aria-hidden="true"></div>
@@ -41,20 +55,57 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
     sizes="100vw"
     alt=""
     decoding="async"
-    class="hero-layer"
+    class="hero-layer hero-photo"
   />
 
+  <!-- 4b. El relieve real del Ávila en 3D; al estar listo sustituye a la foto -->
+  <canvas class="hero-canvas3d" data-avila-canvas aria-hidden="true"></canvas>
+
   <!-- 5. Lo mínimo para decidir: qué hago y qué hacer ahora -->
-  <div class="absolute inset-x-0 bottom-0 z-[45] bg-gradient-to-t from-background via-background/70 to-transparent pt-32">
+  <div class="hero-fade absolute inset-x-0 bottom-0 z-[45] pt-40">
     <div class="container-page pb-8 md:pb-10">
       <div class="container-content flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <p class="max-w-md text-lg md:text-xl leading-snug text-white">
-          {t("hero_role")}
-          <span class="block text-sm text-white/60 mt-1">
+        <div class="relative max-w-xl">
+          <p class="type-meta text-white/60">{t("hero_kicker")}</p>
+          <p class="mt-2 text-xl md:text-2xl font-medium leading-snug tracking-tight text-white text-balance">
+            {t("hero_role")}
+          </p>
+          <p class="mt-2 text-sm text-white/60">
             <span class="mr-1.5 inline-block h-1.5 w-1.5 -translate-y-px rounded-full bg-emerald-400"></span>
-            {t("hero_status")}
-          </span>
-        </p>
+            {t("hero_status")} ·
+            <button
+              type="button"
+              class="hero-time"
+              data-time-toggle
+              aria-expanded="false"
+              aria-controls="hero-time-panel"
+              data-label-live={t("hero_time")}
+              data-label-sim={t("hero_time_sim")}
+            >
+              <span data-time-label>{t("hero_time")}:</span>
+              <time class="tabular-nums" data-caracas-time>{caracasTime}</time>
+              <svg class="hero-time__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg>
+            </button>
+          </p>
+
+          <!-- Editor de la hora: el Ávila se ve como estaría a esa hora -->
+          <div id="hero-time-panel" class="hero-time-panel" data-time-panel role="group" aria-label={t("time_panel_title")} hidden>
+            <div class="flex items-baseline justify-between gap-4">
+              <p class="type-meta text-white/60">{t("time_panel_title")}</p>
+              <p class="text-xs text-white/50" data-time-mode>{t("time_live")}</p>
+            </div>
+            <p class="mt-1 font-display text-5xl leading-none text-white tabular-nums" data-time-big>{caracasTime}</p>
+            <div class="mt-4 flex items-center gap-3">
+              <svg class="h-4 w-4 shrink-0 text-white/50" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" /></svg>
+              <input type="range" min="0" max="24" step="0.25" value="12" class="hero-time__range" data-time-range aria-label={t("time_slider")} />
+              <svg class="h-4 w-4 shrink-0 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2">
+              {presets.map((p) => <button type="button" class="hero-time__chip" data-time-preset={p.hour}>{p.label}</button>)}
+            </div>
+            <button type="button" class="hero-time__live" data-time-live hidden>{t("time_back_live")}</button>
+          </div>
+        </div>
         <div class="flex items-center gap-3">
           <a href="#proyectos" class="btn btn-primary h-12 px-6 text-base">{t("hero_cta_projects")}</a>
           <a href="#contacto" class="btn btn-secondary h-12 px-6 text-base">{t("hero_cta_contact")}</a>
@@ -66,6 +117,135 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
 
 <!-- Flores cercanas: fijas sobre toda la página (fuera del hero para quedar por encima del resto) -->
 <canvas id="petals-front" class="pointer-events-none fixed inset-0 z-40 h-full w-full" aria-hidden="true"></canvas>
+
+<script>
+  // Ávila 3D + reloj editable. El 3D se carga cuando el navegador está libre; si algo falla
+  // (sin WebGL, ahorro de datos, conexión lenta, error de red) el hero se queda con la foto.
+  type Scene3D = Awaited<ReturnType<typeof import("../../lib/avila-scene").createAvilaScene>>;
+
+  const hero = document.querySelector<HTMLElement>("[data-hero]");
+  const canvas = hero?.querySelector<HTMLCanvasElement>("[data-avila-canvas]");
+  const skyCanvas = hero?.querySelector<HTMLCanvasElement>("[data-avila-sky]");
+  const toggle = hero?.querySelector<HTMLButtonElement>("[data-time-toggle]");
+  const panel = hero?.querySelector<HTMLElement>("[data-time-panel]");
+  const range = hero?.querySelector<HTMLInputElement>("[data-time-range]");
+  const clock = hero?.querySelector<HTMLElement>("[data-caracas-time]");
+  const big = hero?.querySelector<HTMLElement>("[data-time-big]");
+  const mode = hero?.querySelector<HTMLElement>("[data-time-mode]");
+  const label = hero?.querySelector<HTMLElement>("[data-time-label]");
+  const liveBtn = hero?.querySelector<HTMLButtonElement>("[data-time-live]");
+
+  if (hero && canvas && skyCanvas && toggle && panel && range && clock && big && mode && label && liveBtn) {
+    const fmt = new Intl.DateTimeFormat(hero.dataset.locale, { hour: "numeric", minute: "2-digit", timeZone: "America/Caracas" });
+    const caracasHour = () => {
+      const d = new Date(Date.now() - 4 * 36e5);
+      return d.getUTCHours() + d.getUTCMinutes() / 60;
+    };
+    const textFor = (h: number) => fmt.format(new Date(Date.UTC(2024, 0, 1, Math.floor(h) + 4, Math.round((h % 1) * 60))));
+
+    let scene: Scene3D | null = null;
+    let simulated: number | null = null; // hora fijada por el visitante; null = en vivo
+
+    const paint = () => {
+      const h = simulated ?? caracasHour();
+      const text = simulated === null ? fmt.format(new Date()) : textFor(h);
+      clock.textContent = text;
+      big.textContent = text;
+      label.textContent = (simulated === null ? toggle.dataset.labelLive : toggle.dataset.labelSim) + ":";
+      mode.textContent = simulated === null ? mode.dataset.live! : mode.dataset.sim!;
+      liveBtn.hidden = simulated === null;
+      hero.toggleAttribute("data-simulated", simulated !== null);
+      if (simulated === null) range.value = String(caracasHour());
+    };
+    mode.dataset.live = mode.textContent!;
+    mode.dataset.sim = hero.dataset.simLabel ?? "";
+
+    // El reloj en vivo avanza justo al cambiar el minuto
+    const tick = () => {
+      if (simulated === null) paint();
+      setTimeout(tick, 60_000 - (Date.now() % 60_000) + 50);
+    };
+    tick();
+
+    const setPanel = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+    };
+    toggle.addEventListener("click", () => {
+      if (!hero.classList.contains("is-3d")) return;
+      setPanel(panel.hidden);
+      if (!panel.hidden) range.focus({ preventScroll: true });
+    });
+    document.addEventListener("click", (e) => {
+      if (!panel.hidden && !(e.target as Element).closest(".hero-time-panel, [data-time-toggle]")) setPanel(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !panel.hidden) {
+        setPanel(false);
+        toggle.focus();
+      }
+    });
+    range.addEventListener("input", () => {
+      simulated = Number(range.value);
+      scene?.setHour(simulated, true);
+      paint();
+    });
+    panel.querySelectorAll<HTMLButtonElement>("[data-time-preset]").forEach((b) =>
+      b.addEventListener("click", () => {
+        simulated = Number(b.dataset.timePreset);
+        range.value = String(simulated);
+        scene?.setHour(simulated);
+        paint();
+      }),
+    );
+    liveBtn.addEventListener("click", () => {
+      simulated = null;
+      scene?.setHour(null);
+      paint();
+    });
+
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const slow = saveData?.saveData || /(^|-)2g$/.test(saveData?.effectiveType ?? "");
+    if (!slow) {
+      const start = async () => {
+        const { createAvilaScene } = await import("../../lib/avila-scene");
+        scene = await createAvilaScene(canvas, {
+          demUrl: "/hero/avila-dem.png",
+          skyCanvas,
+          reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+          // La cabina del teleférico enciende sus ventanas cuando en el Ávila es de noche
+          onSky: ({ night }) => window.dispatchEvent(new CustomEvent("avila:sky", { detail: { night } })),
+        });
+        // ?hour=18.5 fija la hora de Caracas (para compartir o previsualizar)
+        const param = new URLSearchParams(location.search).get("hour");
+        if (param !== null && param !== "" && !Number.isNaN(Number(param))) {
+          simulated = Math.min(24, Math.max(0, Number(param)));
+          range.value = String(simulated);
+          scene.setHour(simulated, true);
+        }
+        paint();
+
+        const onScroll = () => scene!.setScroll(window.scrollY / hero.offsetHeight);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+
+        let visible = true;
+        const sync = () => scene!.setRunning(visible && !document.hidden);
+        new IntersectionObserver(([e]) => {
+          visible = e.isIntersecting;
+          sync();
+        }).observe(hero);
+        document.addEventListener("visibilitychange", sync);
+
+        scene.renderOnce();
+        hero.classList.add("is-3d");
+        sync();
+      };
+      const idle = window.requestIdleCallback ?? ((cb: () => void, _opts?: { timeout: number }) => setTimeout(cb, 300));
+      idle(() => start().catch((err) => console.warn("Ávila 3D no disponible, se mantiene la foto:", err)), { timeout: 1500 });
+    }
+  }
+</script>
 
 <script>
   // Parallax sutil del nombre con el cursor: se mueve "entre" cielo y montaña
