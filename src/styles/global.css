@@ -859,17 +859,24 @@
     transition: opacity 1.4s ease;
   }
 
+  /* Fondo mientras carga el 3D: el color del cielo de la hora (lo fija un script en línea) */
+  .hero {
+    background: var(--hero-bg, linear-gradient(180deg, #0c0e14, #1b1830));
+  }
+
+  /* La foto solo se muestra de respaldo (clase no-3d, o sin JavaScript) */
   .hero-photo {
-    transition: opacity 1.4s ease;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .hero.no-3d .hero-photo {
+    opacity: 1;
   }
 
   .hero.is-3d .hero-canvas3d,
   .hero.is-3d .hero-sky3d {
     opacity: 1;
-  }
-
-  .hero.is-3d .hero-photo {
-    opacity: 0;
   }
 
   @media (prefers-reduced-motion: no-preference) {

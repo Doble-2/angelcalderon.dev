@@ -22,16 +22,28 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
 ---
 
 <section id="inicio" aria-label={t("hero_aria")} class="hero relative h-[100svh] min-h-[560px] overflow-hidden" data-hero data-locale={timeLocale} data-sim-label={t("time_simulated")}>
-  <!-- 0. Cielo en 3D (shader): hasta que está listo se ve la foto -->
+  <!-- Mientras carga el 3D: fondo del color del cielo de esta hora (sin foto que luego cambie) -->
+  <script is:inline>
+    (() => {
+      const hero = document.currentScript.parentElement;
+      const q = new URLSearchParams(location.search).get("hour");
+      const d = new Date(Date.now() - 4 * 36e5);
+      const h = q !== null && q !== "" && !isNaN(+q) ? +q : d.getUTCHours() + d.getUTCMinutes() / 60;
+      // [cielo alto, horizonte] aproximados a la paleta del 3D
+      const sky = h < 5.4 || h > 18.6 ? ["#05081a", "#161c42"] : h < 6.8 ? ["#231d44", "#d98b8a"] : h < 17.2 ? ["#2060b2", "#9fc3e6"] : ["#26376e", "#f0a888"];
+      hero.style.setProperty("--hero-bg", `linear-gradient(180deg, ${sky[0]} 0%, ${sky[1]} 58%, #0c0e14 100%)`);
+    })();
+  </script>
+
+  <!-- 0. Cielo en 3D (shader) -->
   <canvas class="hero-sky3d" data-avila-sky aria-hidden="true"></canvas>
 
-  <!-- 1. Cielo + montaña (foto completa): primera imagen y respaldo -->
+  <!-- 1. Cielo + montaña (foto completa): solo de respaldo, si el 3D no está disponible -->
   <img
     src="/hero/avila-1280.webp"
     srcset={srcset("avila")}
     sizes="100vw"
     alt=""
-    fetchpriority="high"
     decoding="async"
     class="hero-layer hero-sky hero-photo"
   />
@@ -114,6 +126,8 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
     </div>
   </div>
 </section>
+
+<noscript><style>.hero-photo { opacity: 1 !important; }</style></noscript>
 
 <!-- Flores cercanas: fijas sobre toda la página (fuera del hero para quedar por encima del resto) -->
 <canvas id="petals-front" class="pointer-events-none fixed inset-0 z-40 h-full w-full" aria-hidden="true"></canvas>
@@ -204,9 +218,16 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
       paint();
     });
 
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-    const slow = saveData?.saveData || /(^|-)2g$/.test(saveData?.effectiveType ?? "");
-    if (!slow) {
+    // Sin 3D posible (WebGL, ahorro de datos, conexión lenta): la foto, de entrada.
+    // Con 3D: nunca se ve la foto; mientras carga, el fondo del color del cielo.
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const slow = conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? "");
+    const probe = document.createElement("canvas");
+    const webgl = !!(probe.getContext("webgl2") ?? probe.getContext("webgl"));
+    const fallback = () => hero.classList.add("no-3d");
+    if (slow || !webgl) {
+      fallback();
+    } else {
       const start = async () => {
         const { createAvilaScene } = await import("../../lib/avila-scene");
         scene = await createAvilaScene(canvas, {
@@ -241,8 +262,10 @@ const srcset = (name: string) => `/hero/${name}-1280.webp 1280w, /hero/${name}-2
         hero.classList.add("is-3d");
         sync();
       };
-      const idle = window.requestIdleCallback ?? ((cb: () => void, _opts?: { timeout: number }) => setTimeout(cb, 300));
-      idle(() => start().catch((err) => console.warn("Ávila 3D no disponible, se mantiene la foto:", err)), { timeout: 1500 });
+      start().catch((err) => {
+        console.warn("Ávila 3D no disponible, se muestra la foto:", err);
+        fallback();
+      });
     }
   }
 </script>

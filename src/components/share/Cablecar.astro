@@ -1,15 +1,16 @@
 ---
 // Navegación como el teleférico de Caracas: la página es una subida al Ávila.
-// Una cabina cuelga del cable y sube según el scroll; cada sección es una estación.
-// Se puede saltar a una estación con un clic o arrastrar la cabina por el cable.
-// Las altitudes son las del recorrido real (Maripérez ≈ 1.000 m → estación Ávila ≈ 2.105 m).
+// Una cabina cuelga del cable y BAJA según el usuario baja por la página: se empieza arriba,
+// en la estación del Ávila (≈ 2.105 m), y se termina abajo, en Caracas (Maripérez ≈ 1.000 m),
+// que es donde está "Contacto". Cada sección es una estación; se puede saltar a una con un clic
+// o arrastrar la cabina por el cable.
 interface Props {
   lang: string;
   t: (key: string) => string;
 }
 const { lang = "es", t = (k: string) => k } = Astro.props as Props;
 
-// De la estación base (abajo) a la cima (arriba)
+// De arriba (inicio de la página) a abajo (contacto)
 const stations = [
   { id: "inicio", label: t("cable_base") },
   { id: "proyectos", label: t("nav_projects") },
@@ -26,8 +27,8 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
   class="cablecar"
   aria-label={t("cable_aria")}
   data-cablecar
-  data-base="1000"
-  data-top="2105"
+  data-start="2105"
+  data-finish="1000"
   data-locale={locale}
 >
   <svg class="cablecar__svg" aria-hidden="true">
@@ -35,8 +36,8 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     <path data-cable-done class="cablecar__cable is-done"></path>
   </svg>
 
-  <span class="cablecar__end cablecar__end--top" aria-hidden="true">2.105 m</span>
-  <span class="cablecar__end cablecar__end--base" aria-hidden="true">1.000 m</span>
+  <span class="cablecar__end cablecar__end--start" aria-hidden="true">2.105 m</span>
+  <span class="cablecar__end cablecar__end--finish" aria-hidden="true">1.000 m</span>
 
   <ol>
     {stations.map((s, i) => (
@@ -51,21 +52,24 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
 
   <div class="cablecar__cabin" data-cable-cabin>
     <div class="cablecar__swing" data-cable-swing>
-      <svg width="30" height="42" viewBox="0 0 30 42" fill="none" aria-hidden="true">
-        <!-- Pinza sobre el cable y brazo -->
-        <rect x="9" y="0.5" width="12" height="6" rx="3" fill="#f5f7ff" />
-        <circle cx="15" cy="3.5" r="1.1" fill="#9aa3c4" />
-        <path d="M15 6.5V14" stroke="#f5f7ff" stroke-width="1.8" stroke-linecap="round" />
-        <!-- Cabina -->
-        <path d="M5 17a5 5 0 0 1 5-3h10a5 5 0 0 1 5 3l1.4 14.6a4 4 0 0 1-4 4.4H7.6a4 4 0 0 1-4-4.4Z" fill="#800020" stroke="#e0527f" stroke-width="1.4" />
-        <rect class="cablecar__win" x="7.5" y="18.5" width="6" height="7.5" rx="1.6" />
-        <rect class="cablecar__win" x="16.5" y="18.5" width="6" height="7.5" rx="1.6" />
-        <path d="M5.2 29.5h19.6" stroke="#e0527f" stroke-width="1.1" opacity="0.7" />
+      <svg width="34" height="44" viewBox="0 0 34 44" fill="none" aria-hidden="true">
+        <!-- Carro sobre el cable: dos ruedas y la brida -->
+        <rect x="9" y="0.5" width="16" height="6.5" rx="3.25" fill="#f5f7ff" />
+        <circle cx="13.5" cy="3.75" r="1.6" fill="#8d96b8" />
+        <circle cx="20.5" cy="3.75" r="1.6" fill="#8d96b8" />
+        <path d="M17 7v6M11.5 13.5h11" stroke="#f5f7ff" stroke-width="1.8" stroke-linecap="round" />
+        <!-- Góndola: techo, banda de ventanas y faldón -->
+        <path d="M5 21a7 7 0 0 1 7-6.5h10a7 7 0 0 1 7 6.5v12a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5Z" fill="#800020" stroke="#e0527f" stroke-width="1.4" />
+        <rect class="cablecar__win" x="7.5" y="19" width="5.6" height="8.6" rx="1.8" />
+        <rect class="cablecar__win" x="14.2" y="19" width="5.6" height="8.6" rx="1.8" />
+        <rect class="cablecar__win" x="20.9" y="19" width="5.6" height="8.6" rx="1.8" />
+        <path d="M5.4 31.2h23.2" stroke="#e0527f" stroke-width="1.1" opacity="0.75" />
+        <path d="M12 38.5h10" stroke="#e0527f" stroke-width="1.4" stroke-linecap="round" opacity="0.6" />
       </svg>
     </div>
     <span class="cablecar__readout" aria-hidden="true">
       <span data-cable-name>{stations[0].label}</span>
-      <span class="tabular-nums" data-cable-alt>1.000 m</span>
+      <span class="tabular-nums" data-cable-alt>2.105 m</span>
     </span>
   </div>
 </nav>
@@ -111,17 +115,18 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     inset: 0;
   }
 
+  /* El cable va de arriba a la derecha (inicio) a abajo a la izquierda (final) */
   .cablecar li {
     position: absolute;
-    left: calc(var(--t) * 100%);
-    bottom: calc(var(--t) * 100%);
+    left: calc((1 - var(--t)) * 100%);
+    top: calc(var(--t) * 100%);
   }
 
   /* Zona de clic cómoda centrada en el punto del cable */
   .cablecar a {
     position: absolute;
     left: -14px;
-    bottom: -14px;
+    top: -14px;
     display: grid;
     place-items: center;
     width: 28px;
@@ -226,17 +231,17 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     transition: opacity 200ms ease;
   }
 
-  .cablecar__end--top {
+  .cablecar__end--start {
     top: -4px;
   }
 
-  .cablecar__end--base {
+  .cablecar__end--finish {
     bottom: -4px;
   }
 
   .cablecar:hover .cablecar__end,
   .cablecar:focus-within .cablecar__end,
-  .cablecar[data-at-base] .cablecar__end--base {
+  .cablecar[data-at-base] .cablecar__end--start {
     opacity: 0;
   }
 
@@ -244,14 +249,14 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     position: absolute;
     left: 0;
     top: 0;
-    margin: -3px 0 0 -15px;
+    margin: -3px 0 0 -17px;
     will-change: transform;
     pointer-events: none;
     filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.5));
   }
 
   .cablecar__swing {
-    transform-origin: 50% 3.5px; /* cuelga de la pinza */
+    transform-origin: 50% 3.75px; /* cuelga del carro */
     will-change: transform;
   }
 
@@ -267,7 +272,7 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
 
   /* Lectura de altitud: solo en la base y mientras la cabina se mueve o llega */
   .cablecar__readout {
-    top: 14px;
+    top: 16px;
     right: calc(100% + 0.5rem);
     display: flex;
     gap: 0.5rem;
@@ -334,16 +339,16 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     }
 
     .cablecar__swing svg {
-      width: 21px;
-      height: 29px;
+      width: 24px;
+      height: 31px;
     }
 
     .cablecar__cabin {
-      margin: -2px 0 0 -10px;
+      margin: -2px 0 0 -12px;
     }
 
     .cablecar__swing {
-      transform-origin: 50% 2.5px;
+      transform-origin: 50% 2.7px;
     }
 
     .cablecar__readout {
@@ -371,8 +376,8 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     const baseEl = nav.querySelector<SVGPathElement>("[data-cable-base]")!;
     const doneEl = nav.querySelector<SVGPathElement>("[data-cable-done]")!;
     const svg = nav.querySelector<SVGSVGElement>(".cablecar__svg")!;
-    const base = Number(nav.dataset.base);
-    const top = Number(nav.dataset.top);
+    const startAlt = Number(nav.dataset.start);
+    const finishAlt = Number(nav.dataset.finish);
     const fmt = new Intl.NumberFormat(nav.dataset.locale);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const last = links.length - 1;
@@ -406,7 +411,7 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
       });
       H = nav.clientHeight;
       W = nav.clientWidth;
-      pts = links.map((_, i) => ({ x: (i / last) * W, y: H - (i / last) * H }));
+      pts = links.map((_, i) => ({ x: W - (i / last) * W, y: (i / last) * H }));
       // El cable cuelga entre estaciones como uno de verdad: una comba suave
       sags = pts.slice(1).map((p, i) => Math.min(9, Math.hypot(p.x - pts[i].x, p.y - pts[i].y) * 0.07));
       svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
@@ -453,7 +458,7 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
       swing.style.transform = `rotate(${theta.toFixed(2)}deg)`;
       doneEl.setAttribute("d", p.d);
       nav.toggleAttribute("data-at-base", cur < 0.02);
-      altEl.textContent = `${fmt.format(Math.round(base + cur * (top - base)))} m`;
+      altEl.textContent = `${fmt.format(Math.round(startAlt + cur * (finishAlt - startAlt)))} m`;
       const s = Math.min(last, Math.floor(cur * last + 0.02));
       if (s !== station) {
         const arrived = station !== -1;
@@ -493,7 +498,7 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
       prev = cur;
       const accel = Math.max(-3e4, Math.min(3e4, (v - vPrev) / dt));
       vPrev = v;
-      omega += (-60 * theta - 5 * omega + 0.05 * accel) * dt;
+      omega += (-60 * theta - 5 * omega - 0.05 * accel) * dt;
       theta = Math.max(-16, Math.min(16, theta + omega * dt));
       paint();
       if (dragging || Math.abs(t - cur) > 0.0004 || Math.abs(theta) > 0.03 || Math.abs(omega) > 0.1) {
@@ -520,10 +525,12 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     paint();
     window.addEventListener("scroll", onScroll, { passive: true });
     // El alto de la página cambia (galería anclada, fuentes, imágenes): se vuelve a medir
-    new ResizeObserver(() => {
+    const ro = new ResizeObserver(() => {
       measure();
       kick();
-    }).observe(document.body);
+    });
+    ro.observe(document.body);
+    ro.observe(nav); // sus estilos pueden llegar después del script
     window.addEventListener("resize", () => {
       measure();
       kick();
@@ -544,7 +551,7 @@ const locale = lang === "en" ? "en-US" : "de-DE"; // punto de miles: 1.000 m
     cabin.addEventListener("pointermove", (e) => {
       if (!dragging) return;
       const r = nav.getBoundingClientRect();
-      const c = Math.min(1, Math.max(0, 1 - (e.clientY - r.top) / r.height));
+      const c = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
       const i = Math.min(last - 1, Math.floor(c * last));
       cur = c;
       window.scrollTo({ top: stops[i] + (c * last - i) * (stops[i + 1] - stops[i]), behavior: "instant" as ScrollBehavior });
