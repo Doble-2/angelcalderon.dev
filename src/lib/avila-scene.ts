@@ -4,6 +4,9 @@
 //   · cielo (shader propio): degradado, brillo del crepúsculo, nubes finas, estrellas y luna con su fase real
 //   · montaña: bosque, roca y pasto de altura, micro-relieve y sombras proyectadas por las propias crestas
 //   · mar de nubes: capa base más dos velos que se mueven con distinta velocidad
+//   · vida: la cámara rota despacio, las nubes proyectan sombras sobre las laderas, jirones de niebla suben
+//     por ellas, rayos de luz al amanecer y atardecer, pájaros de día, estrellas fugaces y las luces reales
+//     del hotel Humboldt y del teleférico de noche
 // Hay dos lienzos WebGL: el cielo va detrás del nombre (texto del DOM) y la montaña, delante,
 // así la cresta tapa de verdad al nombre.
 import {
@@ -20,6 +23,12 @@ const WIDTH_KM = (BOUNDS.east - BOUNDS.west) * KM_LON;
 const DEPTH_KM = (BOUNDS.north - BOUNDS.south) * KM_LAT;
 const EXAG = 1.7; // exageración vertical: de lejos, el relieve real se ve plano
 const CLOUD_Y = 1.3 * EXAG; // techo del mar de nubes (≈1.300 m)
+/** lon/lat → km sobre el modelo (x hacia el este, z hacia el sur; el norte queda al fondo) */
+const toWorld = (lon: number, lat: number) =>
+  new Vector2(((lon - BOUNDS.west) / (BOUNDS.east - BOUNDS.west) - 0.5) * WIDTH_KM, ((BOUNDS.north - lat) / (BOUNDS.north - BOUNDS.south) - 0.5) * DEPTH_KM);
+// Puntos reales (aproximados): hotel Humboldt, en la cumbre, y la estación Maripérez, abajo
+const HOTEL = toWorld(-66.8767, 10.5417);
+const MARIPEREZ = toWorld(-66.8853, 10.5106);
 const LAYERS = [
   { y: -0.6, alpha: 1, scale: 1, seed: 0 }, // suelo opaco
   { y: -0.12, alpha: 0.8, scale: 1.25, seed: 1 }, // velos translúcidos
@@ -183,6 +192,7 @@ const ATMOS = /* glsl */ `
   uniform vec3 uFog;
   uniform vec3 uSun;
   uniform vec3 uSunCol;
+  uniform float uCity;
   varying vec3 vWorld;
   // Volumen aparente: el mismo ruido, un poco desplazado hacia el sol, hace de luz
   vec3 cloudColor(vec2 xz) {
@@ -190,7 +200,9 @@ const ATMOS = /* glsl */ `
     float n = fbm(xz * 0.15 + drift);
     float lit = fbm3((xz + uSun.xz * 1.3) * 0.15 + drift);
     float relief = n - lit;
-    return uCloud * (0.7 + 0.5 * n + 1.0 * relief) + uSunCol * max(relief, 0.0) * 0.6;
+    // De noche las nubes, que están justo sobre Caracas, se iluminan desde abajo con la ciudad
+    vec3 city = vec3(0.34, 0.15, 0.045) * uCity * (0.45 + 0.9 * n);
+    return uCloud * (0.7 + 0.5 * n + 1.0 * relief) + uSunCol * max(relief, 0.0) * 0.6 + city;
   }
   float haze(float d) { return 1.0 - exp(-pow(d / 36.0, 1.5)); }
 `;
@@ -217,6 +229,10 @@ const TERRAIN_FRAG = /* glsl */ `
   uniform float uCloudY;
   uniform float uExag;
   uniform int uShadowSteps;
+  uniform float uCloudShadow;
+  uniform float uLights;
+  uniform vec2 uHotel;
+  uniform vec2 uLiftA;
   uniform vec2 uExtent;
   uniform sampler2D uHeightTex;
   varying vec3 vNormal;
@@ -275,9 +291,14 @@ const TERRAIN_FRAG = /* glsl */ `
     // Luz: sol (o luna) con sombras, más cielo y rebote del suelo
     float ndl = dot(n, uSun);
     float sh = castShadow(vWorld + n0 * 0.012, uSun);
-    float direct = max(ndl, 0.0) * mix(0.12, 1.0, sh);
-    vec3 amb = mix(uAmbBot, uAmbTop, n.y * 0.5 + 0.5);
-    vec3 col = alb * (uSunCol * direct + amb);
+    // Sombras de las nubes: manchas que cruzan la montaña empujadas por el viento
+    float cs = smoothstep(0.44, 0.66, fbm3(p * 0.085 + vec2(uTime * 0.04, uTime * 0.016)));
+    float shade = 1.0 - 0.78 * cs * uCloudShadow;
+    float direct = max(ndl, 0.0) * mix(0.12, 1.0, sh) * shade;
+    vec3 amb = mix(uAmbBot, uAmbTop, n.y * 0.5 + 0.5) * (1.0 - 0.3 * cs * uCloudShadow);
+    // Relleno desde el oeste, siempre: con el sol alto o a la espalda la montaña se vería plana
+    float fill = max(dot(n, normalize(vec3(-0.85, 0.45, 0.25))), 0.0);
+    vec3 col = alb * (uSunCol * direct + amb + uSunCol * fill * 0.34 * (0.4 + 0.6 * sh));
     // Filo de luz en las crestas, de cara al sol
     col += uSunCol * pow(1.0 - max(dot(n, V), 0.0), 3.0) * sh * 0.05;
 
@@ -286,12 +307,34 @@ const TERRAIN_FRAG = /* glsl */ `
     float line = (1.0 - smoothstep(0.0, 1.6 * w, abs(fract(vH / 500.0 - 0.5) - 0.5))) * (1.0 - smoothstep(0.22, 0.7, w));
     col *= 1.0 + line * uLines * 0.45;
 
+    // Luces de noche: el hotel Humboldt y la línea del teleférico, de Maripérez a la cumbre
+    if (uLights > 0.01) {
+      float dh = distance(p, uHotel);
+      vec3 warm = vec3(1.0, 0.62, 0.28);
+      col += warm * uLights * (2.4 * exp(-dh * dh / 0.006) + 0.5 * exp(-dh * dh / 0.09));
+      for (int k = 0; k < 9; k++) {
+        vec2 q = mix(uLiftA, uHotel, (float(k) + 0.5) / 9.0);
+        float d = distance(p, q);
+        float pulse = 0.65 + 0.35 * sin(uTime * 1.6 + float(k) * 1.7);
+        col += vec3(1.0, 0.8, 0.5) * uLights * pulse * (1.1 * exp(-d * d / 0.0035) + 0.25 * exp(-d * d / 0.03));
+      }
+    }
+
+    // Jirones de niebla que suben por las laderas entre 1.200 y 2.200 m
+    float mh = smoothstep(1150.0, 1500.0, vH) * (1.0 - smoothstep(1700.0, 2300.0, vH));
+    if (mh > 0.01) {
+      float mist = smoothstep(0.5, 0.82, fbm(p * 0.32 + vec2(uTime * 0.02, -uTime * 0.014)));
+      col = mix(col, cloudColor(p), mist * mh * 0.6);
+    }
+
     // La montaña sale del mar de nubes: el borde sube y baja con el ruido, como jirones
     float top = uCloudY + (fbm(p * 0.6 + uTime * 0.012) - 0.5) * 0.9;
     float cm = smoothstep(top + 0.1, top - 0.14, vWorld.y);
     if (cm > 0.001) col = mix(col, cloudColor(p), cm);
 
-    col = mix(col, uFog, haze(dist));
+    // Perspectiva atmosférica: el aire pesa más abajo (valles brumosos) que en las cumbres
+    float hz = haze(dist) * mix(1.25, 0.72, smoothstep(1100.0, 2400.0, vH));
+    col = mix(col, uFog, clamp(hz, 0.0, 1.0));
     gl_FragColor = vec4(toSRGB(col) + dither(gl_FragCoord.xy), 1.0);
   }
 `;
@@ -407,6 +450,95 @@ const SKY_FRAG = /* glsl */ `
   }
 `;
 
+// Capa final a pantalla completa: rayos de luz, pájaros, estrella fugaz y viñeta
+const FX_FRAG = /* glsl */ `
+  ${COMMON}
+  uniform float uAspect;
+  uniform float uDay;
+  uniform float uNight;
+  uniform float uRay;
+  uniform float uSide;
+  uniform float uHorizonY;
+  uniform float uBirds;
+  uniform vec3 uSunS;
+  varying vec2 vUv;
+
+  float seg(vec2 p, vec2 a, vec2 b) {
+    vec2 pa = p - a, ba = b - a;
+    return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
+  }
+
+  // Un pájaro lejano: dos alas en "M" que aletean
+  float bird(vec2 uv, float i) {
+    float r1 = hash(vec2(i, 1.3)), r2 = hash(vec2(i, 7.1)), r3 = hash(vec2(i, 3.7));
+    float dir = r2 > 0.5 ? 1.0 : -1.0;
+    float x = -0.1 + 1.2 * fract(r3 + uTime * (0.018 + r1 * 0.02) * dir / 1.2);
+    float y = 0.5 + r2 * 0.28 + 0.014 * sin(uTime * 0.6 + r1 * 6.28) + (x - 0.5) * 0.04 * (r1 - 0.5);
+    float s = 0.0055 + r3 * 0.006;
+    vec2 q = (uv - vec2(x, y)) * vec2(uAspect, 1.0) / s;
+    q.x = abs(q.x);
+    float f = 0.5 + 0.5 * sin(uTime * (5.5 + r1 * 3.0) + r2 * 6.28); // 0 = alas abajo, 1 = arriba
+    vec2 tip = vec2(1.3, 0.25 + 0.55 * f);
+    float d = min(seg(q, vec2(0.0), tip), seg(q, tip, vec2(2.4, -0.05 + 0.4 * f)));
+    return smoothstep(0.22, 0.09, d);
+  }
+
+  void main() {
+    vec2 uv = vUv;
+    vec3 rgb = vec3(0.0);
+    float a = 0.0;
+
+    // Rayos de luz: salen de donde está el sol (fuera de cuadro) al amanecer y al atardecer
+    if (uRay > 0.01) {
+      vec2 c = vec2(0.5 + uSide * 0.78, uHorizonY + 0.1);
+      vec2 v = (uv - c) * vec2(uAspect, 1.0);
+      float ang = atan(v.y, v.x);
+      float rays = noise(vec2(ang * 8.0, uTime * 0.035)) * 0.6 + noise(vec2(ang * 21.0 + 3.0, -uTime * 0.025)) * 0.4;
+      float ra = pow(rays, 2.4) * exp(-length(v) * 1.05) * uRay * smoothstep(-0.25, 0.1, v.y) * 0.24;
+      rgb += uSunS * ra;
+      a += ra;
+    }
+
+    // Estrella fugaz, de vez en cuando
+    if (uNight > 0.5) {
+      float k = uTime / 8.0;
+      float id = floor(k), f = fract(k);
+      if (hash(vec2(id, 5.5)) > 0.4 && f < 0.07) {
+        float u = f / 0.07;
+        vec2 dir = normalize(vec2(0.85, -0.5));
+        vec2 head = vec2(0.12 + 0.7 * hash(vec2(id, 1.0)), 0.78 + 0.17 * hash(vec2(id, 2.0))) + dir * u * 0.3;
+        vec2 q = (uv - head) * vec2(uAspect, 1.0);
+        vec2 dd = dir * vec2(uAspect, 1.0);
+        float along = dot(q, -normalize(dd));
+        float across = length(q + normalize(dd) * along);
+        float tail = smoothstep(0.0, 0.12, along) * (1.0 - smoothstep(0.12, 0.2, along));
+        float sa = smoothstep(0.004, 0.0008, across) * clamp(1.0 - along * 7.0, 0.0, 1.0) * step(0.0, along) * (1.0 - u * 0.6);
+        rgb += vec3(0.9, 0.95, 1.0) * sa;
+        a += sa;
+      }
+    }
+
+    // Pájaros, solo de día
+    if (uDay > 0.05) {
+      float b = 0.0;
+      for (int i = 0; i < 6; i++) { if (float(i) < uBirds) b = max(b, bird(uv, float(i))); }
+      float ba = b * uDay * 0.8;
+      vec3 bc = mix(vec3(0.08, 0.04, 0.07), vec3(0.04, 0.05, 0.09), smoothstep(0.1, 0.8, uDay));
+      rgb = mix(rgb, bc, ba);
+      a = max(a, ba);
+    }
+
+    // Viñeta: concentra la mirada y ancla el texto
+    float vig = smoothstep(0.5, 1.08, length((uv - 0.5) * vec2(1.05, 1.0)));
+    vec3 vc = vec3(0.01, 0.015, 0.04);
+    float va = vig * 0.34;
+    rgb = (rgb * a + vc * va * (1.0 - a)) / max(a + va * (1.0 - a), 0.0001);
+    a = a + va * (1.0 - a);
+
+    gl_FragColor = vec4(rgb, clamp(a, 0.0, 1.0));
+  }
+`;
+
 // ---------------------------------------------------------------------------------------------
 export type AvilaSky = { night: number };
 export type AvilaOptions = {
@@ -437,6 +569,11 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
     uCloudY: { value: CLOUD_Y },
     uExag: { value: EXAG },
     uShadowSteps: { value: 32 },
+    uCloudShadow: { value: 0 },
+    uLights: { value: 0 },
+    uCity: { value: 0 },
+    uHotel: { value: HOTEL },
+    uLiftA: { value: MARIPEREZ },
     uExtent: { value: new Vector2(WIDTH_KM, DEPTH_KM) },
     uHeightTex: { value: heightTexture(heights) },
   };
@@ -483,6 +620,23 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
   skyQuad.frustumCulled = false;
   skyScene.add(skyQuad);
   const skyCamera = new PerspectiveCamera();
+
+  // Capa final (rayos, pájaros, viñeta) sobre el 3D
+  const fxU = {
+    uTime: uniforms.uTime,
+    uAspect: skyU.uAspect,
+    uDay: { value: 0 },
+    uNight: skyU.uNight,
+    uRay: { value: 0 },
+    uSide: skyU.uSide,
+    uHorizonY: skyU.uHorizonY,
+    uBirds: { value: 6 },
+    uSunS: { value: new Vector3(1, 0.85, 0.65) },
+  };
+  const fx = new Mesh(new PlaneGeometry(2, 2), new ShaderMaterial({ uniforms: fxU, vertexShader: SKY_VERT, fragmentShader: FX_FRAG, transparent: true, depthTest: false, depthWrite: false }));
+  fx.frustumCulled = false;
+  fx.renderOrder = 100;
+  scene.add(fx);
 
   const camera = new PerspectiveCamera(34, 1, 0.1, 700);
   const target = new Vector3();
@@ -542,6 +696,13 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
     skyU.uNight.value = night;
     skyU.uPhase.value = moonAge(date);
 
+    uniforms.uCloudShadow.value = smooth(4, 22, alt) * (1 - night);
+    uniforms.uLights.value = smooth(-3, -9, alt);
+    uniforms.uCity.value = smooth(-2, -10, alt);
+    fxU.uDay.value = smooth(0, 8, alt);
+    fxU.uRay.value = smooth(-3, 1, alt) * (1 - smooth(14, 28, alt));
+    fxU.uSunS.value.fromArray(A.sun);
+
     if (onSky && Math.abs(night - lastNight) > 0.01) {
       lastNight = night;
       onSky({ night });
@@ -551,19 +712,27 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
   const applyCamera = () => {
     const portrait = camera.aspect < 0.9;
     const e = 1 - Math.pow(1 - intro, 3); // la cámara sube desde las nubes al entrar
-    const s = scroll;
+    const sc = scroll;
+    const t = reducedMotion ? 0 : uniforms.uTime.value;
     camera.fov = portrait ? 46 : 34;
+
+    // Rota despacio alrededor de la montaña (±5°) y respira un poco: paralaje real entre crestas
+    const swing = Math.sin(t * 0.055) * 0.075 + Math.sin(t * 0.021 + 1.3) * 0.035;
+    const tx = portrait ? 1.3 : 0.6;
+    const relX = (portrait ? -0.4 : -1.2) - tx;
+    const relZ = 15.5 - e * 2 - sc * 5;
+    const cos = Math.cos(swing), sin = Math.sin(swing);
     camera.position.set(
-      (portrait ? -0.4 : -1.2) + pointer.x * 0.9,
-      CLOUD_Y + 0.45 + e * 0.5 + s * 2.2 + pointer.y * 0.25,
-      15.5 - e * 2 - s * 5,
+      tx + relX * cos + relZ * sin + pointer.x * 1.3,
+      CLOUD_Y + 0.45 + e * 0.5 + sc * 2.2 + pointer.y * 0.3 + Math.sin(t * 0.09) * 0.08,
+      relZ * cos - relX * sin,
     );
-    target.set(portrait ? 1.3 : 0.6, (portrait ? 4.15 : 4.4) + s * 0.6, 0);
+    target.set(tx, (portrait ? 4.15 : 4.4) + sc * 0.6, 0);
     camera.lookAt(target);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
     skyU.uAspect.value = camera.aspect;
-    skyU.uMoon.value.set(portrait ? 0.74 : 0.8, portrait ? 0.9 : 0.82);
+    skyU.uMoon.value.set(portrait ? 0.86 : 0.8, portrait ? 0.8 : 0.82); // en móvil, bajo la cabecera y fuera del nombre
   };
 
   const render = (time: number) => {
@@ -617,7 +786,8 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
-    const base = Math.min(window.devicePixelRatio || 1, w < 700 ? 1.5 : 2);
+    // 1,5× como máximo: el shader pesa por píxel y el relieve es suave, así que en retina casi no se nota
+    const base = Math.min(window.devicePixelRatio || 1, 1.5);
     const ratio = [base, Math.min(base, 1), 0.75][quality];
     renderer.setPixelRatio(ratio);
     renderer.setSize(w, h, false);
@@ -630,6 +800,7 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
     quality = q;
     uniforms.uShadowSteps.value = [32, 18, 10][q];
     layers[2].visible = q < 2;
+    fxU.uBirds.value = [6, 4, 2][q];
     resize();
   }
   const ro = new ResizeObserver(resize);
@@ -689,6 +860,8 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
         m.geometry.dispose();
         (m.material as ShaderMaterial).dispose();
       }
+      fx.geometry.dispose();
+      (fx.material as ShaderMaterial).dispose();
       skyQuad.geometry.dispose();
       (skyQuad.material as ShaderMaterial).dispose();
       renderer.dispose();
