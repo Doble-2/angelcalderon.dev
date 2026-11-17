@@ -5,7 +5,7 @@
 //   · montaña: bosque, roca y pasto de altura, micro-relieve y sombras proyectadas por las propias crestas
 //   · mar de nubes: capa base más dos velos que se mueven con distinta velocidad
 //   · vida: la cámara rota despacio, las nubes proyectan sombras sobre las laderas, jirones de niebla suben
-//     por ellas, rayos de luz al amanecer y atardecer, pájaros de día, estrellas fugaces y las luces reales
+//     por ellas, rayos de luz al amanecer y atardecer, estrellas fugaces y las luces reales
 //     del hotel Humboldt y del teleférico de noche
 // Hay dos lienzos WebGL: el cielo va detrás del nombre (texto del DOM) y la montaña, delante,
 // así la cresta tapa de verdad al nombre.
@@ -450,37 +450,20 @@ const SKY_FRAG = /* glsl */ `
   }
 `;
 
-// Capa final a pantalla completa: rayos de luz, pájaros, estrella fugaz y viñeta
+// Capa final a pantalla completa: rayos de luz, estrella fugaz y viñeta
 const FX_FRAG = /* glsl */ `
   ${COMMON}
   uniform float uAspect;
-  uniform float uDay;
   uniform float uNight;
   uniform float uRay;
   uniform float uSide;
   uniform float uHorizonY;
-  uniform float uBirds;
   uniform vec3 uSunS;
   varying vec2 vUv;
 
   float seg(vec2 p, vec2 a, vec2 b) {
     vec2 pa = p - a, ba = b - a;
     return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
-  }
-
-  // Un pájaro lejano: dos alas en "M" que aletean
-  float bird(vec2 uv, float i) {
-    float r1 = hash(vec2(i, 1.3)), r2 = hash(vec2(i, 7.1)), r3 = hash(vec2(i, 3.7));
-    float dir = r2 > 0.5 ? 1.0 : -1.0;
-    float x = -0.1 + 1.2 * fract(r3 + uTime * (0.018 + r1 * 0.02) * dir / 1.2);
-    float y = 0.5 + r2 * 0.28 + 0.014 * sin(uTime * 0.6 + r1 * 6.28) + (x - 0.5) * 0.04 * (r1 - 0.5);
-    float s = 0.0055 + r3 * 0.006;
-    vec2 q = (uv - vec2(x, y)) * vec2(uAspect, 1.0) / s;
-    q.x = abs(q.x);
-    float f = 0.5 + 0.5 * sin(uTime * (5.5 + r1 * 3.0) + r2 * 6.28); // 0 = alas abajo, 1 = arriba
-    vec2 tip = vec2(1.3, 0.25 + 0.55 * f);
-    float d = min(seg(q, vec2(0.0), tip), seg(q, tip, vec2(2.4, -0.05 + 0.4 * f)));
-    return smoothstep(0.22, 0.09, d);
   }
 
   void main() {
@@ -516,16 +499,6 @@ const FX_FRAG = /* glsl */ `
         rgb += vec3(0.9, 0.95, 1.0) * sa;
         a += sa;
       }
-    }
-
-    // Pájaros, solo de día
-    if (uDay > 0.05) {
-      float b = 0.0;
-      for (int i = 0; i < 6; i++) { if (float(i) < uBirds) b = max(b, bird(uv, float(i))); }
-      float ba = b * uDay * 0.8;
-      vec3 bc = mix(vec3(0.08, 0.04, 0.07), vec3(0.04, 0.05, 0.09), smoothstep(0.1, 0.8, uDay));
-      rgb = mix(rgb, bc, ba);
-      a = max(a, ba);
     }
 
     // Viñeta: concentra la mirada y ancla el texto
@@ -621,16 +594,14 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
   skyScene.add(skyQuad);
   const skyCamera = new PerspectiveCamera();
 
-  // Capa final (rayos, pájaros, viñeta) sobre el 3D
+  // Capa final (rayos, estrella fugaz, viñeta) sobre el 3D
   const fxU = {
     uTime: uniforms.uTime,
     uAspect: skyU.uAspect,
-    uDay: { value: 0 },
     uNight: skyU.uNight,
     uRay: { value: 0 },
     uSide: skyU.uSide,
     uHorizonY: skyU.uHorizonY,
-    uBirds: { value: 6 },
     uSunS: { value: new Vector3(1, 0.85, 0.65) },
   };
   const fx = new Mesh(new PlaneGeometry(2, 2), new ShaderMaterial({ uniforms: fxU, vertexShader: SKY_VERT, fragmentShader: FX_FRAG, transparent: true, depthTest: false, depthWrite: false }));
@@ -699,7 +670,6 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
     uniforms.uCloudShadow.value = smooth(4, 22, alt) * (1 - night);
     uniforms.uLights.value = smooth(-3, -9, alt);
     uniforms.uCity.value = smooth(-2, -10, alt);
-    fxU.uDay.value = smooth(0, 8, alt);
     fxU.uRay.value = smooth(-3, 1, alt) * (1 - smooth(14, 28, alt));
     fxU.uSunS.value.fromArray(A.sun);
 
@@ -800,7 +770,6 @@ export async function createAvilaScene(canvas: HTMLCanvasElement, { demUrl, skyC
     quality = q;
     uniforms.uShadowSteps.value = [32, 18, 10][q];
     layers[2].visible = q < 2;
-    fxU.uBirds.value = [6, 4, 2][q];
     resize();
   }
   const ro = new ResizeObserver(resize);
